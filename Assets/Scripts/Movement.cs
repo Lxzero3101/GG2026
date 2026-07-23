@@ -1,11 +1,5 @@
 using UnityEngine;
 
-public class Movement
-{
-    
-}
-using UnityEngine;
-
 /// <summary>
 /// Moves the attached object around an N x N grid using WASD or Arrow Keys.
 /// Attach this to your Player GameObject.
