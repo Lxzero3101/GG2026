@@ -1,6 +1,6 @@
 using UnityEngine;
 
- summary
+summary
  Moves the attached object around an N x N grid using WASD or Arrow Keys.
  Attach this to your Player GameObject.
 
@@ -15,24 +15,17 @@ using UnityEngine;
 public class PlayerGridMovement  MonoBehaviour
 {
     [Header(Grid Settings)]
-    [Tooltip(Size of the grid (N x N cells).)]
-    public int gridSize = 10;
-
-    [Tooltip(World size of a single grid cell.)]
+    [Tooltip("World size of a single grid cell.")]
     public float cellSize = 1f;
 
-    [Tooltip(World position of the grid's bottom-left corner (cell 0,0).)]
+    [Tooltip("World position of the grid's bottom-left corner (cell 0,0).")]
     public Vector2 gridOrigin = Vector2.zero;
 
-    [Header(Movement Mode)]
-    [Tooltip(If true, moves freely like Brotato. If false, snaps one cell at a time.)]
+    [Header("Movement Mode")]
+    [Tooltip("If true, moves freely like Brotato. If false, snaps one cell at a time.")]
     public bool useFreeMovement = true;
 
-    [Header(Free Movement Settings)]
-    [Tooltip(Movement speed in units per second (used only in Free Movement mode).)]
-    public float moveSpeed = 5f;
-
-    [Header(Snap Movement Settings)]
+    [Header("Free Movement Settings")]
     [Tooltip(Time in seconds to glide between grid cells (used only in Snap mode).)]
     public float snapMoveDuration = 0.12f;
 
