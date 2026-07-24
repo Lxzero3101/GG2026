@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 390558115}
   - component: {fileID: 390558119}
   - component: {fileID: 390558120}
+  - component: {fileID: 390558121}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Player
@@ -290,6 +291,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 5
+--- !u!114 &390558121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390558113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 927834996ce883e47adbe13bbb8423bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpriteDirection
+  playerMovement: {fileID: 390558120}
+  spriteRenderer: {fileID: 0}
+  frontSprite: {fileID: -5682669648317748431, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
+  backSprite: {fileID: -8920587743720450768, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
+  leftSprite: {fileID: 8499631214573712661, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
+  rightSprite: {fileID: 6046224777264370187, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
 --- !u!1 &396937626
 GameObject:
   m_ObjectHideFlags: 0
