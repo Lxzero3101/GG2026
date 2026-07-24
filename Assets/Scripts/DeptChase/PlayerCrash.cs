@@ -12,10 +12,14 @@ public class PlayerCrash : MonoBehaviour
 
     public System.Action OnCrash; // MiniGameManager lắng nghe event này
 
+
+    private Color originalColor;
+
     void Awake()
     {
         laneController = GetComponent<PlayerLaneController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color; // lưu màu gốc
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -45,7 +49,7 @@ public class PlayerCrash : MonoBehaviour
         }
 
         // Trả về màu gốc
-        spriteRenderer.color = Color.blue; // màu placeholder của player
+        spriteRenderer.color = originalColor; // trả về màu gốc thay vì Color.blue
         laneController.InputLocked = false;
         isStunned = false;
     }
