@@ -3,14 +3,15 @@ using UnityEngine;
 public class PlayerLaneController : MonoBehaviour
 {
     [Header("Lane Settings")]
-    public float[] lanePositions = { 2f, 0f, -2f }; // Lane 0 = trên, 1 = giữa, 2 = dưới
+    public float[] lanePositions = { -2f, -3f, -4f }; // Lane 0 = trên, 1 = giữa, 2 = dưới
     public float moveSpeed = 15f;
 
-    private int currentLane = 1; // Bắt đầu ở lane giữa
+    private int currentLane = 1;
     public bool InputLocked { get; set; } = false;
+
     void Start()
     {
-        currentLane = 1; // ép về lane giữa, không tin default value
+        currentLane = 1;
         transform.position = new Vector3(transform.position.x, lanePositions[currentLane], 0f);
     }
 
