@@ -149,13 +149,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 390558113}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c9903893a5bd90469cc62a84596190f, type: 3}
+  m_Script: {fileID: 11500000, guid: 70d4caf72f37b344ebd3b60f10b7f81c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 4
-  interactKey: 32
-  interactRadius: 1.2
-  animator: {fileID: 0}
+  moveSpeed: 3
 --- !u!50 &390558115
 Rigidbody2D:
   serializedVersion: 5
@@ -250,13 +247,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 390558113}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.77, y: 3.29, z: 0}
+  m_LocalRotation: {x: -0.015707863, y: -0, z: -0, w: 0.9998766}
+  m_LocalPosition: {x: -8.34, y: 6.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -1.8, y: 0, z: 0}
 --- !u!1839735485 &390558118
 Tilemap:
   m_ObjectHideFlags: 0
