@@ -2,6 +2,7 @@ Shader "Custom/VisionMask"
 {
     Properties
     {
+        _MainTex ("Texture (unused, required by UI Canvas)", 2D) = "white" {}
         _Color ("Darkness Color", Color) = (0,0,0,1)
         _Center ("Center (viewport 0-1)", Vector) = (0.5,0.5,0,0)
         _Radius ("Radius", Range(0,1)) = 0.2
@@ -34,6 +35,7 @@ Shader "Custom/VisionMask"
                 float2 uv : TEXCOORD0;
             };
 
+            sampler2D _MainTex;
             fixed4 _Color;
             float4 _Center;
             float _Radius;
