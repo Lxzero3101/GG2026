@@ -9,14 +9,29 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/Lose.unity
-    guid: 5f18a80caec128f4da262757b94eee46
-  - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: 080c9135b9ab12147a84baae7a4b06f0
   - enabled: 1
+    path: Assets/Scenes/Office.unity
+    guid: 0a8668b9ee9add747ae7a8f1d5fb5a04
+  - enabled: 1
+    path: Assets/Scenes/MiniGame1.unity
+    guid: 4368985500aa4a845877752ba8098694
+  - enabled: 1
     path: Assets/Scenes/MiniGame2_DeptChase.unity
     guid: 9346fd4a5ef36734c961ce2c82a9fc41
+  - enabled: 1
+    path: Assets/Scenes/MiniGame3.unity
+    guid: 1eb1b3a1f553a404b8e55570185c6b90
+  - enabled: 1
+    path: Assets/Scenes/MiniGame4.unity
+    guid: 5f80c9ae838799147b192e1681dc5e56
+  - enabled: 1
+    path: Assets/Scenes/Lose.unity
+    guid: 5f18a80caec128f4da262757b94eee46
+  - enabled: 1
+    path: Assets/Scenes/Credit.unity
+    guid: 6978f6550dfd5dc48a07d0654e0743c4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
