@@ -2411,7 +2411,7 @@ MonoBehaviour:
   debtorStartX: 4
   debtorCatchOffset: 1
   winLoadDelay: 5
-  winSceneName: NextLevel
+  winSceneName: Menu
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -137,6 +137,9 @@ public class MiniGameManager : MonoBehaviour
         // Place debtor at starting position and keep backgrounds still until the round starts.
         UpdateDebtorPosition();
         SetParallaxPaused(true);
+        // Lock player movement until the countdown finishes.
+        if (playerLaneController != null)
+            playerLaneController.InputLocked = true;
 
         // Everything (spawning, patience drain, catch-progress fill) stays paused
         // until the countdown finishes.
@@ -194,6 +197,10 @@ public class MiniGameManager : MonoBehaviour
         SetParallaxPaused(false);
         gameUI?.ResumePatience();
         obstacleSpawner?.StartSpawning();
+
+            // Player can only start moving once the countdown ends.
+        if (playerLaneController != null)
+            playerLaneController.InputLocked = false;
     }
 
     // ─────────────────────────────────────────────
