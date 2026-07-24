@@ -1,22 +1,19 @@
 fileFormatVersion: 2
-guid: 34e495ba6911f0c4b8c18aad629c2131
+guid: 2edf886a23db1644385cd5662abb89ca
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3289932470294284201
-    second: player facial expressions_0
+      213: -5682669648317748431
+    second: PlayerFBRLViews_0
   - first:
-      213: -5123749940382568691
-    second: player facial expressions_1
+      213: 6046224777264370187
+    second: PlayerFBRLViews_1
   - first:
-      213: 6870462737596853407
-    second: player facial expressions_2
+      213: 8499631214573712661
+    second: PlayerFBRLViews_2
   - first:
-      213: -6070750828920438620
-    second: player facial expressions_3
-  - first:
-      213: -439792915331315209
-    second: player facial expressions_4
+      213: -8920587743720450768
+    second: PlayerFBRLViews_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -63,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -138,111 +135,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: player facial expressions_0
+      name: PlayerFBRLViews_0
       rect:
         serializedVersion: 2
-        x: 10
+        x: 0
         y: 0
-        width: 12
-        height: 31
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9a70ae2a62038ad20800000000000000
-      internalID: 3289932470294284201
+      spriteID: 13b602c101a1321b0800000000000000
+      internalID: -5682669648317748431
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player facial expressions_1
+      name: PlayerFBRLViews_1
       rect:
         serializedVersion: 2
-        x: 42
+        x: 32
         y: 0
-        width: 12
-        height: 31
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d0f61957398c4e8b0800000000000000
-      internalID: -5123749940382568691
+      spriteID: b021201966188e350800000000000000
+      internalID: 6046224777264370187
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player facial expressions_2
+      name: PlayerFBRLViews_2
       rect:
         serializedVersion: 2
-        x: 74
+        x: 64
         y: 0
-        width: 12
-        height: 31
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f9ca4056579c85f50800000000000000
-      internalID: 6870462737596853407
+      spriteID: 515fc728e81c4f570800000000000000
+      internalID: 8499631214573712661
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player facial expressions_3
+      name: PlayerFBRLViews_3
       rect:
         serializedVersion: 2
-        x: 106
+        x: 96
         y: 0
-        width: 12
-        height: 31
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4a00a4a094c50cba0800000000000000
-      internalID: -6070750828920438620
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player facial expressions_4
-      rect:
-        serializedVersion: 2
-        x: 138
-        y: 0
-        width: 12
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7f981f27caa85e9f0800000000000000
-      internalID: -439792915331315209
+      spriteID: 035d6dbd5b4b33480800000000000000
+      internalID: -8920587743720450768
       vertices: []
       indices: 
       edges: []
@@ -251,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 98a2d361ed8e32144bf5bf30e5f55fda
     internalID: 0
     vertices: []
     indices: 
@@ -259,13 +234,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      player facial expressions_0: 3289932470294284201
-      player facial expressions_1: -5123749940382568691
-      player facial expressions_2: 6870462737596853407
-      player facial expressions_3: -6070750828920438620
-      player facial expressions_4: -439792915331315209
+      PlayerFBRLViews_0: -5682669648317748431
+      PlayerFBRLViews_1: 6046224777264370187
+      PlayerFBRLViews_2: 8499631214573712661
+      PlayerFBRLViews_3: -8920587743720450768
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
 
+    /// <summary>Current movement input this frame (-1..1 on each axis). Read-only for other scripts.</summary>
+    public Vector2 CurrentMoveInput => moveInput;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
