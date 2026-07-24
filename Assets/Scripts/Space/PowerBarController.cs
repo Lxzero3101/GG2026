@@ -6,21 +6,24 @@ public class PowerBarController : MonoBehaviour
     [Header("UI Elements")]
     public RectTransform barBackground;
     public RectTransform indicator;
-    public RectTransform targetZone;   // Vùng xanh lá
+    public RectTransform targetZone;
     public Slider survivalSlider;
 
-    
+    [Header("Tug of War GameObjects (Cụm Giằng Co)")]
+    public Transform playerTransform;   // Ông áo xanh (Player)
+    public Transform debtorTransform;   // Ông áo vàng (Con nợ)
+    public Transform moneyBagTransform; // Túi tiền
+    public float tugSpeed = 1.5f;       // Tốc độ nhích qua nhích lại của 2 người
 
     [Header("Physics Settings (Dòng Lũ)")]
-    public float floodStrength = 220f;  // Tăng nhẹ lực nước đẩy
-    public float swimStrength = 450f;   // Lực bơi của người chơi
+    public float floodStrength = 220f;
+    public float swimStrength = 450f;
 
     [Header("Survival Settings (Thời Gian)")]
     public float maxSurvivalTime = 10f;
     public float currentSurvivalTime = 0f;
 
-    [Header("Penalty Settings (TụT Thời Gian)")]
-    // Tốc độ trừ thời gian MỖI GIÂY khi đứng ngoài vùng xanh lá
+    [Header("Penalty Settings")]
     public float timeDrainRate = 2.5f;
     public float rewardMultiplier = 1f;
 
@@ -32,12 +35,10 @@ public class PowerBarController : MonoBehaviour
 
     void Start()
     {
-        // 1. Tính toán giới hạn thanh nền (Mép Đỏ 2 đầu)
         float barWidth = barBackground.rect.width;
         minX = -barWidth / 2f;
         maxX = barWidth / 2f;
 
-        // 2. Tính toán vị trí Vùng Xanh (Target Zone đã thu nhỏ)
         float targetWidth = targetZone.rect.width;
         float targetX = targetZone.anchoredPosition.x;
         targetMinX = targetX - (targetWidth / 2f);
@@ -57,7 +58,7 @@ public class PowerBarController : MonoBehaviour
     {
         if (isGameOver) return;
 
-        // --- A. VẬT LÝ DI CHUYỂN ---
+        // --- A. VẬT LÝ DI CHUYỂN KIM ---
         float currentSpeed = -floodStrength;
         if (Input.GetKey(KeyCode.Space))
         {
@@ -65,25 +66,29 @@ public class PowerBarController : MonoBehaviour
         }
         MoveIndicator(currentSpeed);
 
-        // --- B. TRỪ THỜI GIAN LIÊN TỤC KHI RA NGOÀI VÙNG XANH ---
+        // --- B. XỬ LÝ TRONG / NGOÀI VÙNG XANH & GIẰNG CO ---
         bool isInTargetZone = CheckIsInTargetZone();
 
         if (isInTargetZone)
         {
-            // Ở trong vùng xanh: Cộng thời gian sống sót
+            // Trong vùng xanh: Cộng thời gian
             currentSurvivalTime += Time.deltaTime * rewardMultiplier;
             currentSurvivalTime = Mathf.Min(currentSurvivalTime, maxSurvivalTime);
+
+            // GIẰNG CO: Kéo cả cụm nhích sang TRÁI (về phía ông áo xanh)
+            MoveTugOfWarGroup(Vector3.left);
         }
         else
         {
-            // Ra ngoài vùng xanh: Trừ thời gian liên tục theo thời gian thực (Drain Rate)
+            // Ngoài vùng xanh: Trừ thời gian
             currentSurvivalTime -= timeDrainRate * Time.deltaTime;
+
+            // GIẰNG CO: Kéo cả cụm nhích sang PHẢI (về phía ông áo vàng)
+            MoveTugOfWarGroup(Vector3.right);
         }
 
-        // Đảm bảo không âm
         currentSurvivalTime = Mathf.Max(0f, currentSurvivalTime);
 
-        // Cập nhật Slider UI
         if (survivalSlider != null)
         {
             survivalSlider.value = currentSurvivalTime;
@@ -107,28 +112,48 @@ public class PowerBarController : MonoBehaviour
         return (indicatorX >= targetMinX && indicatorX <= targetMaxX);
     }
 
+    [Header("Screen Boundaries (Giới Hạn Màn Hình)")]
+    public float minScreenX = -7f; // Mép trái màn hình (tùy thuộc vào Camera của bạn)
+    public float maxScreenX = 7f;  // Mép phải màn hình
+
+    // Hàm di chuyển cả 2 nhân vật và túi tiền có GIỚI HẠN
+    void MoveTugOfWarGroup(Vector3 direction)
+    {
+        Vector3 shift = direction * tugSpeed * Time.deltaTime;
+
+        // Tính vị trí X mới thử nghiệm của ông áo xanh
+        if (playerTransform != null)
+        {
+            float nextPlayerX = playerTransform.position.x + shift.x;
+
+            // Chỉ cho phép di chuyển nếu còn nằm trong khoảng minScreenX và maxScreenX
+            if (nextPlayerX >= minScreenX && nextPlayerX <= maxScreenX)
+            {
+                playerTransform.position += shift;
+                if (debtorTransform != null) debtorTransform.position += shift;
+                if (moneyBagTransform != null) moneyBagTransform.position += shift;
+            }
+        }
+    }
     void CheckWinLossConditions()
     {
-        // 1. THẮNG: Đạt đủ thời gian
         if (currentSurvivalTime >= maxSurvivalTime)
         {
             isGameOver = true;
-            Debug.Log("🎉 BẠN ĐÃ THẮNG MINIGAME!");
+            Debug.Log("🎉 THẮNG MINIGAME!");
         }
 
-        // 2. THUA: Thời gian cạn sạch về 0
         if (currentSurvivalTime <= 0f && maxSurvivalTime > 0)
         {
             isGameOver = true;
-            Debug.LogError("💀 THUA! Hết thời gian sống sót do ở ngoài vùng xanh quá lâu!");
+            Debug.LogError("💀 THUA! Hết thời gian sống sót!");
         }
 
-        // 3. THUA CHẾT NGAY: Chạm vào vùng đỏ 2 bên mép
         float indicatorX = indicator.anchoredPosition.x;
         if (indicatorX <= minX || indicatorX >= maxX)
         {
             isGameOver = true;
-            Debug.LogError("💀 THUA NGAY! Chạm vạch đỏ ở 2 đầu thanh!");
+            Debug.LogError("💀 THUA NGAY! Chạm vạch đỏ!");
         }
     }
 }

@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 161023087}
   - component: {fileID: 161023088}
   m_Layer: 0
-  m_Name: MoneyBag_0
+  m_Name: MoneyBag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1073,6 +1073,10 @@ MonoBehaviour:
   indicator: {fileID: 1202592767}
   targetZone: {fileID: 118706512}
   survivalSlider: {fileID: 2118799848}
+  playerTransform: {fileID: 1602418331}
+  debtorTransform: {fileID: 2037711116}
+  moneyBagTransform: {fileID: 161023087}
+  tugSpeed: 3
   floodStrength: 200
   swimStrength: 400
   maxSurvivalTime: 10
@@ -1556,7 +1560,7 @@ GameObject:
   - component: {fileID: 2037711116}
   - component: {fileID: 2037711117}
   m_Layer: 0
-  m_Name: Triangle
+  m_Name: Debtor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
