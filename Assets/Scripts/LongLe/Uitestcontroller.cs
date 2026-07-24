@@ -11,6 +11,7 @@ public class UITestController : MonoBehaviour
     [SerializeField] private GameUI gameUI;
     [SerializeField] private float testAdjustAmount = 10f;
     [SerializeField] private float testDrainSpeed = 15f;
+    [SerializeField, Range(0f, 1f)] private float testIncreasePercentage = 0.2f;
 
     private void Update()
     {
@@ -27,14 +28,29 @@ public class UITestController : MonoBehaviour
         if (keyboard.digit4Key.wasPressedThisFrame) gameUI.SetBossExpression(BossExpression.Angry);
         if (keyboard.digit5Key.wasPressedThisFrame) gameUI.SetBossExpression(BossExpression.Furious);
 
-        // Arrow keys adjust patience manually.
+        // Arrow keys adjust patience manually by a flat amount.
         if (keyboard.upArrowKey.wasPressedThisFrame) gameUI.IncreasePatience(testAdjustAmount);
         if (keyboard.downArrowKey.wasPressedThisFrame) gameUI.DecreasePatience(testAdjustAmount);
 
-        // Space pauses/resumes drain, R resets, F speeds up drain.
+        // Space pauses drain, G resumes it, R resets, F speeds up drain.
         if (keyboard.spaceKey.wasPressedThisFrame) gameUI.PausePatience();
         if (keyboard.rKey.wasPressedThisFrame) gameUI.ResetPatience();
         if (keyboard.fKey.wasPressedThisFrame) gameUI.SetDrainSpeed(testDrainSpeed);
         if (keyboard.gKey.wasPressedThisFrame) gameUI.ResumePatience();
+
+        // Simulates hitting an obstacle: -10% patience + boss flash/shake reaction.
+        if (keyboard.hKey.wasPressedThisFrame) gameUI.ApplyObstacleHit();
+
+        // U key mirrors the test button below, for keyboard-only testing.
+        if (keyboard.uKey.wasPressedThisFrame) TestIncreasePatience();
+    }
+
+    /// <summary>
+    /// Wire this to a UI Button's OnClick() to add a test amount of patience
+    /// (default +20% of max) without needing the keyboard.
+    /// </summary>
+    public void TestIncreasePatience()
+    {
+        gameUI?.IncreasePatiencePercent(testIncreasePercentage);
     }
 }

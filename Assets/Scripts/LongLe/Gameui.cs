@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,55 @@ public class GameUI : MonoBehaviour
 {
     [SerializeField] private BossPortraitUI bossPortraitUI;
     [SerializeField] private PatienceBarUI patienceBarUI;
+    [SerializeField] private BossExpressionController bossExpressionController;
+
+    [Tooltip("Fraction of MAX patience lost when the player hits an obstacle (0.1 = 10%).")]
+    [SerializeField, Range(0f, 1f)] private float obstacleHitPercentage = 0.1f;
+
+    /// <summary>Raised once when patience reaches zero — e.g. for GameManager to trigger a loss.</summary>
+    public event Action OnPatienceDepleted;
+
+    private void OnEnable()
+    {
+        if (patienceBarUI != null)
+        {
+            patienceBarUI.OnPatienceDepleted += HandlePatienceDepleted;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (patienceBarUI != null)
+        {
+            patienceBarUI.OnPatienceDepleted -= HandlePatienceDepleted;
+        }
+    }
+
+    private void HandlePatienceDepleted()
+    {
+        OnPatienceDepleted?.Invoke();
+    }
+
+    /// <summary>
+    /// Single entry point for obstacle-hit reactions. Applies the configured
+    /// patience penalty and triggers the boss's "next stage" flash + shake.
+    /// This is the ONLY GameUI method gameplay/obstacle scripts should call
+    /// for this feature — it never exposes PatienceBarUI or BossPortraitUI directly.
+    /// </summary>
+    public void ApplyObstacleHit()
+    {
+        if (patienceBarUI == null)
+        {
+            Debug.LogWarning("[GameUI] PatienceBarUI reference is missing.");
+            return;
+        }
+
+        // Flash first so it captures the pre-hit stage, then apply the drop.
+        bossExpressionController?.FlashNextStage();
+
+        float amount = patienceBarUI.MaxPatience * obstacleHitPercentage;
+        patienceBarUI.Decrease(amount);
+    }
 
     /// <summary>Sets the boss portrait's current facial expression.</summary>
     public void SetBossExpression(BossExpression expression)
@@ -23,7 +73,7 @@ public class GameUI : MonoBehaviour
         bossPortraitUI.SetExpression(expression);
     }
 
-    /// <summary>Increases the patience bar's current value.</summary>
+    /// <summary>Increases the patience bar's current value by an absolute amount.</summary>
     public void IncreasePatience(float amount)
     {
         if (patienceBarUI == null)
@@ -33,6 +83,18 @@ public class GameUI : MonoBehaviour
         }
 
         patienceBarUI.Increase(amount);
+    }
+
+    /// <summary>Increases patience by a fraction of the maximum (0.2 = +20% of max).</summary>
+    public void IncreasePatiencePercent(float normalizedAmount)
+    {
+        if (patienceBarUI == null)
+        {
+            Debug.LogWarning("[GameUI] PatienceBarUI reference is missing.");
+            return;
+        }
+
+        patienceBarUI.Increase(patienceBarUI.MaxPatience * normalizedAmount);
     }
 
     /// <summary>Decreases the patience bar's current value.</summary>
