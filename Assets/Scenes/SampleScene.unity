@@ -225,6 +225,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameUI
   bossPortraitUI: {fileID: 1762784104}
   patienceBarUI: {fileID: 366410769}
+  bossExpressionController: {fileID: 0}
+  obstacleHitPercentage: 0.1
 --- !u!224 &254498405
 RectTransform:
   m_ObjectHideFlags: 0
@@ -997,6 +999,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1762784103}
   - component: {fileID: 1762784104}
+  - component: {fileID: 1762784106}
+  - component: {fileID: 1762784105}
   m_Layer: 5
   m_Name: BossPortrait
   m_TagString: Untagged
@@ -1048,6 +1052,38 @@ MonoBehaviour:
     sprite: {fileID: 40894122568221113, guid: 21ce4426a0c47c847ac3fc2b4a1c62f7, type: 3}
   - expression: 4
     sprite: {fileID: 2997763459327813078, guid: 21ce4426a0c47c847ac3fc2b4a1c62f7, type: 3}
+--- !u!114 &1762784105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762784102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 223b216bbf53fdf46b32cd7fafb2abfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossExpressionController
+  bossPortraitUI: {fileID: 1762784104}
+  patienceBarUI: {fileID: 366410769}
+  portraitShake: {fileID: 1762784106}
+  stageExpressions: 0000000001000000020000000300000004000000
+  flashDuration: 1
+  lowPatienceShakeThreshold: 0.1
+--- !u!114 &1762784106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762784102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a396228b3801a8444bf28f4f18db59b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossPortraitShake
+  shakeMagnitude: 8
+  shakeFrequency: 25
 --- !u!1 &2004967174
 GameObject:
   m_ObjectHideFlags: 0

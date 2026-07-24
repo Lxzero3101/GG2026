@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,18 @@ public class PatienceBarUI : MonoBehaviour
 
     private float currentPatience;
     private bool isDraining;
+
+    /// <summary>
+    /// Raised whenever the patience value changes, passing the new normalized (0–1)
+    /// value. Lets other systems (e.g. <see cref="BossExpressionController"/>) react
+    /// to changes without polling this component every frame.
+    /// </summary>
+    public event Action<float> OnPatienceChanged;
+
+    /// <summary>Raised once when patience reaches zero (does not repeat while it stays at zero).</summary>
+    public event Action OnPatienceDepleted;
+
+    private bool hasFiredDepletedEvent;
 
     /// <summary>Current patience value, clamped between 0 and <see cref="MaxPatience"/>.</summary>
     public float CurrentPatience => currentPatience;
@@ -100,11 +113,24 @@ public class PatienceBarUI : MonoBehaviour
 
     private void UpdateFill()
     {
-        if (fillImage == null)
+        if (fillImage != null)
         {
-            return;
+            fillImage.fillAmount = NormalizedPatience;
         }
 
-        fillImage.fillAmount = NormalizedPatience;
+        OnPatienceChanged?.Invoke(NormalizedPatience);
+
+        if (currentPatience <= 0f)
+        {
+            if (!hasFiredDepletedEvent)
+            {
+                hasFiredDepletedEvent = true;
+                OnPatienceDepleted?.Invoke();
+            }
+        }
+        else
+        {
+            hasFiredDepletedEvent = false;
+        }
     }
 }

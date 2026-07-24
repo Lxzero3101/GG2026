@@ -1,0 +1,59 @@
+using System;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+
+/// <summary>
+/// Displays a countdown at the center of the screen and notifies listeners when
+/// it finishes. Purely presentational — has no knowledge of win/lose state or
+/// scene flow; <see cref="GameManager"/> decides what happens after it finishes.
+/// </summary>
+public class CountdownUI : MonoBehaviour
+{
+    [SerializeField] private TextMeshProUGUI countdownText;
+    [SerializeField] private int startValue = 5;
+    [SerializeField] private float secondsPerCount = 1f;
+
+    private Coroutine countdownCoroutine;
+
+    /// <summary>Raised once the countdown reaches zero.</summary>
+    public event Action OnCountdownFinished;
+
+    /// <summary>Starts (or restarts) the countdown from <see cref="startValue"/>.</summary>
+    public void StartCountdown()
+    {
+        gameObject.SetActive(true);
+
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+        }
+
+        countdownCoroutine = StartCoroutine(CountdownRoutine());
+    }
+
+    private IEnumerator CountdownRoutine()
+    {
+        int count = startValue;
+
+        while (count > 0)
+        {
+            if (countdownText != null)
+            {
+                countdownText.text = count.ToString();
+            }
+
+            yield return new WaitForSeconds(secondsPerCount);
+            count--;
+        }
+
+        if (countdownText != null)
+        {
+            countdownText.text = string.Empty;
+        }
+
+        gameObject.SetActive(false);
+        countdownCoroutine = null;
+        OnCountdownFinished?.Invoke();
+    }
+}
