@@ -533,8 +533,8 @@ MonoBehaviour:
   resultText: {fileID: 0}
   winMessage: YOU WIN
   loseMessage: YOU LOSE
-  pullSystem: {fileID: 0}
-  pointerMovement: {fileID: 0}
+  pullSystem: {fileID: 1872028955}
+  pointerMovement: {fileID: 2034779855}
 --- !u!1 &988568360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,11 +1008,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbc44a37c16e0b844b04fde4f8179f75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PullSystem
-  pointerRect: {fileID: 0}
-  perfectZoneRect: {fileID: 0}
-  itemTransform: {fileID: 0}
-  playerAnchor: {fileID: 0}
-  enemyAnchor: {fileID: 0}
+  pointerRect: {fileID: 2034779852}
+  perfectZoneRect: {fileID: 327125948}
+  itemTransform: {fileID: 791144378}
+  playerAnchor: {fileID: 34829925}
+  enemyAnchor: {fileID: 712790118}
   grabKey: 32
   requiredHits: 3
   maxMisses: 3
@@ -1021,10 +1021,34 @@ MonoBehaviour:
   resultText: {fileID: 0}
   onWin:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 982891329}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: PlayerWin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onLose:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 982891329}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: EnemyWin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ada
+          m_BoolArgument: 0
+        m_CallState: 2
   onHit:
     m_PersistentCalls:
       m_Calls: []

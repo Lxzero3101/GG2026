@@ -53,11 +53,9 @@ public class PullSystem : MonoBehaviour
     void Update()
     {
         if (gameEnded) return;
-
         if (Input.GetKeyDown(grabKey))
-        {
             TryGrab();
-        }
+
     }
 
     void TryGrab()
