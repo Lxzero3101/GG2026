@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 21ce4426a0c47c847ac3fc2b4a1c62f7
+guid: f66f25709f3927a44a58b2d8b1706b54
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2817987313453986846
-    second: boss facial expressions_0
-  - first:
-      213: -7238920860542329700
-    second: boss facial expressions_1
-  - first:
-      213: -4903995873095474386
-    second: boss facial expressions_2
-  - first:
-      213: 40894122568221113
-    second: boss facial expressions_3
-  - first:
-      213: 2997763459327813078
-    second: boss facial expressions_4
+      213: 6879538022904502005
+    second: newspaper_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -125,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: boss facial expressions_0
+      name: newspaper_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2
-        width: 32
-        height: 29
+        x: 2
+        y: 4
+        width: 28
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,96 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2eb8400087f74e8d0800000000000000
-      internalID: -2817987313453986846
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss facial expressions_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 2
-        width: 32
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c9c953ea4df2a8b90800000000000000
-      internalID: -7238920860542329700
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss facial expressions_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 2
-        width: 32
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e23a9246cb181fbb0800000000000000
-      internalID: -4903995873095474386
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss facial expressions_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 2
-        width: 32
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9b18411ecf8419000800000000000000
-      internalID: 40894122568221113
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: boss facial expressions_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 2
-        width: 32
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6d561e1cbf13a9920800000000000000
-      internalID: 2997763459327813078
+      spriteID: 5f6140ae167097f50800000000000000
+      internalID: 6879538022904502005
       vertices: []
       indices: 
       edges: []
@@ -248,11 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      boss facial expressions_0: -2817987313453986846
-      boss facial expressions_1: -7238920860542329700
-      boss facial expressions_2: -4903995873095474386
-      boss facial expressions_3: 40894122568221113
-      boss facial expressions_4: 2997763459327813078
+      newspaper_0: 6879538022904502005
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
