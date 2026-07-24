@@ -9,6 +9,14 @@ using UnityEngine;
 /// </summary>
 public class GameUI : MonoBehaviour
 {
+    /// <summary>
+    /// Runtime-only lookup for scripts that can't hold a serialized reference to
+    /// this scene object — e.g. components on prefab ASSETS (like obstacles),
+    /// which Unity will not let you drag a scene object into via the Inspector.
+    /// Those scripts fall back to <see cref="Instance"/> instead.
+    /// </summary>
+    public static GameUI Instance { get; private set; }
+
     [SerializeField] private BossPortraitUI bossPortraitUI;
     [SerializeField] private PatienceBarUI patienceBarUI;
     [SerializeField] private BossExpressionController bossExpressionController;
@@ -18,6 +26,11 @@ public class GameUI : MonoBehaviour
 
     /// <summary>Raised once when patience reaches zero — e.g. for GameManager to trigger a loss.</summary>
     public event Action OnPatienceDepleted;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void OnEnable()
     {
@@ -32,6 +45,11 @@ public class GameUI : MonoBehaviour
         if (patienceBarUI != null)
         {
             patienceBarUI.OnPatienceDepleted -= HandlePatienceDepleted;
+        }
+
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 

@@ -1,12 +1,20 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
 /// Controls the Debt Chase mini-game loop.
-/// - Catch Progress: fills over time → WIN at 100
-/// - Boss Patience:  drains over time → LOSE at 0
-/// - Crash:          penalizes both meters
+/// - Countdown:      the round is fully paused (no spawn, no patience drain,
+///   no catch-progress fill, no parallax scroll) until CountdownUI finishes.
+/// - Catch Progress: fills over time → WIN at 100 (owned locally by this class)
+/// - Boss Patience:  owned entirely by GameUI/PatienceBarUI (the real UI) —
+///   this class only listens for GameUI.OnPatienceDepleted to trigger a LOSE.
+/// - Crash:          penalizes catch progress here; the obstacle's own
+///   ObstaclePatiencePenalty already applies the patience penalty + boss
+///   reaction on the same collision, so this class must NOT touch patience too.
 /// - Debtor:         lerps closer as catch progress increases (visual fake)
+/// - Win:            pauses everything, waits winLoadDelay seconds, then loads winSceneName.
 /// </summary>
 public class MiniGameManager : MonoBehaviour
 {
@@ -15,22 +23,33 @@ public class MiniGameManager : MonoBehaviour
     // ─────────────────────────────────────────────
 
     [Header("Player References")]
-    public PlayerCrash playerCrash;
-    public PlayerLaneController playerLaneController;
+    [SerializeField] private PlayerCrash playerCrash;
+    [SerializeField] private PlayerLaneController playerLaneController;
 
     [Header("Spawner Reference")]
-    public ObstacleSpawner obstacleSpawner;
+    [SerializeField] private ObstacleSpawner obstacleSpawner;
 
     [Header("Debtor Reference")]
-    public Transform debtorTransform;
+    [SerializeField] private Transform debtorTransform;
+
+    [Header("Boss UI")]
+    [Tooltip("The real GameUI bridge — owns the patience bar + boss portrait. This replaces the old placeholder patience Slider.")]
+    [SerializeField] private GameUI gameUI;
+
+    [Header("Countdown")]
+    [Tooltip("Round stays fully paused (no spawn/drain/fill/parallax) until this finishes.")]
+    [SerializeField] private CountdownUI countdownUI;
+
+    [Header("Parallax Backgrounds")]
+    [Tooltip("All scrolling background layers — paused during countdown and after win/lose.")]
+    [SerializeField] private ParallaxBackground[] parallaxBackgrounds;
 
     // ─────────────────────────────────────────────
     //  UI
     // ─────────────────────────────────────────────
 
     [Header("UI Sliders")]
-    public Slider catchProgressBar;   // 0 → 100, fills green
-    public Slider patienceBar;        // 100 → 0, drains red
+    [SerializeField] private Slider catchProgressBar; // 0 → 100, fills green
 
     // ─────────────────────────────────────────────
     //  Catch Progress Tuning
@@ -38,21 +57,10 @@ public class MiniGameManager : MonoBehaviour
 
     [Header("Catch Progress")]
     [Tooltip("Points per second the catch meter fills automatically")]
-    public float catchFillRate = 8f;
+    [SerializeField] private float catchFillRate = 8f;
 
     [Tooltip("Points subtracted from catch meter on crash")]
-    public float catchCrashPenalty = 10f;
-
-    // ─────────────────────────────────────────────
-    //  Boss Patience Tuning
-    // ─────────────────────────────────────────────
-
-    [Header("Boss Patience")]
-    [Tooltip("Points per second the patience meter drains automatically")]
-    public float patienceDrainRate = 5f;
-
-    [Tooltip("Points subtracted from patience meter on crash")]
-    public float patienceCrashPenalty = 15f;
+    [SerializeField] private float catchCrashPenalty = 10f;
 
     // ─────────────────────────────────────────────
     //  Debtor Fake Movement
@@ -60,19 +68,30 @@ public class MiniGameManager : MonoBehaviour
 
     [Header("Debtor Movement")]
     [Tooltip("Debtor X position at 0% catch progress (far away)")]
-    public float debtorStartX = 4f;
+    [SerializeField] private float debtorStartX = 4f;
 
     [Tooltip("How many units ahead of the Player the Debtor stops when caught (0 = overlap)")]
-    public float debtorCatchOffset = 0.5f;
+    [SerializeField] private float debtorCatchOffset = 0.5f;
+
+    // ─────────────────────────────────────────────
+    //  Win Sequence
+    // ─────────────────────────────────────────────
+
+    [Header("Win Sequence")]
+    [Tooltip("Seconds to wait after winning (fully paused) before loading the next scene.")]
+    [SerializeField] private float winLoadDelay = 5f;
+
+    [Tooltip("Scene to load after the win delay elapses.")]
+    [SerializeField] private string winSceneName = "NextLevel";
 
     // ─────────────────────────────────────────────
     //  Private State
     // ─────────────────────────────────────────────
 
     private float catchProgress = 0f;   // range [0, 100]
-    private float patience = 100f;  // range [0, 100]
     private bool isGameOver = false;
-    private float debtorEndX = 0f;   // calculated at Start() from player's actual X
+    private bool roundStarted = false;  // true once the countdown finishes
+    private float debtorEndX = 0f;      // calculated at Start() from player's actual X
 
     // ─────────────────────────────────────────────
     //  Unity Lifecycle
@@ -82,7 +101,6 @@ public class MiniGameManager : MonoBehaviour
     {
         // Init internal state
         catchProgress = 0f;
-        patience = 100f;
 
         // Auto-calculate debtorEndX from Player's actual X position so
         // the debtor always ends up just ahead of the player, not hardcoded.
@@ -91,9 +109,8 @@ public class MiniGameManager : MonoBehaviour
         else
             debtorEndX = -2.5f; // fallback if reference missing
 
-        // Init UI sliders
+        // Init catch progress UI slider only — patience bar UI is owned by GameUI.
         InitSlider(catchProgressBar, 0f, 100f, catchProgress);
-        InitSlider(patienceBar, 0f, 100f, patience);
 
         // Subscribe to crash event (always unsubscribe in OnDestroy)
         if (playerCrash != null)
@@ -101,15 +118,38 @@ public class MiniGameManager : MonoBehaviour
         else
             Debug.LogWarning("[MiniGameManager] PlayerCrash reference is missing!");
 
-        // Hand control of spawning to this manager
-        // NOTE: Make sure ObstacleSpawner.Start() does NOT auto-set IsSpawning = true
-        if (obstacleSpawner != null)
-            obstacleSpawner.StartSpawning();
+        // Subscribe to the REAL patience-depleted event instead of polling a
+        // locally-duplicated patience float. Keep it paused until the round starts.
+        if (gameUI != null)
+        {
+            gameUI.OnPatienceDepleted += HandlePatienceDepleted;
+            gameUI.ResetPatience();
+            gameUI.PausePatience();
+        }
         else
+        {
+            Debug.LogWarning("[MiniGameManager] GameUI reference is missing!");
+        }
+
+        if (obstacleSpawner == null)
             Debug.LogWarning("[MiniGameManager] ObstacleSpawner reference is missing!");
 
-        // Place debtor at starting position
+        // Place debtor at starting position and keep backgrounds still until the round starts.
         UpdateDebtorPosition();
+        SetParallaxPaused(true);
+
+        // Everything (spawning, patience drain, catch-progress fill) stays paused
+        // until the countdown finishes.
+        if (countdownUI != null)
+        {
+            countdownUI.OnCountdownFinished += HandleCountdownFinished;
+            countdownUI.StartCountdown();
+        }
+        else
+        {
+            Debug.LogWarning("[MiniGameManager] CountdownUI reference missing — starting round immediately.");
+            HandleCountdownFinished();
+        }
     }
 
     void OnDestroy()
@@ -117,30 +157,43 @@ public class MiniGameManager : MonoBehaviour
         // Always clean up event subscriptions to avoid memory leaks
         if (playerCrash != null)
             playerCrash.OnCrash -= HandleCrash;
+
+        if (gameUI != null)
+            gameUI.OnPatienceDepleted -= HandlePatienceDepleted;
+
+        if (countdownUI != null)
+            countdownUI.OnCountdownFinished -= HandleCountdownFinished;
     }
 
     void Update()
     {
-        if (isGameOver) return;
+        if (isGameOver || !roundStarted) return;
 
         // ── Catch Progress fills over time ──
         catchProgress = Mathf.Clamp(catchProgress + catchFillRate * Time.deltaTime, 0f, 100f);
 
-        // ── Patience drains over time ──
-        patience = Mathf.Clamp(patience - patienceDrainRate * Time.deltaTime, 0f, 100f);
-
         // ── Update UI ──
         if (catchProgressBar != null) catchProgressBar.value = catchProgress;
-        if (patienceBar != null) patienceBar.value = patience;
 
         // ── Update debtor fake position ──
         UpdateDebtorPosition();
 
-        // ── Win / Lose check ──
+        // ── Win check (Lose is event-driven — see HandlePatienceDepleted) ──
         if (catchProgress >= 100f)
             TriggerWin();
-        else if (patience <= 0f)
-            TriggerLose();
+    }
+
+    // ─────────────────────────────────────────────
+    //  Countdown Handler
+    // ─────────────────────────────────────────────
+
+    private void HandleCountdownFinished()
+    {
+        roundStarted = true;
+
+        SetParallaxPaused(false);
+        gameUI?.ResumePatience();
+        obstacleSpawner?.StartSpawning();
     }
 
     // ─────────────────────────────────────────────
@@ -151,10 +204,19 @@ public class MiniGameManager : MonoBehaviour
     {
         if (isGameOver) return;
 
+        // Patience penalty is NOT applied here on purpose: the obstacle that
+        // caused this crash also carries an ObstaclePatiencePenalty component,
+        // which already calls gameUI.ApplyObstacleHit() on the same trigger
+        // event. Penalizing patience again here would double-count the hit.
         catchProgress = Mathf.Max(0f, catchProgress - catchCrashPenalty);
-        patience = Mathf.Max(0f, patience - patienceCrashPenalty);
 
-        Debug.Log($"[MiniGameManager] CRASH — CatchProgress: {catchProgress:F1} | Patience: {patience:F1}");
+        Debug.Log($"[MiniGameManager] CRASH — CatchProgress: {catchProgress:F1}");
+    }
+
+    private void HandlePatienceDepleted()
+    {
+        if (isGameOver) return;
+        TriggerLose();
     }
 
     // ─────────────────────────────────────────────
@@ -175,6 +237,18 @@ public class MiniGameManager : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────
+    //  Parallax Helper
+    // ─────────────────────────────────────────────
+
+    private void SetParallaxPaused(bool paused)
+    {
+        if (parallaxBackgrounds == null) return;
+
+        foreach (var bg in parallaxBackgrounds)
+            bg?.SetPaused(paused);
+    }
+
+    // ─────────────────────────────────────────────
     //  Win / Lose
     // ─────────────────────────────────────────────
 
@@ -182,7 +256,17 @@ public class MiniGameManager : MonoBehaviour
     {
         EndGame();
         Debug.Log("[MiniGameManager] WIN — Debtor caught! 🎉");
-        // TODO: Fire a public event or call boss UI / scene transition here
+        StartCoroutine(WinSequenceRoutine());
+    }
+
+    private IEnumerator WinSequenceRoutine()
+    {
+        yield return new WaitForSeconds(winLoadDelay);
+
+        if (!string.IsNullOrEmpty(winSceneName))
+            SceneManager.LoadScene(winSceneName);
+        else
+            Debug.LogWarning("[MiniGameManager] winSceneName is empty — not loading a scene.");
     }
 
     private void TriggerLose()
@@ -198,6 +282,12 @@ public class MiniGameManager : MonoBehaviour
 
         // Stop obstacles
         obstacleSpawner?.StopSpawning();
+
+        // Freeze the boss's drain so the top bar doesn't keep ticking after game over
+        gameUI?.PausePatience();
+
+        // Freeze the scrolling background too
+        SetParallaxPaused(true);
 
         // Lock player input
         if (playerLaneController != null)
@@ -221,6 +311,6 @@ public class MiniGameManager : MonoBehaviour
     // ─────────────────────────────────────────────
 
     public float CatchProgress => catchProgress;
-    public float Patience => patience;
+    public float Patience => gameUI != null ? gameUI.GetNormalizedPatience() * 100f : 0f;
     public bool IsGameOver => isGameOver;
 }
