@@ -6,13 +6,20 @@ public class ObstacleSpawner : MonoBehaviour
     public GameObject[] obstaclePrefabs; // kéo 4 prefab vào đây
 
     [Header("Lane Settings")]
-    public float[] lanePositions = { -2f, -3f, -4f };
+    public float[] lanePositions = { -2f, -3f, -4f }; // Line 1, Line 2, Line 3 (bottom)
     public float spawnX = 10f;
 
     [Header("Spawn Timing")]
     public float minInterval = 1f;
     public float maxInterval = 2f;
     public bool IsSpawning { get; set; } = false;
+
+    [Header("Sorting Order Fix")]
+    [Tooltip("Lane index that should render in front of the player (0-based). With the default lanePositions, index 2 = Line 3 / bottom lane.")]
+    [SerializeField] private int frontLaneIndex = 2;
+
+    [Tooltip("Sorting order applied to obstacles spawned in frontLaneIndex (player is 6, so this should be 7).")]
+    [SerializeField] private int frontLaneSortingOrder = 7;
 
     private float timer;
     private int lastLane = -1;
@@ -45,7 +52,15 @@ public class ObstacleSpawner : MonoBehaviour
         // Random obstacle
         int index = Random.Range(0, obstaclePrefabs.Length);
         Vector3 spawnPos = new Vector3(spawnX, lanePositions[lane], 0f);
-        Instantiate(obstaclePrefabs[index], spawnPos, Quaternion.identity);
+        GameObject obstacle = Instantiate(obstaclePrefabs[index], spawnPos, Quaternion.identity);
+
+        // Bottom lane (Line 3) renders in front of the player; other lanes stay default.
+        if (lane == frontLaneIndex)
+        {
+            SpriteRenderer sr = obstacle.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.sortingOrder = frontLaneSortingOrder;
+        }
     }
 
     public void StartSpawning() => IsSpawning = true;
