@@ -5,9 +5,9 @@
 /// </summary>
 public enum BossExpression
 {
-    Happy,
     Neutral,
     Annoyed,
+    Disappointed,
     Angry,
     Furious
 }
