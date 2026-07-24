@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class PointerMovement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Movement Settings")]
+    [SerializeField] private float moveSpeed = 200f;
+
+    private RectTransform rectTransform;
+    private bool movingRight = true;
+
+    private void Awake()
     {
-        
+        rectTransform = GetComponent<RectTransform>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (movingRight)
+        {
+            rectTransform.anchoredPosition += Vector2.right * moveSpeed * Time.deltaTime;
+        }
     }
 }
