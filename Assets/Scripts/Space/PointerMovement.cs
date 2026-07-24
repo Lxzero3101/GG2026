@@ -70,7 +70,7 @@
 
         IEnumerator ResetPointer()
         {
-            yield return new WaitForSeconds(6f);
+            yield return new WaitForSeconds(1f);
 
             rectTransform.anchoredPosition =
                 new Vector2(0f, rectTransform.anchoredPosition.y);

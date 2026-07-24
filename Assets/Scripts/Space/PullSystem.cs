@@ -63,6 +63,7 @@ public class PullSystem : MonoBehaviour
         if (pointerRect == null || perfectZoneRect == null) return;
 
         bool isHit = CheckOverlap();
+        Debug.Log("TryGrab: isHit = " + isHit + " | pointerX = " + pointerRect.anchoredPosition.x);
 
         if (isHit)
         {
