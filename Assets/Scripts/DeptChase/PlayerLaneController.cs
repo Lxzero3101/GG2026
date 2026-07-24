@@ -8,6 +8,11 @@ public class PlayerLaneController : MonoBehaviour
 
     private int currentLane = 1; // Bắt đầu ở lane giữa
     public bool InputLocked { get; set; } = false;
+    void Start()
+    {
+        currentLane = 1; // ép về lane giữa, không tin default value
+        transform.position = new Vector3(transform.position.x, lanePositions[currentLane], 0f);
+    }
 
     void Update()
     {
