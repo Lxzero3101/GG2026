@@ -3,10 +3,10 @@ using UnityEngine;
 public class ObstacleSpawner : MonoBehaviour
 {
     [Header("References")]
-    public GameObject obstaclePrefab;
+    public GameObject[] obstaclePrefabs; // kéo 4 prefab vào đây
 
     [Header("Lane Settings")]
-    public float[] lanePositions = { 2f, 0f, -2f };
+    public float[] lanePositions = { -2f, -3f, -4f };
     public float spawnX = 10f;
 
     [Header("Spawn Timing")]
@@ -15,12 +15,11 @@ public class ObstacleSpawner : MonoBehaviour
     public bool IsSpawning { get; set; } = false;
 
     private float timer;
-
+    private int lastLane = -1;
 
     void Start()
     {
-        timer = 1f; // delay nhỏ trước khi spawn cái đầu tiên
-       
+        timer = 1f;
     }
 
     void Update()
@@ -37,9 +36,16 @@ public class ObstacleSpawner : MonoBehaviour
 
     void SpawnObstacle()
     {
-        int lane = Random.Range(0, lanePositions.Length);
+        // Random lane (không trùng lane trước)
+        int lane;
+        do { lane = Random.Range(0, lanePositions.Length); }
+        while (lane == lastLane && lanePositions.Length > 1);
+        lastLane = lane;
+
+        // Random obstacle
+        int index = Random.Range(0, obstaclePrefabs.Length);
         Vector3 spawnPos = new Vector3(spawnX, lanePositions[lane], 0f);
-        Instantiate(obstaclePrefab, spawnPos, Quaternion.identity);
+        Instantiate(obstaclePrefabs[index], spawnPos, Quaternion.identity);
     }
 
     public void StartSpawning() => IsSpawning = true;
