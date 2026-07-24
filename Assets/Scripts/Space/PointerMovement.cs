@@ -1,14 +1,30 @@
+using System.Collections;
 using UnityEngine;
 
 public class PointerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 200f;
-    [SerializeField] private float leftLimit = -200f;
-    [SerializeField] private float rightLimit = 200f;
+    [Header("Movement")]
+    [SerializeField] private float moveSpeed = 250f;
+    [SerializeField] private float leftLimit = -195f;
+    [SerializeField] private float rightLimit = 195f;
+
+    [Header("Input")]
+    [SerializeField] private KeyCode stopKey = KeyCode.Space;
 
     private RectTransform rectTransform;
+
     private bool movingRight = true;
+    private bool isStopped = false;
+
+    public bool IsStopped => isStopped;
+
+    public float CurrentX
+    {
+        get
+        {
+            return rectTransform.anchoredPosition.x;
+        }
+    }
 
     private void Awake()
     {
@@ -17,27 +33,48 @@ public class PointerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Di chuyển sang phải
+        if (!isStopped && Input.GetKeyDown(stopKey))
+        {
+            isStopped = true;
+            StartCoroutine(ResetPointer());
+        }
+
+        if (isStopped)
+            return;
+
+        Vector2 pos = rectTransform.anchoredPosition;
+
         if (movingRight)
         {
-            rectTransform.anchoredPosition += Vector2.right * moveSpeed * Time.deltaTime;
+            pos.x += moveSpeed * Time.deltaTime;
 
-            // Nếu chạm mép phải thì quay đầu
-            if (rectTransform.anchoredPosition.x >= rightLimit)
+            if (pos.x >= rightLimit)
             {
+                pos.x = rightLimit;
                 movingRight = false;
             }
         }
-        // Di chuyển sang trái
         else
         {
-            rectTransform.anchoredPosition += Vector2.left * moveSpeed * Time.deltaTime;
+            pos.x -= moveSpeed * Time.deltaTime;
 
-            // Nếu chạm mép trái thì quay đầu
-            if (rectTransform.anchoredPosition.x <= leftLimit)
+            if (pos.x <= leftLimit)
             {
+                pos.x = leftLimit;
                 movingRight = true;
             }
         }
+
+        rectTransform.anchoredPosition = pos;
+    }
+
+    IEnumerator ResetPointer()
+    {
+        yield return new WaitForSeconds(1f);
+
+        rectTransform.anchoredPosition =
+            new Vector2(0f, rectTransform.anchoredPosition.y);
+
+        isStopped = false;
     }
 }
