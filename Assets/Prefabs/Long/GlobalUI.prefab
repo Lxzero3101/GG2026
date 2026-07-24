@@ -1063,7 +1063,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameUI
   bossPortraitUI: {fileID: 7063393106272607480}
   patienceBarUI: {fileID: 3970911902504188438}
-  bossExpressionController: {fileID: 0}
+  bossExpressionController: {fileID: 83420242534954757}
   obstacleHitPercentage: 0.1
 --- !u!1 &7446839990362510996
 GameObject:
