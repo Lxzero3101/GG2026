@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class GameManager1 : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager1 Instance { get; private set; }
 
     public enum GameState { Playing, Won, Lost }
     public GameState CurrentState { get; private set; } = GameState.Playing;
