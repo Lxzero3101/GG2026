@@ -1124,9 +1124,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleSpawner
   obstaclePrefabs:
   - {fileID: 8929424768692838835, guid: da1088e1327bc58479542343ea36ba71, type: 3}
-  - {fileID: 699125213535934217, guid: d7d7a885f3bc93a4dbeba19edb8cdd4f, type: 3}
+  - {fileID: 8929424768692838835, guid: ca541e661ca65ba45a90881c3c9b9139, type: 3}
   - {fileID: 8929424768692838835, guid: 05968b7ddde850449ac36e3b49ead2ef, type: 3}
-  - {fileID: 3423525400074399800, guid: 6296fddd4a9cdd34b95030faf38138ad, type: 3}
+  - {fileID: 8929424768692838835, guid: 3e2971b35cee7b14181ae1507fa39d6a, type: 3}
   lanePositions:
   - -2.5
   - -3.5
