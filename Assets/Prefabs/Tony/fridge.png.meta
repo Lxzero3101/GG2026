@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2924550f97fa80044a975d274f9f2638
+guid: ecd4b54f16f9a824e84230d8839ca0dc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5727101463259792520
-    second: MoneyBag_0
+      213: 5739897283171119737
+    second: fridge_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 24
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MoneyBag_0
+      name: fridge_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 5
         y: 0
-        width: 25
-        height: 31
+        width: 21
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8844836ff60ca7f40800000000000000
-      internalID: 5727101463259792520
+      spriteID: 972f4a2fa2638af40800000000000000
+      internalID: 5739897283171119737
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MoneyBag_0: 5727101463259792520
+      fridge_0: 5739897283171119737
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2924550f97fa80044a975d274f9f2638
+guid: 2e01ef972d6fbb24c866bf9166fa1fed
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5727101463259792520
-    second: MoneyBag_0
+      213: 7154340120509879564
+    second: CartonBox_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MoneyBag_0
+      name: CartonBox_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 2
         y: 0
-        width: 25
-        height: 31
+        width: 27
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8844836ff60ca7f40800000000000000
-      internalID: 5727101463259792520
+      spriteID: c05115d2f62594360800000000000000
+      internalID: 7154340120509879564
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MoneyBag_0: 5727101463259792520
+      CartonBox_0: 7154340120509879564
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

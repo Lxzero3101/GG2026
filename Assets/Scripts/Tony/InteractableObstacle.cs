@@ -162,7 +162,7 @@ public class InteractableObstacle : MonoBehaviour
 
     void ShowPrompt()
     {
-        if (promptRoot == null) return;
+        if (promptRoot == null || !gameObject.activeInHierarchy) return;
 
         if (animRoutine != null) StopCoroutine(animRoutine);
         animRoutine = StartCoroutine(PopIn());
@@ -170,7 +170,7 @@ public class InteractableObstacle : MonoBehaviour
 
     void HidePrompt()
     {
-        if (promptRoot == null) return;
+        if (promptRoot == null || !gameObject.activeInHierarchy) return;
 
         if (animRoutine != null) StopCoroutine(animRoutine);
         animRoutine = StartCoroutine(PopOut());

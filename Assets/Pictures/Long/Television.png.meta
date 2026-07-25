@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2924550f97fa80044a975d274f9f2638
+guid: 780977357ab579243943dacea9f278fa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5727101463259792520
-    second: MoneyBag_0
+      213: 763399972546573087
+    second: Television_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MoneyBag_0
+      name: Television_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 0
-        width: 25
-        height: 31
+        x: 1
+        y: 3
+        width: 30
+        height: 27
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8844836ff60ca7f40800000000000000
-      internalID: 5727101463259792520
+      spriteID: f137e29fa34289a00800000000000000
+      internalID: 763399972546573087
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MoneyBag_0: 5727101463259792520
+      Television_0: 763399972546573087
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

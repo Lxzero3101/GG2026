@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2924550f97fa80044a975d274f9f2638
+guid: 985c01ec3c4079248b5a209281e2f2ea
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5727101463259792520
-    second: MoneyBag_0
+      213: 8102106982796855895
+    second: Gold sycee_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MoneyBag_0
+      name: Gold sycee_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 0
-        width: 25
-        height: 31
+        x: 1
+        y: 5
+        width: 30
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8844836ff60ca7f40800000000000000
-      internalID: 5727101463259792520
+      spriteID: 75a81d1cf57707070800000000000000
+      internalID: 8102106982796855895
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MoneyBag_0: 5727101463259792520
+      Gold sycee_0: 8102106982796855895
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
