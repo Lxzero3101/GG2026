@@ -15,6 +15,9 @@ using UnityEngine.UI;
 public class PowerBarController : MonoBehaviour
 {
     [Header("UI Elements")]
+    [Header("Target Zone Randomization")]
+    [SerializeField] private float zoneRandomInterval = 5f; // Mỗi bao nhiêu giây thì đổi vị trí vùng xanh
+    [SerializeField] private float zoneRandomTimer = 0f;
     [SerializeField] private RectTransform barBackground;
     [SerializeField] private RectTransform indicator;
     [SerializeField] private RectTransform targetZone;
@@ -44,12 +47,14 @@ public class PowerBarController : MonoBehaviour
     [SerializeField] private float moneyBagHeightOffset = 1.2f;   // Độ cao túi tiền bay lên đầu
 
     [Header("Physics Settings (Dòng Lũ)")]
-    [SerializeField] private float floodStrength = 220f;  // Lực nước đẩy trôi về bên trái
-    [SerializeField] private float swimStrength = 450f;   // Lực người chơi bấm Space bơi sang phải
+    [SerializeField] private float floodStrength = 220f;  // Tốc độ dòng lũ kéo trái (vận tốc, giây)
+    [SerializeField] private float swimStrength = 20f;    // Khoảng cách CỐ ĐỊNH nhích sang phải mỗi lần BẤM Space
+    [SerializeField] private float maxVelocity = 40f;     // Giới hạn tốc độ tối đa của dòng lũ
 
     [Header("Survival Settings (Thời Gian)")]
     [SerializeField] private float maxSurvivalTime = 10f; // Thời gian cần đạt để THẮNG
     [SerializeField] private float currentSurvivalTime = 0f;
+    [SerializeField] private float startGracePeriod = 2f; // Số giây đầu round KHÔNG bị thua
 
     [Header("Penalty Settings (TụT Thời Gian)")]
     [SerializeField] private float timeDrainRate = 2.5f;  // Tốc độ trừ thời gian/giây khi ở ngoài vùng xanh
@@ -85,8 +90,10 @@ public class PowerBarController : MonoBehaviour
     // The round doesn't actually run (indicator doesn't move, no win/lose checks)
     // until GameManager calls BeginRound() once the intro countdown finishes.
     private bool isRoundActive = false;
+    private float roundElapsedTime = 0f;
 
     private bool wasInTargetZone = true;
+    private float indicatorVelocity = 0f;
     private Vector2 barBackgroundOriginalPosition;
     private RectTransform survivalSliderRect;
     private Vector2 survivalSliderOriginalPosition;
@@ -130,6 +137,8 @@ public class PowerBarController : MonoBehaviour
     public void BeginRound()
     {
         isRoundActive = true;
+        roundElapsedTime = 0f;
+        zoneRandomTimer = 0f;
 
         if (tugLoopSource != null && tugLoopClip != null)
         {
@@ -156,14 +165,27 @@ public class PowerBarController : MonoBehaviour
     void Update()
     {
         if (!isRoundActive || isGameOver) return;
+        roundElapsedTime += Time.deltaTime;
+        // --- ĐẾM GIỜ ĐỂ RANDOM VỊ TRÍ VÙNG XANH ---
+        zoneRandomTimer += Time.deltaTime;
+        if (zoneRandomTimer >= zoneRandomInterval)
+        {
+            zoneRandomTimer = 0f;
+            RandomizeTargetZonePosition();
+        }
 
         // --- A. VẬT LÝ DI CHUYỂN KIM ---
-        float currentSpeed = -floodStrength;
-        if (Input.GetKey(KeyCode.Space))
+        // Dòng lũ luôn kéo về bên trái theo vận tốc (điều khiển bằng floodStrength)
+        indicatorVelocity -= floodStrength * Time.deltaTime;
+        indicatorVelocity = Mathf.Clamp(indicatorVelocity, -maxVelocity, 0f); // Dòng lũ chỉ kéo trái, không tự đẩy phải
+
+        MoveIndicator(indicatorVelocity);
+
+        // Mỗi lần BẤM Space, nhích trực tiếp 1 khoảng CỐ ĐỊNH sang phải (tách biệt khỏi vận tốc dòng lũ)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            currentSpeed += swimStrength;
+            NudgeIndicator(swimStrength);
         }
-        MoveIndicator(currentSpeed);
 
         // --- B. GIẰNG CO & TÍNH THỜI GIAN ---
         bool isInTargetZone = CheckIsInTargetZone();
@@ -176,7 +198,6 @@ public class PowerBarController : MonoBehaviour
         {
             wasInTargetZone = isInTargetZone;
             OnTargetZoneStatusChanged?.Invoke(!isInTargetZone);
-
         }
 
         if (isInTargetZone)
@@ -210,10 +231,19 @@ public class PowerBarController : MonoBehaviour
         CheckWinLossConditions();
     }
 
-    void MoveIndicator(float speed)
+    void MoveIndicator(float velocity)
     {
         float currentX = indicator.anchoredPosition.x;
-        currentX += speed * Time.deltaTime;
+        currentX += velocity * Time.deltaTime;
+        currentX = Mathf.Clamp(currentX, minX, maxX);
+        indicator.anchoredPosition = new Vector2(currentX, indicator.anchoredPosition.y);
+    }
+
+    // Nhích kim ngay lập tức 1 khoảng cố định khi bấm Space (không phụ thuộc Time.deltaTime)
+    void NudgeIndicator(float distance)
+    {
+        float currentX = indicator.anchoredPosition.x;
+        currentX += distance;
         currentX = Mathf.Clamp(currentX, minX, maxX);
         indicator.anchoredPosition = new Vector2(currentX, indicator.anchoredPosition.y);
     }
@@ -222,6 +252,22 @@ public class PowerBarController : MonoBehaviour
     {
         float indicatorX = indicator.anchoredPosition.x;
         return (indicatorX >= targetMinX && indicatorX <= targetMaxX);
+    }
+    void RandomizeTargetZonePosition()
+    {
+        if (targetZone == null) return;
+
+        float targetWidth = targetZone.rect.width;
+        float halfWidth = targetWidth / 2f;
+
+        // Random 1 vị trí X mới, đảm bảo vùng xanh không bị lòi ra ngoài 2 vạch đỏ
+        float newX = UnityEngine.Random.Range(minX + halfWidth, maxX - halfWidth);
+
+        targetZone.anchoredPosition = new Vector2(newX, targetZone.anchoredPosition.y);
+
+        // Tính lại biên trái/phải của vùng xanh theo vị trí mới
+        targetMinX = newX - halfWidth;
+        targetMaxX = newX + halfWidth;
     }
 
     // Hàm di chuyển cả 2 nhân vật và túi tiền (Có kiểm tra giới hạn minScreenX và maxScreenX)
@@ -250,6 +296,20 @@ public class PowerBarController : MonoBehaviour
 
     void CheckWinLossConditions()
     {
+        // Trong thời gian grace period, không kiểm tra thua
+        if (roundElapsedTime < startGracePeriod)
+        {
+            // 1. THẮNG: Đạt đủ thời gian tích lũy
+            if (currentSurvivalTime >= maxSurvivalTime)
+            {
+                isGameOver = true;
+                Debug.Log("BẠN ĐÃ THẮNG MINIGAME!");
+                HandleWinVisuals();
+                OnMiniGameWon?.Invoke();
+            }
+            return;
+        }
+
         // 1. THẮNG: Đạt đủ thời gian tích lũy
         if (currentSurvivalTime >= maxSurvivalTime)
         {
@@ -303,6 +363,8 @@ public class PowerBarController : MonoBehaviour
     // Hiệu ứng khi NGƯỜI CHƠI THUA (Con Nợ thắng)
     void HandleLossVisuals()
     {
+        if (tugLoopSource != null) tugLoopSource.Stop();
+
         // Phát âm thanh thua
         if (sfxSource != null && loseClip != null)
         {
