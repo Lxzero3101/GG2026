@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9133510563778168328}
   - component: {fileID: 6730958690273097071}
   - component: {fileID: 4093281053889722041}
+  - component: {fileID: 4771973701572445500}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -190,3 +191,19 @@ MonoBehaviour:
   backSprite: {fileID: -8920587743720450768, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
   leftSprite: {fileID: 8499631214573712661, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
   rightSprite: {fileID: 6046224777264370187, guid: 2edf886a23db1644385cd5662abb89ca, type: 3}
+--- !u!114 &4771973701572445500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3742135291348615997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2aefea4d8ad523418d4a15f40ca0ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpeechBubble
+  bubbleRoot: {fileID: 0}
+  bubbleText: {fileID: 0}
+  displayDuration: 2
+  isPlayerBubble: 1
