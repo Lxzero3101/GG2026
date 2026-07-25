@@ -10,6 +10,9 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
+    // Inuka: Expose volume properties for external access (Settings).
+    public float BgmVolume => bgmVolume;
+    public float SfxVolume => sfxVolume;
 
     [Header("BGM")]
     [SerializeField] private AudioSource bgmSource;
@@ -25,6 +28,9 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
+        // Inuka: Load saved volume settings from PlayerPrefs, or use defaults if not set.
+        bgmVolume = PlayerPrefs.GetFloat("BgmVolume", bgmVolume);
+        sfxVolume = PlayerPrefs.GetFloat("SfxVolume", sfxVolume);
         // Standard singleton guard — if a second AudioManager sneaks into a
         // freshly loaded scene, destroy the newcomer and keep the original alive.
         if (Instance != null && Instance != this)
@@ -37,6 +43,10 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         BuildSfxPool();
+
+        // Inuka: Apply the loaded volume settings to the AudioSources.
+        SetBgmVolume(bgmVolume);
+        SetSfxVolume(sfxVolume);
 
         if (bgmSource != null)
         {
@@ -106,15 +116,27 @@ public class AudioManager : MonoBehaviour
     public void SetSfxVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
-        if (sfxPool == null) return;
-        foreach (var src in sfxPool)
-            src.volume = sfxVolume;
+
+        if (sfxPool != null)
+        {
+            foreach (var src in sfxPool)
+                src.volume = sfxVolume;
+        }
+
+        // Inuka: Save the SFX volume setting to PlayerPrefs for persistence across sessions.
+        PlayerPrefs.SetFloat("SfxVolume", sfxVolume);
+        PlayerPrefs.Save();
     }
 
     public void SetBgmVolume(float volume)
     {
         bgmVolume = Mathf.Clamp01(volume);
+
         if (bgmSource != null)
             bgmSource.volume = bgmVolume;
+
+        // Inuka: Save the BGM volume setting to PlayerPrefs for persistence across sessions.
+        PlayerPrefs.SetFloat("BgmVolume", bgmVolume);
+        PlayerPrefs.Save();
     }
 }
