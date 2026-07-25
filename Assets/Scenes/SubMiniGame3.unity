@@ -6454,7 +6454,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   lines:
   - speaker: {fileID: 890447359}
+    text: 
+  - speaker: {fileID: 890447359}
     text: YOU GUYS ARE SO BUSTED!
+  - speaker: {fileID: 614418494}
+    text: lmao
+  - speaker: {fileID: 614418494}
+    text: lmao
+  - speaker: {fileID: 614418494}
+    text: lmao
+  - speaker: {fileID: 614418494}
+    text: lmao
   - speaker: {fileID: 614418494}
     text: lmao
   playOnStart: 1
