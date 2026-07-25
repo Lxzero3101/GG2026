@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +20,9 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Scene loaded when patience reaches zero.")]
     [SerializeField] private string loseSceneName = "Lose";
+
+    [Tooltip("Seconds to hold on the boss's furious reaction before loading the lose scene.")]
+    [SerializeField] private float loseTransitionDelay = 1.5f;
 
     private bool isRoundActive;
 
@@ -102,6 +106,27 @@ public class GameManager : MonoBehaviour
         }
 
         isRoundActive = false;
+
+        gameUI?.PausePatience();
+        gameUI?.SetBossExpression(BossExpression.Furious);
+        PlayerMovement.Instance?.SetLocked(true);
+
+        StartCoroutine(LoadLoseSceneAfterDelay());
+    }
+
+    private IEnumerator LoadLoseSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(loseTransitionDelay);
+        SceneManager.LoadScene(loseSceneName);
+    }
+
+    /// <summary>
+    /// Loads the same lose scene used for patience depletion. Exposed publicly so
+    /// other lose conditions (e.g. MiniGameManager4 running out of attempts) can
+    /// reuse it instead of duplicating the scene name.
+    /// </summary>
+    public void LoadLoseScene()
+    {
         SceneManager.LoadScene(loseSceneName);
     }
 

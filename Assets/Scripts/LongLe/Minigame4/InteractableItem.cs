@@ -1,11 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider2D))]
 public class InteractableItem : MonoBehaviour
 {
     [Header("Item Value")]
     [SerializeField] private int moneyValue = 10;
+
+    [Header("Interaction Settings")]
+    [Tooltip("Key the player presses to interact while standing near this item (proximity-based, replaces mouse click).")]
+    [SerializeField] private Key interactKey = Key.F;
 
     [Header("Visual Effects Settings")]
     [SerializeField] private SpriteRenderer itemRenderer;
@@ -24,6 +29,13 @@ public class InteractableItem : MonoBehaviour
     private Camera mainCamera;
     private Vector3 originalScale;
 
+    // Shared across ALL InteractableItem instances. If the player is standing
+    // inside two overlapping trigger zones, both items' Update() would otherwise
+    // react to the same single keypress in the same frame and both get collected
+    // at once. This lets only the first item to process the press in a given
+    // frame claim it; every other item sees the frame already claimed and skips.
+    private static int lastInteractFrame = -1;
+
     public int MoneyValue => moneyValue;
 
     private void Awake()
@@ -39,6 +51,41 @@ public class InteractableItem : MonoBehaviour
     private void Update()
     {
         HandleSparkleEffect();
+        HandleInteractInput();
+    }
+
+    /// <summary>
+    /// Proximity + key-press interaction, replacing the old click-based flow.
+    /// Requires the player to be inside the trigger (<see cref="isPlayerNearby"/>)
+    /// AND press <see cref="interactKey"/>. Also respects PlayerMovement.IsLocked,
+    /// so this is automatically disabled during the intro countdown and after the
+    /// round ends (win/lose freeze), same as before.
+    /// </summary>
+    private void HandleInteractInput()
+    {
+        if (isCollected || !isPlayerNearby)
+        {
+            return;
+        }
+
+        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
+        {
+            return;
+        }
+
+        if (Keyboard.current == null || !Keyboard.current[interactKey].wasPressedThisFrame)
+        {
+            return;
+        }
+
+        if (lastInteractFrame == Time.frameCount)
+        {
+            // Another overlapping item already claimed this keypress this frame.
+            return;
+        }
+
+        lastInteractFrame = Time.frameCount;
+        CollectItem();
     }
 
     private void HandleSparkleEffect()
@@ -71,22 +118,9 @@ public class InteractableItem : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
-    {
-        // Triggers when clicked on via Physics 2D Raycaster / Collider.
-        // Frozen during the intro countdown (see PlayerMovement.IsLocked) —
-        // covers both the manual raycast in PlayerClickInput and Unity's
-        // built-in OnMouseDown message.
-        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
-        {
-            return;
-        }
-
-        if (isPlayerNearby && !isCollected)
-        {
-            CollectItem();
-        }
-    }
+    // Click-based collection (OnMouseDown) removed — interaction is now
+    // proximity + key press, handled by HandleInteractInput() above.
+    // PlayerClickInput.cs is now unused and can be removed from the player object.
 
     /// <summary>
     /// Handles the click reaction: money/attempt bookkeeping, the boss's

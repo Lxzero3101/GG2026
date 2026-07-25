@@ -7930,6 +7930,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 928079090}
   m_CullTransparentMesh: 1
+--- !u!114 &940772635 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4134236664633990492, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+  m_PrefabInstance: {fileID: 1673170318}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d68bd401afa284b88d9b259d35981f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameUI
 --- !u!1 &1022173888
 GameObject:
   m_ObjectHideFlags: 0
@@ -8083,6 +8094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableInformation
   moneyValue: 10
+  interactKey: 20
   itemRenderer: {fileID: 1022173889}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   sparkleColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -8140,87 +8152,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.3, y: 0.27}
   m_EdgeRadius: 0
---- !u!1 &1174752238
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1174752240}
-  - component: {fileID: 1174752239}
-  m_Layer: 0
-  m_Name: MiniGameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1174752239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1174752238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bec4b77757199f49990307a8635fc08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MiniGameManager4
-  targetMoneyRequirement: 100
-  maxAllowedAttempts: 7
-  lowValueThreshold: 20
-  gameManager: {fileID: 1673170319}
-  winToNextSceneDelay: 2
-  currentTotalMoney: 0
-  currentAttempts: 0
-  onWin:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onLose:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!4 &1174752240
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1174752238}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.93958, y: 4.16347, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1250268418
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8567,6 +8498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableInformation
   moneyValue: 10
+  interactKey: 20
   itemRenderer: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   sparkleColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -8578,6 +8510,11 @@ MonoBehaviour:
   infoText: {fileID: 1460170642}
   infoMessage: The Princess's dog is missing
   displayDuration: 1
+--- !u!1 &1533592363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8789415315666337366, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+  m_PrefabInstance: {fileID: 1673170318}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1595272639
 GameObject:
   m_ObjectHideFlags: 0
@@ -8749,19 +8686,97 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2667157410824168385, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1595272640}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8789415315666337366, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1673170321}
+    - targetCorrespondingSourceObject: {fileID: 8789415315666337366, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1673170322}
   m_SourcePrefab: {fileID: 100100000, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
 --- !u!114 &1673170319 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4272648065342565942, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
   m_PrefabInstance: {fileID: 1673170318}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1533592363}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75a08875333c1774f8f42890880b8ab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+--- !u!114 &1673170321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533592363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bec4b77757199f49990307a8635fc08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameManager4
+  targetMoneyRequirement: 100
+  maxAllowedAttempts: 7
+  lowValueThreshold: 10
+  gameManager: {fileID: 1673170319}
+  winToNextSceneDelay: 3
+  loseToLoseSceneDelay: 2
+  currentTotalMoney: 0
+  currentAttempts: 0
+  onWin:
+    m_PersistentCalls:
+      m_Calls: []
+  onLose:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1673170322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533592363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 552e99e507d158a4692948b52979a26a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WinManager
+  autoDetectRequiredCount: 1
+  requiredCount: 4
+  sceneToLoad: Office
+  delayBeforeSceneLoad: 3
+  onProgress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1673170319}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: OnPlayerWin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onWin:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 940772635}
+        m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
+        m_MethodName: ImproveBossExpression
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2126292847
 GameObject:
   m_ObjectHideFlags: 0
@@ -8970,11 +8985,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.24
+      value: 18.46
       objectReference: {fileID: 0}
     - target: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.17
+      value: -2.62
       objectReference: {fileID: 0}
     - target: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9088,11 +9103,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7512331214693364679, guid: 788a49f3c379f3c4c936e8081d1b2833, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.36
+      value: 18.91
       objectReference: {fileID: 0}
     - target: {fileID: 7512331214693364679, guid: 788a49f3c379f3c4c936e8081d1b2833, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: 5.83
       objectReference: {fileID: 0}
     - target: {fileID: 7512331214693364679, guid: 788a49f3c379f3c4c936e8081d1b2833, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9427,7 +9442,6 @@ SceneRoots:
   - {fileID: 1673170318}
   - {fileID: 340068979}
   - {fileID: 892519697}
-  - {fileID: 1174752240}
   - {fileID: 4629250937775789233}
   - {fileID: 582588591214027633}
   - {fileID: 1022173890}

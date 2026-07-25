@@ -198,7 +198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24bd0f0efbc58df41a677db2803462ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableItem
-  moneyValue: 10
+  moneyValue: 20
+  interactKey: 20
   itemRenderer: {fileID: 2284281394709864370}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   sparkleColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
