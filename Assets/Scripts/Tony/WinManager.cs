@@ -38,9 +38,21 @@ public class WinManager : MonoBehaviour
     {
         if (autoDetectRequiredCount)
         {
-            requiredCount = FindObjectsByType<WinConditionObject>(FindObjectsSortMode.None).Length;
-            Debug.Log($"WinManager auto-detected {requiredCount} win objects.");
+            // Wait one frame: RandomSpawner also runs its spawning in Start(),
+            // and Unity doesn't guarantee it runs before this Start(). Counting
+            // immediately can catch the scene before any win objects exist yet.
+            // By next frame, every Start() in the scene (including the spawner's
+            // Instantiate calls) has already finished.
+            StartCoroutine(AutoDetectNextFrame());
         }
+    }
+
+    private IEnumerator AutoDetectNextFrame()
+    {
+        yield return null;
+
+        requiredCount = FindObjectsByType<WinConditionObject>(FindObjectsSortMode.None).Length;
+        Debug.Log($"WinManager auto-detected {requiredCount} win objects.");
     }
 
     public void RegisterWin(WinConditionObject obj)

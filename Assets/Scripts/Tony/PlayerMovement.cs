@@ -11,12 +11,14 @@ using UnityEngine.InputSystem;
 /// This version supports BOTH input backends automatically, using Unity's
 /// built-in compiler flags (ENABLE_INPUT_SYSTEM / ENABLE_LEGACY_INPUT_MANAGER).
 ///
-/// NEW: also owns the "input lock" used to freeze the player during the intro
-/// countdown. Assign the scene's CountdownUI in the Inspector; movement (and,
-/// via <see cref="IsLocked"/>, item interaction) stays frozen until the
-/// countdown's OnCountdownFinished event fires. Exposes a static Instance
-/// (same pattern as GameUI.Instance) so prefab-asset scripts like
-/// InteractableItem can check the lock without a scene reference.
+/// Also owns the "input lock" used to freeze the player during the intro
+/// countdown (and reused for the win screen — see <see cref="SetLocked"/>).
+/// Uses <see cref="CountdownUI.Instance"/> rather than a serialized field:
+/// this script lives on the Player PREFAB, which RandomSpawner instantiates
+/// at runtime, so it can never hold a working drag-and-drop reference to the
+/// scene's CountdownUI object. Exposes a static Instance (same pattern as
+/// GameUI.Instance) so prefab-asset scripts like InteractableItem, or other
+/// systems like WinScreenUI, can reach the player without a scene reference.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
@@ -28,8 +30,8 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
 
     [Header("Countdown Lock")]
-    [Tooltip("Assign the scene's CountdownUI. Movement and item interaction stay frozen until it finishes. Leave empty to skip freezing entirely.")]
-    [SerializeField] private CountdownUI countdownUI;
+    [Tooltip("If true, movement/interaction stays frozen until CountdownUI.Instance finishes counting down.")]
+    [SerializeField] private bool freezeDuringCountdown = true;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -37,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>Current movement input this frame (-1..1 on each axis). Read-only for other scripts.</summary>
     public Vector2 CurrentMoveInput => moveInput;
 
-    /// <summary>True while movement and interactable clicks should be frozen (e.g. during the intro countdown).</summary>
+    /// <summary>True while movement and interactable clicks should be frozen (e.g. during the intro countdown or a win screen).</summary>
     public bool IsLocked { get; private set; } = true;
 
     void Awake()
@@ -49,27 +51,30 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
-        if (countdownUI == null)
+        if (!freezeDuringCountdown || CountdownUI.Instance == null)
         {
-            // Nothing would ever unlock us, so don't freeze the player forever by mistake.
-            Debug.LogWarning("[PlayerMovement] No CountdownUI assigned — skipping the intro freeze.");
+            if (freezeDuringCountdown)
+            {
+                Debug.LogWarning("[PlayerMovement] No CountdownUI.Instance found in the scene — skipping the intro freeze.");
+            }
+
             IsLocked = false;
         }
     }
 
     void OnEnable()
     {
-        if (countdownUI != null)
+        if (freezeDuringCountdown && CountdownUI.Instance != null)
         {
-            countdownUI.OnCountdownFinished += HandleCountdownFinished;
+            CountdownUI.Instance.OnCountdownFinished += HandleCountdownFinished;
         }
     }
 
     void OnDisable()
     {
-        if (countdownUI != null)
+        if (freezeDuringCountdown && CountdownUI.Instance != null)
         {
-            countdownUI.OnCountdownFinished -= HandleCountdownFinished;
+            CountdownUI.Instance.OnCountdownFinished -= HandleCountdownFinished;
         }
 
         if (Instance == this)
@@ -81,6 +86,21 @@ public class PlayerMovement : MonoBehaviour
     private void HandleCountdownFinished()
     {
         IsLocked = false;
+    }
+
+    /// <summary>
+    /// Locks or unlocks movement/interaction on demand. Used internally for the
+    /// intro countdown, and reusable for anything else that should freeze the
+    /// player — e.g. WinScreenUI freezing the player once the mini-game is won.
+    /// </summary>
+    public void SetLocked(bool locked)
+    {
+        IsLocked = locked;
+
+        if (locked)
+        {
+            moveInput = Vector2.zero;
+        }
     }
 
     void Update()
