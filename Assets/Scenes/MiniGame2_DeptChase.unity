@@ -1140,11 +1140,13 @@ MonoBehaviour:
   - {fileID: 8929424768692838835, guid: 3e2971b35cee7b14181ae1507fa39d6a, type: 3}
   lanePositions:
   - -2.5
-  - -3.5
-  - -4
+  - -3.3
+  - -4.3
   spawnX: 10
   minInterval: 1
   maxInterval: 2
+  frontLaneIndex: 2
+  frontLaneSortingOrder: 7
 --- !u!1 &804802708
 GameObject:
   m_ObjectHideFlags: 0
