@@ -1,54 +1,87 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Drives the tug-of-war minigame: an indicator drifts under "flood" pressure and
+/// the player fights it back by holding Space, trying to keep the indicator inside
+/// the TargetZone long enough to accumulate survival time and win.
+///
+/// This script owns its own win/lose visuals (sprite swaps) but does NOT decide
+/// scene flow itself, and does NOT know about GameUI/BossExpressionController at
+/// all — it only reports outcomes and TargetZone status via events. A scene-specific
+/// orchestrator (e.g. MiniGameFlowController) listens to these and decides what to do.
+/// </summary>
 public class PowerBarController : MonoBehaviour
 {
     [Header("UI Elements")]
-    public RectTransform barBackground;
-    public RectTransform indicator;
-    public RectTransform targetZone;
-    public Slider survivalSlider;
+    [SerializeField] private RectTransform barBackground;
+    [SerializeField] private RectTransform indicator;
+    [SerializeField] private RectTransform targetZone;
+    [SerializeField] private Slider survivalSlider;
 
     [Header("Tug of War GameObjects")]
-    public Transform playerTransform;   // Ông áo xanh
-    public Transform debtorTransform;   // Ông áo vàng
-    public Transform moneyBagTransform; // Túi tiền
-    public float tugSpeed = 1.5f;       // Tốc độ giằng co
+    [SerializeField] private Transform playerTransform;   // Ông áo xanh
+    [SerializeField] private Transform debtorTransform;   // Ông áo vàng
+    [SerializeField] private Transform moneyBagTransform; // Túi tiền
+    [SerializeField] private float tugSpeed = 1.5f;       // Tốc độ giằng co
 
     [Header("Screen Boundaries (Giới Hạn Màn Hình)")]
-    public float minScreenX = -6.5f;    // Mép trái màn hình
-    public float maxScreenX = 6.5f;     // Mép phải màn hình
+    [SerializeField] private float minScreenX = -6.5f;    // Mép trái màn hình
+    [SerializeField] private float maxScreenX = 6.5f;     // Mép phải màn hình
 
     [Header("Sprites & Victory Visuals")]
-    public SpriteRenderer playerSpriteRenderer; // SpriteRenderer của Player
-    public SpriteRenderer debtorSpriteRenderer; // SpriteRenderer của Con Nợ
+    [SerializeField] private SpriteRenderer playerSpriteRenderer; // SpriteRenderer của Player
+    [SerializeField] private SpriteRenderer debtorSpriteRenderer; // SpriteRenderer của Con Nợ
 
     [Space(5)]
-    public Sprite playerVictorySprite;          // Ảnh Player giơ 2 tay ăn mừng
-    public Sprite debtorVictorySprite;          // Ảnh Con Nợ giơ 2 tay ăn mừng (nếu thắng)
-    public Sprite playerFallenSprite;           // Ảnh Player bị ngã gục
-    public Sprite debtorFallenSprite;           // Ảnh Con Nợ bị ngã gục
+    [SerializeField] private Sprite playerVictorySprite;          // Ảnh Player giơ 2 tay ăn mừng
+    [SerializeField] private Sprite debtorVictorySprite;          // Ảnh Con Nợ giơ 2 tay ăn mừng (nếu thắng)
+    [SerializeField] private Sprite playerFallenSprite;           // Ảnh Player bị ngã gục
+    [SerializeField] private Sprite debtorFallenSprite;           // Ảnh Con Nợ bị ngã gục
 
     [Space(5)]
-    public float moneyBagHeightOffset = 1.2f;   // Độ cao túi tiền bay lên đầu
+    [SerializeField] private float moneyBagHeightOffset = 1.2f;   // Độ cao túi tiền bay lên đầu
 
     [Header("Physics Settings (Dòng Lũ)")]
-    public float floodStrength = 220f;  // Lực nước đẩy trôi về bên trái
-    public float swimStrength = 450f;   // Lực người chơi bấm Space bơi sang phải
+    [SerializeField] private float floodStrength = 220f;  // Lực nước đẩy trôi về bên trái
+    [SerializeField] private float swimStrength = 450f;   // Lực người chơi bấm Space bơi sang phải
 
     [Header("Survival Settings (Thời Gian)")]
-    public float maxSurvivalTime = 10f; // Thời gian cần đạt để THẮNG
-    public float currentSurvivalTime = 0f;
+    [SerializeField] private float maxSurvivalTime = 10f; // Thời gian cần đạt để THẮNG
+    [SerializeField] private float currentSurvivalTime = 0f;
 
     [Header("Penalty Settings (TụT Thời Gian)")]
-    public float timeDrainRate = 2.5f;  // Tốc độ trừ thời gian/giây khi ở ngoài vùng xanh
-    public float rewardMultiplier = 1f; // Tốc độ cộng thời gian khi ở trong vùng xanh
+    [SerializeField] private float timeDrainRate = 2.5f;  // Tốc độ trừ thời gian/giây khi ở ngoài vùng xanh
+    [SerializeField] private float rewardMultiplier = 1f; // Tốc độ cộng thời gian khi ở trong vùng xanh
+
+    [Header("Round End Transition")]
+    [Tooltip("How far (and which direction) BarBackground is instantly moved, relative to its start position, when the round ends.")]
+    [SerializeField] private Vector2 offScreenOffset = new Vector2(3000f, 0f);
+
+    /// <summary>Raised once when the player reaches <see cref="maxSurvivalTime"/>.</summary>
+    public event Action OnMiniGameWon;
+
+    /// <summary>Raised once when the player runs out of survival time or the indicator hits an edge.</summary>
+    public event Action OnMiniGameLost;
+
+    /// <summary>Raised whenever the indicator crosses the TargetZone boundary. True = now outside the zone.</summary>
+    public event Action<bool> OnTargetZoneStatusChanged;
 
     private float minX;
     private float maxX;
     private float targetMinX;
     private float targetMaxX;
     private bool isGameOver = false;
+
+    // The round doesn't actually run (indicator doesn't move, no win/lose checks)
+    // until GameManager calls BeginRound() once the intro countdown finishes.
+    private bool isRoundActive = false;
+
+    private bool wasInTargetZone = true;
+    private Vector2 barBackgroundOriginalPosition;
+    private RectTransform survivalSliderRect;
+    private Vector2 survivalSliderOriginalPosition;
 
     void Start()
     {
@@ -73,11 +106,41 @@ public class PowerBarController : MonoBehaviour
             survivalSlider.maxValue = maxSurvivalTime;
             survivalSlider.value = currentSurvivalTime;
         }
+
+        barBackgroundOriginalPosition = barBackground != null ? barBackground.anchoredPosition : Vector2.zero;
+
+        if (survivalSlider != null)
+        {
+            survivalSliderRect = survivalSlider.GetComponent<RectTransform>();
+            survivalSliderOriginalPosition = survivalSliderRect != null ? survivalSliderRect.anchoredPosition : Vector2.zero;
+        }
+
+        wasInTargetZone = CheckIsInTargetZone();
+    }
+
+    /// <summary>Called by GameManager once the intro countdown finishes. Until then, the indicator stays put.</summary>
+    public void BeginRound()
+    {
+        isRoundActive = true;
+    }
+
+    /// <summary>Instantly moves BarBackground and SurvivalSlider off screen. Called by GameManager on win or loss.</summary>
+    public void HideBar()
+    {
+        if (barBackground != null)
+        {
+            barBackground.anchoredPosition = barBackgroundOriginalPosition + offScreenOffset;
+        }
+
+        if (survivalSliderRect != null)
+        {
+            survivalSliderRect.anchoredPosition = survivalSliderOriginalPosition + offScreenOffset;
+        }
     }
 
     void Update()
     {
-        if (isGameOver) return;
+        if (!isRoundActive || isGameOver) return;
 
         // --- A. VẬT LÝ DI CHUYỂN KIM ---
         float currentSpeed = -floodStrength;
@@ -89,6 +152,12 @@ public class PowerBarController : MonoBehaviour
 
         // --- B. GIẰNG CO & TÍNH THỜI GIAN ---
         bool isInTargetZone = CheckIsInTargetZone();
+
+        if (isInTargetZone != wasInTargetZone)
+        {
+            wasInTargetZone = isInTargetZone;
+            OnTargetZoneStatusChanged?.Invoke(!isInTargetZone);
+        }
 
         if (isInTargetZone)
         {
@@ -165,8 +234,10 @@ public class PowerBarController : MonoBehaviour
         if (currentSurvivalTime >= maxSurvivalTime)
         {
             isGameOver = true;
-            Debug.Log("🎉 BẠN ĐÃ THẮNG MINIGAME!");
+            Debug.Log("BẠN ĐÃ THẮNG MINIGAME!");
             HandleWinVisuals();
+            OnMiniGameWon?.Invoke();
+            return;
         }
 
         // 2. THUA: Hết thời gian sống sót HOẶC Chạm vạch đỏ ở 2 đầu
@@ -174,8 +245,9 @@ public class PowerBarController : MonoBehaviour
         if ((currentSurvivalTime <= 0f && maxSurvivalTime > 0) || indicatorX <= minX || indicatorX >= maxX)
         {
             isGameOver = true;
-            Debug.LogError("💀 BẠN ĐÃ THUA MINIGAME!");
+            Debug.LogError("BẠN ĐÃ THUA MINIGAME!");
             HandleLossVisuals();
+            OnMiniGameLost?.Invoke();
         }
     }
 
