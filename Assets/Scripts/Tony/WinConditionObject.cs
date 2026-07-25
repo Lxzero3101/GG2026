@@ -3,14 +3,14 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class WinConditionObject : MonoBehaviour
 {
-    [Tooltip("Leave empty to auto-find the SpriteRenderer on this GameObject.")]
     public SpriteRenderer spriteRenderer;
-
-    [Tooltip("The sprite this object changes into once the player interacts with it.")]
     public Sprite newSprite;
 
-    [Tooltip("Optional speech bubble on this object, used when the win condition is met.")]
+    [Tooltip("Speech bubble on THIS object, shown after the player's line.")]
     public SpeechBubble speechBubble;
+
+    [TextArea]
+    public string winLine = "okay";
 
     private bool hasReported;
 
@@ -23,6 +23,7 @@ public class WinConditionObject : MonoBehaviour
             speechBubble = GetComponent<SpeechBubble>();
     }
 
+    /// <summary>Hook this to InteractableObstacle's On Interact event.</summary>
     public void OnWinInteract()
     {
         SwapSprite();
@@ -33,6 +34,13 @@ public class WinConditionObject : MonoBehaviour
     {
         if (spriteRenderer == null || newSprite == null) return;
         spriteRenderer.sprite = newSprite;
+    }
+
+    /// <summary>Called by WinManager once all 4 are collected, after the player's line.</summary>
+    public void SayWinLine()
+    {
+        if (speechBubble != null)
+            speechBubble.Show(winLine);
     }
 
     private void ReportToWinManager()

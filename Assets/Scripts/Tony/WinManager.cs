@@ -11,16 +11,15 @@ public class WinManager : MonoBehaviour
     public bool autoDetectRequiredCount = true;
     public int requiredCount = 4;
 
-    [Header("Win Speech Bubbles")]
+    [Header("Player Speech")]
+    [Tooltip("Drag the Player GameObject's SpeechBubble component here directly.")]
     public SpeechBubble playerSpeechBubble;
 
     [TextArea]
-    public string playerWinMessage = "You guys are so busted";
+    public string playerWinLine = "You guys are so busted";
 
-    public float playerMessageDuration = 2f;
-
-    [TextArea]
-    public string winObjectMessage = "okay";
+    [Tooltip("How long the player's line stays up before the win objects reply.")]
+    public float playerLineDuration = 2f;
 
     [Header("Events")]
     public UnityEvent<int, int> onProgress;
@@ -48,11 +47,7 @@ public class WinManager : MonoBehaviour
         }
 
         if (playerSpeechBubble == null)
-        {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-                playerSpeechBubble = player.GetComponent<SpeechBubble>();
-        }
+            Debug.LogWarning("WinManager: Player Speech Bubble not assigned in Inspector. Drag the Player object into the field.");
     }
 
     public void RegisterWin(WinConditionObject obj)
@@ -66,30 +61,26 @@ public class WinManager : MonoBehaviour
         if (registered.Count >= requiredCount)
         {
             hasWon = true;
-            WinGame();
+            StartCoroutine(WinSequence());
+            onWin?.Invoke();
         }
-    }
-
-    private void WinGame()
-    {
-        Debug.Log("You Win!");
-        StartCoroutine(WinSequence());
-        onWin?.Invoke();
     }
 
     private IEnumerator WinSequence()
     {
+        Debug.Log("You Win!");
+
+        // Player speaks first
         if (playerSpeechBubble != null)
-            playerSpeechBubble.Show(playerWinMessage, playerMessageDuration);
-        else
-            Debug.LogWarning("WinManager: no player SpeechBubble assigned/found.");
+            playerSpeechBubble.Show(playerWinLine, playerLineDuration);
 
-        yield return new WaitForSeconds(playerMessageDuration);
+        yield return new WaitForSeconds(playerLineDuration);
 
+        // Then all 4 win objects reply, like a conversation
         foreach (WinConditionObject obj in registered)
         {
-            if (obj != null && obj.speechBubble != null)
-                obj.speechBubble.Show(winObjectMessage);
+            if (obj != null)
+                obj.SayWinLine();
         }
     }
 }
