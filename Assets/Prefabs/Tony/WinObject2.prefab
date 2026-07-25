@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2731001722924673131, guid: 97749aba0c6848149b3eae0dc6af7bef, type: 3}
+  m_Sprite: {fileID: 7154340120509879564, guid: 2e01ef972d6fbb24c866bf9166fa1fed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,7 +134,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.8125, y: 1}
+    oldSize: {x: 0.84375, y: 0.9375}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinConditionObject
   spriteRenderer: {fileID: 0}
-  newSprite: {fileID: -7212638827082969431, guid: ee2aa27cdee7e9f43b13194d6afa96c0, type: 3}
+  newSprite: {fileID: -6193003297303038783, guid: f694a4034e344e940891612661fc67bd, type: 3}
 --- !u!61 &8483889768591620825
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -194,7 +194,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.8125, y: 1}
+    oldSize: {x: 0.84375, y: 0.9375}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

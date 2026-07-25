@@ -15,6 +15,10 @@ public class PlayerCrash : MonoBehaviour
 
     private Color originalColor;
 
+    // SFX
+    [Header("Audio")]
+    [SerializeField] private AudioClip crashSfx;
+
     void Awake()
     {
         laneController = GetComponent<PlayerLaneController>();
@@ -29,6 +33,9 @@ public class PlayerCrash : MonoBehaviour
             Destroy(other.gameObject);
             StartCoroutine(StunRoutine());
             OnCrash?.Invoke();
+
+            Debug.Log($"[PlayerCrash] AudioManager.Instance is {(AudioManager.Instance != null ? "OK" : "NULL")}, crashSfx is {(crashSfx != null ? crashSfx.name : "NULL")}");
+            AudioManager.Instance?.PlaySfx(crashSfx);
         }
     }
 
