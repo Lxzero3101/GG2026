@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Credit.unity
     guid: 6978f6550dfd5dc48a07d0654e0743c4
+  - enabled: 1
+    path: Assets/Scenes/SubMiniGame3.unity
+    guid: 49f96966b5f931a4db47c84410e84823
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

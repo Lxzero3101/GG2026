@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class WinManager : MonoBehaviour
 {
@@ -18,6 +19,13 @@ public class WinManager : MonoBehaviour
     [TextArea]
     public string playerWinLine = "You guys are so busted";
     public float playerLineDuration = 2f;
+
+    [Header("Scene Transition")]
+    [Tooltip("Exact name of the scene to load after the win sequence (must be added to Build Settings).")]
+    public string sceneToLoad = "WinScene";
+
+    [Tooltip("Delay, in seconds, after the win conversation before switching scenes.")]
+    public float delayBeforeSceneLoad = 3f;
 
     [Header("Events")]
     public UnityEvent<int, int> onProgress;
@@ -72,6 +80,7 @@ public class WinManager : MonoBehaviour
     {
         Debug.Log("You Win!");
 
+        // Player speaks first
         if (playerSpeechBubble != null)
             playerSpeechBubble.Show(playerWinLine, playerLineDuration);
         else
@@ -79,10 +88,27 @@ public class WinManager : MonoBehaviour
 
         yield return new WaitForSeconds(playerLineDuration);
 
+        // Then all 4 win objects reply, like a conversation
         foreach (WinConditionObject obj in registered)
         {
             if (obj != null)
                 obj.SayWinLine();
         }
+
+        // Wait, then load the next scene
+        yield return new WaitForSeconds(delayBeforeSceneLoad);
+        LoadNextScene();
+    }
+
+    private void LoadNextScene()
+    {
+        if (string.IsNullOrEmpty(sceneToLoad))
+        {
+            Debug.LogWarning("WinManager: Scene To Load is empty — set it in the Inspector.");
+            return;
+        }
+
+        Debug.Log($"WinManager: loading scene '{sceneToLoad}'.");
+        SceneManager.LoadScene(sceneToLoad);
     }
 }
