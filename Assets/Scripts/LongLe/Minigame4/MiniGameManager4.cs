@@ -11,6 +11,10 @@ public class MiniGameManager4 : MonoBehaviour
     [Header("Counter Settings")]
     [SerializeField] private int maxAllowedAttempts = 4;
 
+    [Header("Boss Reaction Settings")]
+    [Tooltip("Items worth less than this trigger a boss warning (facial flash + shake) with no patience penalty.")]
+    [SerializeField] private int lowValueThreshold = 5;
+
     [Header("Game State Readouts")]
     [SerializeField] private int currentTotalMoney = 0;
     [SerializeField] private int currentAttempts = 0;
@@ -20,6 +24,9 @@ public class MiniGameManager4 : MonoBehaviour
     [SerializeField] private UnityEvent onLose;
 
     private bool isGameOver = false;
+
+    /// <summary>Items worth less than this trigger the boss's low-value warning reaction.</summary>
+    public int LowValueThreshold => lowValueThreshold;
 
     private void Awake()
     {
