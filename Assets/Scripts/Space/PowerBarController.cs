@@ -8,11 +8,9 @@ using UnityEngine.UI;
 /// the TargetZone long enough to accumulate survival time and win.
 ///
 /// This script owns its own win/lose visuals (sprite swaps) but does NOT decide
-/// scene flow itself — it only reports outcomes via <see cref="OnMiniGameWon"/> /
-/// <see cref="OnMiniGameLost"/> events, which <see cref="GameManager"/> listens to.
-/// It also reports whether the indicator is inside the TargetZone to
-/// <see cref="GameUI"/>, so the boss portrait can react, without knowing anything
-/// about how that reaction is implemented.
+/// scene flow itself, and does NOT know about GameUI/BossExpressionController at
+/// all — it only reports outcomes and TargetZone status via events. A scene-specific
+/// orchestrator (e.g. MiniGameFlowController) listens to these and decides what to do.
 /// </summary>
 public class PowerBarController : MonoBehaviour
 {
@@ -21,10 +19,6 @@ public class PowerBarController : MonoBehaviour
     [SerializeField] private RectTransform indicator;
     [SerializeField] private RectTransform targetZone;
     [SerializeField] private Slider survivalSlider;
-
-    [Header("Cross-System Reference")]
-    [Tooltip("Used to report TargetZone enter/exit so the boss portrait can react. Optional.")]
-    [SerializeField] private GameUI gameUI;
 
     [Header("Tug of War GameObjects")]
     [SerializeField] private Transform playerTransform;   // Ông áo xanh
@@ -70,6 +64,9 @@ public class PowerBarController : MonoBehaviour
 
     /// <summary>Raised once when the player runs out of survival time or the indicator hits an edge.</summary>
     public event Action OnMiniGameLost;
+
+    /// <summary>Raised whenever the indicator crosses the TargetZone boundary. True = now outside the zone.</summary>
+    public event Action<bool> OnTargetZoneStatusChanged;
 
     private float minX;
     private float maxX;
@@ -159,7 +156,7 @@ public class PowerBarController : MonoBehaviour
         if (isInTargetZone != wasInTargetZone)
         {
             wasInTargetZone = isInTargetZone;
-            gameUI?.SetBossOutOfZoneReaction(!isInTargetZone);
+            OnTargetZoneStatusChanged?.Invoke(!isInTargetZone);
         }
 
         if (isInTargetZone)

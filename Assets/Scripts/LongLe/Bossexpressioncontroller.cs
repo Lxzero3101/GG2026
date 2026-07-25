@@ -6,10 +6,8 @@ using UnityEngine;
 /// range into stages (one per entry in <see cref="stageExpressions"/>) and keeps
 /// the portrait's expression in sync via <see cref="PatienceBarUI"/>'s change
 /// event — no per-frame polling. Also supports a temporary "flash" preview of
-/// the next angrier expression (used on obstacle hits), a continuous idle shake
-/// when patience is critically low, and an out-of-zone override (used while the
-/// tug-of-war indicator is outside its TargetZone) that forces a specific angry
-/// expression + continuous shake until the indicator returns.
+/// the next angrier expression (used on obstacle hits) and a continuous idle
+/// shake when patience is critically low.
 /// </summary>
 public class BossExpressionController : MonoBehaviour
 {
@@ -34,12 +32,8 @@ public class BossExpressionController : MonoBehaviour
     [Tooltip("Normalized patience (0-1) at or below which the idle low-patience shake is active.")]
     [SerializeField, Range(0f, 1f)] private float lowPatienceShakeThreshold = 0.2f;
 
-    [Tooltip("Expression forced while the tug-of-war indicator is outside its TargetZone.")]
-    [SerializeField] private BossExpression outOfZoneExpression = BossExpression.Angry;
-
     private int currentStageIndex;
     private Coroutine flashCoroutine;
-    private bool isOutOfZoneOverride;
 
     /// <summary>The stage index of the currently displayed steady-state expression (0 = calmest).</summary>
     public int CurrentStageIndex => currentStageIndex;
@@ -68,17 +62,14 @@ public class BossExpressionController : MonoBehaviour
     {
         currentStageIndex = ComputeStageIndex(normalizedValue);
 
-        // Don't stomp on an in-progress flash preview or the out-of-zone override;
-        // they'll pick up the latest currentStageIndex themselves once they end.
-        if (flashCoroutine == null && !isOutOfZoneOverride)
+        // Don't stomp on an in-progress flash preview; it will pick up the
+        // latest currentStageIndex itself once it finishes.
+        if (flashCoroutine == null)
         {
             ApplyExpressionForStage(currentStageIndex);
         }
 
-        if (!isOutOfZoneOverride)
-        {
-            portraitShake?.SetIdleShaking(normalizedValue <= lowPatienceShakeThreshold);
-        }
+        portraitShake?.SetIdleShaking(normalizedValue <= lowPatienceShakeThreshold);
     }
 
     private int ComputeStageIndex(float normalizedValue)
@@ -99,60 +90,14 @@ public class BossExpressionController : MonoBehaviour
     }
 
     /// <summary>
-    /// Call with true when the tug-of-war indicator leaves its TargetZone, and false
-    /// when it returns. While active, forces <see cref="outOfZoneExpression"/> and a
-    /// continuous shake, overriding whatever the patience stage or flash would show.
-    /// On deactivate, reverts to the current patience-stage expression (or lets an
-    /// in-progress flash finish on its own) and restores the correct low-patience
-    /// shake state.
-    /// </summary>
-    public void SetOutOfZoneOverride(bool active)
-    {
-        if (isOutOfZoneOverride == active)
-        {
-            return;
-        }
-
-        isOutOfZoneOverride = active;
-
-        if (active)
-        {
-            if (flashCoroutine != null)
-            {
-                StopCoroutine(flashCoroutine);
-                flashCoroutine = null;
-            }
-
-            bossPortraitUI?.SetExpression(outOfZoneExpression);
-            portraitShake?.SetIdleShaking(true);
-        }
-        else
-        {
-            if (flashCoroutine == null)
-            {
-                ApplyExpressionForStage(currentStageIndex);
-            }
-
-            float normalized = patienceBarUI != null ? patienceBarUI.NormalizedPatience : 0f;
-            portraitShake?.SetIdleShaking(normalized <= lowPatienceShakeThreshold);
-        }
-    }
-
-    /// <summary>
     /// Temporarily previews the next, angrier expression stage (relative to the
     /// stage displayed right now) and triggers a shake. Reverts to whatever the
     /// actual current stage is once <see cref="flashDuration"/> elapses. Call this
     /// BEFORE applying the patience decrease so the preview is based on the
-    /// pre-hit stage, as described in the design. No-ops while the out-of-zone
-    /// override is active, since that already shows an angry, shaking portrait.
+    /// pre-hit stage, as described in the design.
     /// </summary>
     public void FlashNextStage()
     {
-        if (isOutOfZoneOverride)
-        {
-            return;
-        }
-
         if (flashCoroutine != null)
         {
             StopCoroutine(flashCoroutine);
@@ -171,13 +116,8 @@ public class BossExpressionController : MonoBehaviour
 
         // currentStageIndex may have advanced further during the wait (e.g. from
         // continued passive drain) — reverting to it, not to baseStage, keeps the
-        // portrait honest about the real current value. Skip if the out-of-zone
-        // override took over while we were waiting; it owns the display now.
-        if (!isOutOfZoneOverride)
-        {
-            ApplyExpressionForStage(currentStageIndex);
-        }
-
+        // portrait honest about the real current value.
+        ApplyExpressionForStage(currentStageIndex);
         flashCoroutine = null;
     }
 }

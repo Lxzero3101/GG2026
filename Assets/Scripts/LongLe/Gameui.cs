@@ -3,10 +3,9 @@ using UnityEngine;
 
 /// <summary>
 /// Central bridge between gameplay logic and the UI subsystems. Gameplay code
-/// (via GameManager, or PowerBarController) should talk exclusively to this class
-/// and never reference <see cref="BossPortraitUI"/>, <see cref="PatienceBarUI"/>,
-/// or <see cref="BossExpressionController"/> directly. This keeps UI implementation
-/// details free to change without breaking gameplay code.
+/// (via GameManager) should talk exclusively to this class and never reference
+/// <see cref="BossPortraitUI"/> or <see cref="PatienceBarUI"/> directly. This
+/// keeps UI implementation details free to change without breaking gameplay code.
 /// </summary>
 public class GameUI : MonoBehaviour
 {
@@ -78,16 +77,6 @@ public class GameUI : MonoBehaviour
 
         float amount = patienceBarUI.MaxPatience * obstacleHitPercentage;
         patienceBarUI.Decrease(amount);
-    }
-
-    /// <summary>
-    /// Called by PowerBarController when the tug-of-war indicator leaves (true) or
-    /// re-enters (false) its TargetZone. Forwards to the boss expression system
-    /// without exposing BossExpressionController to gameplay code directly.
-    /// </summary>
-    public void SetBossOutOfZoneReaction(bool active)
-    {
-        bossExpressionController?.SetOutOfZoneOverride(active);
     }
 
     /// <summary>Sets the boss portrait's current facial expression.</summary>
