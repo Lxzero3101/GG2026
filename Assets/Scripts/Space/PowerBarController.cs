@@ -59,6 +59,14 @@ public class PowerBarController : MonoBehaviour
     [Tooltip("How far (and which direction) BarBackground is instantly moved, relative to its start position, when the round ends.")]
     [SerializeField] private Vector2 offScreenOffset = new Vector2(3000f, 0f);
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip winClip;      // Phát khi thắng
+    [SerializeField] private AudioClip loseClip;     // Phát khi thua
+    [Header("Tug Loop Audio")]
+    [SerializeField] private AudioSource tugLoopSource;   // AudioSource riêng để loop
+    [SerializeField] private AudioClip tugLoopClip;       // Tiếng kéo dây liên tục
+
     /// <summary>Raised once when the player reaches <see cref="maxSurvivalTime"/>.</summary>
     public event Action OnMiniGameWon;
 
@@ -122,6 +130,13 @@ public class PowerBarController : MonoBehaviour
     public void BeginRound()
     {
         isRoundActive = true;
+
+        if (tugLoopSource != null && tugLoopClip != null)
+        {
+            tugLoopSource.clip = tugLoopClip;
+            tugLoopSource.loop = true;
+            tugLoopSource.Play();
+        }
     }
 
     /// <summary>Instantly moves BarBackground and SurvivalSlider off screen. Called by GameManager on win or loss.</summary>
@@ -152,11 +167,16 @@ public class PowerBarController : MonoBehaviour
 
         // --- B. GIẰNG CO & TÍNH THỜI GIAN ---
         bool isInTargetZone = CheckIsInTargetZone();
+        if (tugLoopSource != null && tugLoopSource.isPlaying)
+        {
+            tugLoopSource.pitch = isInTargetZone ? 1.1f : 0.9f;
+        }
 
         if (isInTargetZone != wasInTargetZone)
         {
             wasInTargetZone = isInTargetZone;
             OnTargetZoneStatusChanged?.Invoke(!isInTargetZone);
+
         }
 
         if (isInTargetZone)
@@ -254,6 +274,13 @@ public class PowerBarController : MonoBehaviour
     // Hiệu ứng khi NGƯỜI CHƠI THẮNG
     void HandleWinVisuals()
     {
+        if (tugLoopSource != null) tugLoopSource.Stop();
+        // Phát âm thanh thắng
+        if (sfxSource != null && winClip != null)
+        {
+            sfxSource.PlayOneShot(winClip, 0.7f);
+        }
+
         // 1. Người chơi giơ 2 tay ăn mừng
         if (playerSpriteRenderer != null && playerVictorySprite != null)
         {
@@ -276,6 +303,12 @@ public class PowerBarController : MonoBehaviour
     // Hiệu ứng khi NGƯỜI CHƠI THUA (Con Nợ thắng)
     void HandleLossVisuals()
     {
+        // Phát âm thanh thua
+        if (sfxSource != null && loseClip != null)
+        {
+            sfxSource.PlayOneShot(loseClip, 0.7f);
+        }
+
         // 1. Con Nợ giơ 2 tay ăn mừng
         if (debtorSpriteRenderer != null && debtorVictorySprite != null)
         {
