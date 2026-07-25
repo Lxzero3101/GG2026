@@ -12,19 +12,8 @@ public class WinManager : MonoBehaviour
     public bool autoDetectRequiredCount = true;
     public int requiredCount = 4;
 
-    [Header("Player Speech")]
-    [Tooltip("Auto-filled at runtime when the spawned Player's SpeechBubble registers itself. No need to assign manually.")]
-    public SpeechBubble playerSpeechBubble;
-
-    [TextArea]
-    public string playerWinLine = "You guys are so busted";
-    public float playerLineDuration = 2f;
-
     [Header("Scene Transition")]
-    [Tooltip("Exact name of the scene to load after the win sequence (must be added to Build Settings).")]
-    public string sceneToLoad = "WinScene";
-
-    [Tooltip("Delay, in seconds, after the win conversation before switching scenes.")]
+    public string sceneToLoad = "Office";
     public float delayBeforeSceneLoad = 3f;
 
     [Header("Events")]
@@ -38,6 +27,7 @@ public class WinManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning($"WinManager: duplicate instance found on '{name}', destroying it. Check your scene for multiple GameManagers.");
             Destroy(gameObject);
             return;
         }
@@ -53,24 +43,25 @@ public class WinManager : MonoBehaviour
         }
     }
 
-    /// <summary>Called automatically by the Player's SpeechBubble when it spawns.</summary>
-    public void SetPlayerSpeechBubble(SpeechBubble bubble)
-    {
-        playerSpeechBubble = bubble;
-        Debug.Log("WinManager: Player speech bubble registered.");
-    }
-
     public void RegisterWin(WinConditionObject obj)
     {
         if (hasWon) return;
-        if (!registered.Add(obj)) return;
 
-        Debug.Log($"Win objects interacted with: {registered.Count}/{requiredCount}");
+        if (!registered.Add(obj))
+        {
+            Debug.LogWarning($"WinManager: '{obj.name}' already registered, ignoring duplicate call.");
+            return;
+        }
+
+        Debug.Log($"Win objects interacted with: {registered.Count}/{requiredCount} (just registered: {obj.name})");
         onProgress?.Invoke(registered.Count, requiredCount);
 
-        if (registered.Count >= requiredCount)
+        // Explicit equality check, not just >=, so this only fires exactly
+        // once, exactly when the count matches requiredCount precisely.
+        if (registered.Count == requiredCount && !hasWon)
         {
             hasWon = true;
+            Debug.Log("All win objects found — starting win sequence.");
             StartCoroutine(WinSequence());
             onWin?.Invoke();
         }
@@ -79,23 +70,6 @@ public class WinManager : MonoBehaviour
     private IEnumerator WinSequence()
     {
         Debug.Log("You Win!");
-
-        // Player speaks first
-        if (playerSpeechBubble != null)
-            playerSpeechBubble.Show(playerWinLine, playerLineDuration);
-        else
-            Debug.LogWarning("WinManager: no player SpeechBubble registered — did the Player spawn correctly?");
-
-        yield return new WaitForSeconds(playerLineDuration);
-
-        // Then all 4 win objects reply, like a conversation
-        foreach (WinConditionObject obj in registered)
-        {
-            if (obj != null)
-                obj.SayWinLine();
-        }
-
-        // Wait, then load the next scene
         yield return new WaitForSeconds(delayBeforeSceneLoad);
         LoadNextScene();
     }
