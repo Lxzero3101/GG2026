@@ -1,12 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
 /// <summary>
-/// Plays a scripted back-and-forth conversation between any number of
-/// SpeechBubble owners (Player, NPC, etc), one line at a time, in the exact
-/// order listed in the Inspector. Add as many lines as you want.
+/// Visual-novel style dialogue: shows one line at a time, advances to the
+/// next on mouse click. Add as many lines as you want, in any order.
 ///
 /// SETUP:
 /// 1. Add this script to any GameObject in the scene (e.g. an empty
@@ -14,12 +16,12 @@ using UnityEngine.Events;
 /// 2. In "Lines", add one entry per line:
 ///    - Speaker = the SpeechBubble component that should say it
 ///    - Text = the line itself
-///    - Duration = how long it stays up (0 = use that speaker's default)
 /// 3. Order the list top-to-bottom exactly how the conversation should
 ///    play — alternate Speaker between entries to go back and forth.
-/// 4. Check "Play On Start" for it to auto-play when the scene loads, or
-///    leave unchecked and call StartDialogue() from elsewhere (an
-///    interaction key press, trigger zone, button, etc).
+/// 4. Check "Play On Start" for the first line to appear automatically
+///    when the scene loads, or leave unchecked and call StartDialogue()
+///    from elsewhere (an interaction key press, trigger zone, etc).
+/// 5. Click anywhere (left mouse button) to advance to the next line.
 /// </summary>
 public class DialogueManager : MonoBehaviour
 {
@@ -31,9 +33,6 @@ public class DialogueManager : MonoBehaviour
 
         [TextArea(1, 3)]
         public string text;
-
-        [Tooltip("Seconds this line stays visible. 0 = use the speaker's own default duration.")]
-        public float duration = 0f;
     }
 
     [Header("Conversation")]
@@ -42,13 +41,11 @@ public class DialogueManager : MonoBehaviour
     [Header("Playback")]
     public bool playOnStart = true;
 
-    [Tooltip("Extra pause after each line, on top of its own duration, for a natural conversational beat.")]
-    public float gapBetweenLines = 0.3f;
-
     [Header("Events")]
     public UnityEvent onDialogueStart;
     public UnityEvent onDialogueComplete;
 
+    private int currentIndex = -1;
     private bool isPlaying;
 
     private void Start()
@@ -57,32 +54,70 @@ public class DialogueManager : MonoBehaviour
             StartDialogue();
     }
 
-    /// <summary>Begins playing the conversation from the first line.</summary>
-    public void StartDialogue()
+    private void Update()
     {
-        if (isPlaying) return;
-        StartCoroutine(PlayDialogue());
+        if (!isPlaying) return;
+
+        if (AdvanceClicked())
+            AdvanceLine();
     }
 
-    private IEnumerator PlayDialogue()
+    private bool AdvanceClicked()
     {
+#if ENABLE_INPUT_SYSTEM
+        Mouse mouse = Mouse.current;
+        return mouse != null && mouse.leftButton.wasPressedThisFrame;
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return Input.GetMouseButtonDown(0);
+#else
+        return false;
+#endif
+    }
+
+    /// <summary>Begins the conversation from the first line.</summary>
+    public void StartDialogue()
+    {
+        if (isPlaying || lines.Count == 0) return;
+
         isPlaying = true;
+        currentIndex = -1;
         onDialogueStart?.Invoke();
 
-        foreach (DialogueLine line in lines)
+        AdvanceLine();
+    }
+
+    private void AdvanceLine()
+    {
+        // Hide whatever is currently showing before moving on.
+        if (currentIndex >= 0 && currentIndex < lines.Count)
         {
-            if (line.speaker == null)
-            {
-                Debug.LogWarning($"DialogueManager: a line has no Speaker assigned — skipping '{line.text}'.");
-                continue;
-            }
-
-            float duration = line.duration > 0f ? line.duration : line.speaker.displayDuration;
-            line.speaker.Show(line.text, duration);
-
-            yield return new WaitForSeconds(duration + gapBetweenLines);
+            SpeechBubble previousSpeaker = lines[currentIndex].speaker;
+            if (previousSpeaker != null)
+                previousSpeaker.Hide();
         }
 
+        currentIndex++;
+
+        if (currentIndex >= lines.Count)
+        {
+            EndDialogue();
+            return;
+        }
+
+        DialogueLine line = lines[currentIndex];
+
+        if (line.speaker == null)
+        {
+            Debug.LogWarning($"DialogueManager: line {currentIndex} has no Speaker assigned — skipping '{line.text}'.");
+            AdvanceLine();
+            return;
+        }
+
+        line.speaker.Show(line.text);
+    }
+
+    private void EndDialogue()
+    {
         isPlaying = false;
         onDialogueComplete?.Invoke();
     }
