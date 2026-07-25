@@ -464,6 +464,9 @@ MonoBehaviour:
   - label: 
     prefab: {fileID: 3629528663493587706, guid: c9cecd758f25ae647bd87b4f68db4059, type: 3}
     count: 1
+  - label: 
+    prefab: {fileID: 8006062178577921739, guid: 7ad44af5378c2a1459105536a37851ee, type: 3}
+    count: 1
   minDistancePlayerToWinObject: 10
   minDistanceWinObjectToObjects: 1.5
   objectsToSpawn:
@@ -475,10 +478,10 @@ MonoBehaviour:
     count: 6
   - label: 
     prefab: {fileID: 445509246180960357, guid: c06b4d786da42724ba790f90b1bdcee3, type: 3}
-    count: 9
+    count: 6
   - label: 
     prefab: {fileID: 78894018490004442, guid: bb5241b0dc9ec574f9b10b3735bb430a, type: 3}
-    count: 6
+    count: 5
   - label: 
     prefab: {fileID: 3162352094935265677, guid: 245b13a007807bd439c79a35dd1c6144, type: 3}
     count: 2
