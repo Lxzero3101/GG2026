@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.015707863, y: -0, z: -0, w: 0.9998766}
   m_LocalPosition: {x: -13.65, y: 4.79, z: 0}
-  m_LocalScale: {x: 1.6098377, y: 1.6098377, z: 1.6098377}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -173,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 5
+  freezeDuringCountdown: 1
 --- !u!114 &4093281053889722041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,5 +206,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpeechBubble
   bubbleRoot: {fileID: 0}
   bubbleText: {fileID: 0}
-  displayDuration: 2
-  isPlayerBubble: 1
+  followTarget: {fileID: 0}
+  worldOffset: {x: 0, y: 1, z: 0}
