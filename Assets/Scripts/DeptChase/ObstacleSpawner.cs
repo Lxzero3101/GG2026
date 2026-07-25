@@ -56,7 +56,7 @@ public class ObstacleSpawner : MonoBehaviour
         int index = Random.Range(0, obstaclePrefabs.Length);
         Vector3 spawnPos = new Vector3(spawnX, lanePositions[lane], 0f);
         GameObject obstacle = Instantiate(obstaclePrefabs[index], spawnPos, Quaternion.identity);
-        AudioManager.Instance?.PlaySfx(spawnSfx);
+        AudioManager.Instance?.PlaySfx(spawnSfx, 0.4f);
 
         // Bottom lane (Line 3) renders in front of the player; other lanes stay default.
         if (lane == frontLaneIndex)

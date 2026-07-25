@@ -77,16 +77,16 @@ public class AudioManager : MonoBehaviour
     // ─────────────────────────────────────────────
 
     /// <summary>Plays a one-shot sound effect. Safe to call rapidly — pulls the next free pooled AudioSource.</summary>
-    public void PlaySfx(AudioClip clip)
+    /// <summary>Plays a one-shot sound effect. volumeScale (0-1) multiplies the global sfxVolume — use it to make a specific sound quieter without affecting others.</summary>
+    public void PlaySfx(AudioClip clip, float volumeScale = 1f)
     {
-        Debug.Log($"[AudioManager] PlaySfx called with clip: {(clip != null ? clip.name : "NULL")}");
         if (clip == null || sfxPool == null || sfxPool.Count == 0) return;
 
         AudioSource src = sfxPool[nextSfxIndex];
         nextSfxIndex = (nextSfxIndex + 1) % sfxPool.Count;
 
         if (src == null) return;
-        src.PlayOneShot(clip, sfxVolume);
+        src.PlayOneShot(clip, sfxVolume * volumeScale);
     }
     /// <summary>Starts (or restarts) looping background music. Passing the same clip that's already playing does nothing.</summary>
     public void PlayBgm(AudioClip clip)

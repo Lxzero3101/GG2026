@@ -34,6 +34,9 @@ public class CountdownUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private int startValue = 5;
     [SerializeField] private float secondsPerCount = 1f;
+    [Header("Instruction Text")]
+    [Tooltip("Shown only during the countdown, hidden once it finishes.")]
+    [SerializeField] private GameObject instructionTextObject;
 
     [Header("Audio")]
     [SerializeField] private AudioClip tickSfx;
@@ -48,6 +51,9 @@ public class CountdownUI : MonoBehaviour
     public void StartCountdown()
     {
         gameObject.SetActive(true);
+
+        if (instructionTextObject != null)
+            instructionTextObject.SetActive(true); // ← thêm dòng này
 
         if (countdownCoroutine != null)
         {
@@ -79,7 +85,10 @@ public class CountdownUI : MonoBehaviour
             countdownText.text = string.Empty;
         }
 
-        AudioManager.Instance?.PlaySfx(goSfx); // ← thêm dòng này
+        if (instructionTextObject != null)
+            instructionTextObject.SetActive(false); // ← thêm dòng này
+
+        AudioManager.Instance?.PlaySfx(goSfx);
 
         gameObject.SetActive(false);
         countdownCoroutine = null;
