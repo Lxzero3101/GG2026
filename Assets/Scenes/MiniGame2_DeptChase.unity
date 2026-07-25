@@ -2908,7 +2908,7 @@ MonoBehaviour:
   debtorSpriteRenderer: {fileID: 1628285218}
   debtorLoseSprite: {fileID: 2556563222956901894, guid: b7a0cb10d8f3eb04caaf4b5a249f525a, type: 3}
   winSfx: {fileID: 8300000, guid: b08f1d58bee733a47bf1a6ade86393c1, type: 3}
-  loseSfx: {fileID: 0}
+  loseSfx: {fileID: 8300000, guid: af9a1279d51a2d74dbc8430762183f3c, type: 3}
   bgmClip: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
