@@ -6447,7 +6447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinManager
   autoDetectRequiredCount: 1
   requiredCount: 4
-  sceneToLoad: Office
+  sceneToLoad: SubMiniGame3
   delayBeforeSceneLoad: 3
   onProgress:
     m_PersistentCalls:
