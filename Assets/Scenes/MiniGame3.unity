@@ -225,7 +225,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3970911902504188438, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: maxPatience
-      value: 300
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 6187345165323056662, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_SortingOrder
