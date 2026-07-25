@@ -38,7 +38,23 @@ public class InteractableInformation : InteractableItem
     protected override void CollectItem()
     {
         base.CollectItem();
-        StartCoroutine(InfoDisplayRoutine());
+
+        // IMPORTANT: this item deactivates itself partway through its own
+        // zoom/shake animation (see InteractableItem.CollectAnimationRoutine),
+        // and Unity kills every coroutine running on a GameObject the instant
+        // it's deactivated. Starting InfoDisplayRoutine() on "this" would get
+        // it cut off mid-wait — patience would pause and never resume, and the
+        // text would never hide. Running it on GameUI (which stays alive for
+        // the whole scene) avoids that.
+        if (GameUI.Instance != null)
+        {
+            GameUI.Instance.StartCoroutine(InfoDisplayRoutine());
+        }
+        else
+        {
+            Debug.LogWarning("[InteractableInformation] GameUI.Instance is missing — falling back to a local coroutine, which may get cut short by this item's own animation.");
+            StartCoroutine(InfoDisplayRoutine());
+        }
     }
 
     private IEnumerator InfoDisplayRoutine()

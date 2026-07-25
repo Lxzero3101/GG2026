@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,6 +17,12 @@ public class MiniGameManager4 : MonoBehaviour
     [Tooltip("Items worth less than this trigger a boss warning (facial flash + shake) with no patience penalty.")]
     [SerializeField] private int lowValueThreshold = 5;
 
+    [Header("Win Flow Settings")]
+    [Tooltip("Scene object reference — used to load the next scene after winning (its own Next Scene Name field decides where to go).")]
+    [SerializeField] private GameManager gameManager;
+    [Tooltip("Seconds to wait after winning before automatically loading the next scene.")]
+    [SerializeField] private float winToNextSceneDelay = 3f;
+
     [Header("Game State Readouts")]
     [SerializeField] private int currentTotalMoney = 0;
     [SerializeField] private int currentAttempts = 0;
@@ -27,6 +35,21 @@ public class MiniGameManager4 : MonoBehaviour
 
     /// <summary>Items worth less than this trigger the boss's low-value warning reaction.</summary>
     public int LowValueThreshold => lowValueThreshold;
+
+    /// <summary>The money total needed to win — read-only, for HUD display.</summary>
+    public int TargetMoneyRequirement => targetMoneyRequirement;
+
+    /// <summary>The player's current money total — read-only, for HUD display.</summary>
+    public int CurrentTotalMoney => currentTotalMoney;
+
+    /// <summary>How many attempts/clicks the player has used so far — read-only, for HUD display.</summary>
+    public int CurrentAttempts => currentAttempts;
+
+    /// <summary>The maximum number of attempts allowed — read-only, for HUD display.</summary>
+    public int MaxAllowedAttempts => maxAllowedAttempts;
+
+    /// <summary>Raised whenever the money total (and attempts) changes, passing the new money total. Lets a HUD counter react without polling every frame.</summary>
+    public event Action<int> OnMoneyChanged;
 
     private void Awake()
     {
@@ -49,6 +72,8 @@ public class MiniGameManager4 : MonoBehaviour
         currentTotalMoney += itemMoney;
 
         Debug.Log($"Attempt: {currentAttempts}/{maxAllowedAttempts} | Current Money: ${currentTotalMoney}");
+
+        OnMoneyChanged?.Invoke(currentTotalMoney);
 
         EvaluateGameState();
     }
@@ -74,6 +99,21 @@ public class MiniGameManager4 : MonoBehaviour
         isGameOver = true;
         Debug.Log("<color=green><b>YOU WIN!</b></color> You reached the required money target!");
         onWin?.Invoke();
+        StartCoroutine(LoadNextSceneAfterDelay());
+    }
+
+    private IEnumerator LoadNextSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(winToNextSceneDelay);
+
+        if (gameManager != null)
+        {
+            gameManager.LoadNextScene();
+        }
+        else
+        {
+            Debug.LogWarning("[MiniGameManager4] GameManager reference is missing — can't auto-load the next scene.");
+        }
     }
 
     private void TriggerLose()
