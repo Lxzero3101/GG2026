@@ -259,10 +259,18 @@ public class MiniGameManager : MonoBehaviour
     // ─────────────────────────────────────────────
     //  Win / Lose
     // ─────────────────────────────────────────────
-
+    private void ClearRemainingObstacles()
+    {
+        GameObject[] remainingObstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+        foreach (GameObject obstacle in remainingObstacles)
+        {
+            Destroy(obstacle);
+        }
+    }
     private void TriggerWin()
     {
         EndGame();
+        ClearRemainingObstacles(); // ← thêm dòng này
         Debug.Log("[MiniGameManager] WIN — Debtor caught! 🎉");
         StartCoroutine(WinSequenceRoutine());
     }
