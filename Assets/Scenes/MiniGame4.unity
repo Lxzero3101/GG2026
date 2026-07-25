@@ -5958,17 +5958,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 75295333}
   m_CullTransparentMesh: 1
---- !u!114 &88206199 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
-  m_PrefabInstance: {fileID: 1673170318}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1707156c1f0689a48a64d0d961bf6d7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CountdownUI
 --- !u!1 &165747547
 GameObject:
   m_ObjectHideFlags: 0
@@ -7739,7 +7728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 5
-  countdownUI: {fileID: 88206199}
+  freezeDuringCountdown: 1
 --- !u!70 &892519700
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -8751,7 +8740,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1841156203918698759, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2667157410824168385, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       insertIndex: -1
