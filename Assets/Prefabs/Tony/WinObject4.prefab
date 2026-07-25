@@ -315,7 +315,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.71875, y: 0.96875}
+    oldSize: {x: 1.15, y: 1.55}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -375,7 +375,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.71875, y: 0.96875}
+    oldSize: {x: 1.15, y: 1.55}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -397,7 +397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObstacle
   promptRoot: {fileID: 1757977303573942148}
   objectLabel: Object
-  canInteractRepeatedly: 1
+  canInteractRepeatedly: 0
   destroyOnInteract: 0
   onInteract:
     m_PersistentCalls:
@@ -405,6 +405,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1872595400434954556}
         m_TargetAssemblyTypeName: WinConditionObject, Assembly-CSharp
         m_MethodName: SwapSprite
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1872595400434954556}
+        m_TargetAssemblyTypeName: WinConditionObject, Assembly-CSharp
+        m_MethodName: OnWinInteract
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
