@@ -6250,6 +6250,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinManager
   autoDetectRequiredCount: 1
   requiredCount: 4
+  playerSpeechBubble: {fileID: 0}
+  playerWinMessage: YOU GUYS ARE SO BUSTED!
+  playerMessageDuration: 2
+  winObjectMessage: Okay, we'll pay...
   onProgress:
     m_PersistentCalls:
       m_Calls: []
