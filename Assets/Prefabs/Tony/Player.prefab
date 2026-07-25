@@ -206,3 +206,4 @@ MonoBehaviour:
   bubbleRoot: {fileID: 0}
   bubbleText: {fileID: 0}
   displayDuration: 2
+  isPlayerBubble: 1

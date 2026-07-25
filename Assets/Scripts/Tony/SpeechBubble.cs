@@ -2,27 +2,26 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// A simple world-space speech bubble. Call Show("text") to pop it up
-/// above the object for a few seconds, then it auto-hides.
-///
-/// SETUP:
-/// 1. Create a child GameObject under the target (Player or win object),
-///    positioned above its head/sprite. Name it e.g. "SpeechBubbleRoot".
-/// 2. Under THAT, add a TextMeshPro - Text (world space) child.
-/// 3. On this script (attached to the Player/win object itself):
-///    - Bubble Root = the "SpeechBubbleRoot" child
-///    - Bubble Text = the TMP_Text child
-/// 4. Leave both active in the Hierarchy — this script disables the root
-///    on Start.
-/// </summary>
 public class SpeechBubble : MonoBehaviour
 {
     public GameObject bubbleRoot;
     public TMP_Text bubbleText;
     public float displayDuration = 2.5f;
 
+    [Tooltip("Check this ONLY on the Player's SpeechBubble — it auto-registers with WinManager on spawn.")]
+    public bool isPlayerBubble = false;
+
     private Coroutine activeRoutine;
+
+    void Awake()
+    {
+        // Register with WinManager the moment this object exists,
+        // regardless of when/where it was spawned.
+        if (isPlayerBubble && WinManager.Instance != null)
+        {
+            WinManager.Instance.SetPlayerSpeechBubble(this);
+        }
+    }
 
     void Start()
     {

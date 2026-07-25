@@ -12,13 +12,11 @@ public class WinManager : MonoBehaviour
     public int requiredCount = 4;
 
     [Header("Player Speech")]
-    [Tooltip("Drag the Player GameObject's SpeechBubble component here directly.")]
+    [Tooltip("Auto-filled at runtime when the spawned Player's SpeechBubble registers itself. No need to assign manually.")]
     public SpeechBubble playerSpeechBubble;
 
     [TextArea]
     public string playerWinLine = "You guys are so busted";
-
-    [Tooltip("How long the player's line stays up before the win objects reply.")]
     public float playerLineDuration = 2f;
 
     [Header("Events")]
@@ -45,9 +43,13 @@ public class WinManager : MonoBehaviour
             requiredCount = FindObjectsByType<WinConditionObject>(FindObjectsSortMode.None).Length;
             Debug.Log($"WinManager auto-detected {requiredCount} win objects.");
         }
+    }
 
-        if (playerSpeechBubble == null)
-            Debug.LogWarning("WinManager: Player Speech Bubble not assigned in Inspector. Drag the Player object into the field.");
+    /// <summary>Called automatically by the Player's SpeechBubble when it spawns.</summary>
+    public void SetPlayerSpeechBubble(SpeechBubble bubble)
+    {
+        playerSpeechBubble = bubble;
+        Debug.Log("WinManager: Player speech bubble registered.");
     }
 
     public void RegisterWin(WinConditionObject obj)
@@ -70,13 +72,13 @@ public class WinManager : MonoBehaviour
     {
         Debug.Log("You Win!");
 
-        // Player speaks first
         if (playerSpeechBubble != null)
             playerSpeechBubble.Show(playerWinLine, playerLineDuration);
+        else
+            Debug.LogWarning("WinManager: no player SpeechBubble registered — did the Player spawn correctly?");
 
         yield return new WaitForSeconds(playerLineDuration);
 
-        // Then all 4 win objects reply, like a conversation
         foreach (WinConditionObject obj in registered)
         {
             if (obj != null)
