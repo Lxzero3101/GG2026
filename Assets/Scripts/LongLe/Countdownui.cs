@@ -10,6 +10,27 @@ using UnityEngine;
 /// </summary>
 public class CountdownUI : MonoBehaviour
 {
+    // ---- Added for the minigame polish pass -------------------------------
+    // Same pattern as GameUI.Instance / PlayerMovement.Instance: lets scripts
+    // living on PREFAB ASSETS (e.g. PlayerMovement on the Player prefab,
+    // instantiated at runtime by RandomSpawner) find this scene object without
+    // a serialized Inspector reference, which can't be wired on a prefab asset.
+    public static CountdownUI Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+    // -------------------------------------------------------------------
+
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private int startValue = 5;
     [SerializeField] private float secondsPerCount = 1f;
