@@ -1697,6 +1697,14 @@ PrefabInstance:
       propertyPath: decreasePerSecond
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: goSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 6c0befb73b3694349906dfac788d63eb, type: 3}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: tickSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 324e008867a24e54eb4efeb8ed6b0523, type: 3}
     - target: {fileID: 7529291451038755939, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_fontSize
       value: 300
@@ -2103,7 +2111,7 @@ MonoBehaviour:
   bgmSource: {fileID: 0}
   bgmVolume: 1
   sfxPoolSize: 6
-  sfxVolume: 1
+  sfxVolume: 0.706
 --- !u!1 &1628285216
 GameObject:
   m_ObjectHideFlags: 0
