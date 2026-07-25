@@ -162,4 +162,29 @@ public class GameUI : MonoBehaviour
     {
         return patienceBarUI != null ? patienceBarUI.NormalizedPatience : 0f;
     }
+
+    // ---- Added for the minigame polish pass -------------------------------
+    // Both methods below are pure pass-throughs to BossExpressionController.
+    // No existing method above was changed.
+
+    /// <summary>
+    /// Triggers the boss's short warning reaction (next-stage flash + shake)
+    /// without applying any patience penalty. Use for minor negative feedback
+    /// that shouldn't cost the player patience — e.g. picking up a low-value item.
+    /// </summary>
+    public void FlashBossWarning()
+    {
+        bossExpressionController?.FlashNextStage();
+    }
+
+    /// <summary>
+    /// Moves the boss's displayed expression toward calmer by the given number
+    /// of stages and keeps it there as the new steady state (e.g. as a win
+    /// reward). Does not touch the underlying patience value — pair this with
+    /// <see cref="PausePatience"/> if you don't want drain to fight it afterward.
+    /// </summary>
+    public void ImproveBossExpression(int stages)
+    {
+        bossExpressionController?.ImproveStage(stages);
+    }
 }

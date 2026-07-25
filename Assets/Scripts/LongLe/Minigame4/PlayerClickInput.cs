@@ -15,6 +15,12 @@ public class PlayerClickInput : MonoBehaviour
 
     private void Update()
     {
+        // Frozen during the intro countdown (see PlayerMovement.IsLocked).
+        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
+        {
+            return;
+        }
+
         // Check for click/tap using New Input System
         if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
         {
