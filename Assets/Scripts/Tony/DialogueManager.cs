@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -9,6 +11,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Visual-novel style dialogue: shows one line at a time, advances to the
 /// next on mouse click. Add as many lines as you want, in any order.
+/// After the last line, waits a set delay then loads the next scene.
 ///
 /// SETUP:
 /// 1. Add this script to any GameObject in the scene (e.g. an empty
@@ -22,6 +25,8 @@ using UnityEngine.InputSystem;
 ///    when the scene loads, or leave unchecked and call StartDialogue()
 ///    from elsewhere (an interaction key press, trigger zone, etc).
 /// 5. Click anywhere (left mouse button) to advance to the next line.
+/// 6. Set "Scene To Load" (must be added to Build Settings) and "Delay
+///    Before Scene Load" for what happens after the last line.
 /// </summary>
 public class DialogueManager : MonoBehaviour
 {
@@ -40,6 +45,16 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Playback")]
     public bool playOnStart = true;
+
+    [Header("Scene Transition")]
+    [Tooltip("If true, automatically loads a scene after the last line is dismissed.")]
+    public bool loadSceneOnComplete = true;
+
+    [Tooltip("Exact name of the scene to load (must be added to Build Settings).")]
+    public string sceneToLoad = "NextScene";
+
+    [Tooltip("Seconds to wait after the last line before loading the scene.")]
+    public float delayBeforeSceneLoad = 2f;
 
     [Header("Events")]
     public UnityEvent onDialogueStart;
@@ -120,5 +135,22 @@ public class DialogueManager : MonoBehaviour
     {
         isPlaying = false;
         onDialogueComplete?.Invoke();
+
+        if (loadSceneOnComplete)
+            StartCoroutine(LoadSceneAfterDelay());
+    }
+
+    private IEnumerator LoadSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(delayBeforeSceneLoad);
+
+        if (string.IsNullOrEmpty(sceneToLoad))
+        {
+            Debug.LogWarning("DialogueManager: Scene To Load is empty — set it in the Inspector.");
+            yield break;
+        }
+
+        Debug.Log($"DialogueManager: loading scene '{sceneToLoad}'.");
+        SceneManager.LoadScene(sceneToLoad);
     }
 }

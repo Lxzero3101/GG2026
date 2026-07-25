@@ -7009,6 +7009,9 @@ MonoBehaviour:
   - speaker: {fileID: 614418494}
     text: Y-Yeah...
   playOnStart: 1
+  loadSceneOnComplete: 1
+  sceneToLoad: Office
+  delayBeforeSceneLoad: 2
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
