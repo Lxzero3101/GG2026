@@ -1721,7 +1721,7 @@ MonoBehaviour:
   uiCanvas: {fileID: 881819128}
   powerBarController: {fileID: 1051866677}
   winButton: {fileID: 0}
-  nextSceneName: NextLevel
+  nextSceneName: Office
   loseSceneName: Lose
   winSceneLoadDelay: 5
   loseSceneLoadDelay: 5
