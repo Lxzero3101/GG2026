@@ -19,6 +19,9 @@ using UnityEngine.InputSystem;
 /// scene's CountdownUI object. Exposes a static Instance (same pattern as
 /// GameUI.Instance) so prefab-asset scripts like InteractableItem, or other
 /// systems like WinScreenUI, can reach the player without a scene reference.
+///
+/// Also plays a looping footstep sound while the player is actively moving,
+/// and stops it the instant movement stops (including while locked).
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
@@ -32,6 +35,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Countdown Lock")]
     [Tooltip("If true, movement/interaction stays frozen until CountdownUI.Instance finishes counting down.")]
     [SerializeField] private bool freezeDuringCountdown = true;
+
+    [Header("Footstep Sound")]
+    [Tooltip("AudioSource that plays the walking loop. Leave empty to auto-find one on this GameObject.")]
+    public AudioSource footstepAudioSource;
+
+    [Tooltip("The walking sound clip. Assign here, or leave empty and set the clip directly on the AudioSource instead.")]
+    public AudioClip walkClip;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -50,6 +60,18 @@ public class PlayerMovement : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        if (footstepAudioSource == null)
+            footstepAudioSource = GetComponent<AudioSource>();
+
+        if (footstepAudioSource != null)
+        {
+            footstepAudioSource.loop = true;
+            footstepAudioSource.playOnAwake = false;
+
+            if (walkClip != null)
+                footstepAudioSource.clip = walkClip;
+        }
 
         if (!freezeDuringCountdown || CountdownUI.Instance == null)
         {
@@ -81,6 +103,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Instance = null;
         }
+
+        StopFootstepSound();
     }
 
     private void HandleCountdownFinished()
@@ -100,6 +124,7 @@ public class PlayerMovement : MonoBehaviour
         if (locked)
         {
             moveInput = Vector2.zero;
+            StopFootstepSound();
         }
     }
 
@@ -108,6 +133,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsLocked)
         {
             moveInput = Vector2.zero;
+            StopFootstepSound();
             return;
         }
 
@@ -137,6 +163,31 @@ public class PlayerMovement : MonoBehaviour
         // Normalize so diagonal movement isn't faster than straight movement.
         if (moveInput.sqrMagnitude > 1f)
             moveInput.Normalize();
+
+        UpdateFootstepSound();
+    }
+
+    void UpdateFootstepSound()
+    {
+        if (footstepAudioSource == null || footstepAudioSource.clip == null)
+            return;
+
+        bool isMoving = moveInput.sqrMagnitude > 0.01f;
+
+        if (isMoving && !footstepAudioSource.isPlaying)
+        {
+            footstepAudioSource.Play();
+        }
+        else if (!isMoving && footstepAudioSource.isPlaying)
+        {
+            footstepAudioSource.Stop();
+        }
+    }
+
+    void StopFootstepSound()
+    {
+        if (footstepAudioSource != null && footstepAudioSource.isPlaying)
+            footstepAudioSource.Stop();
     }
 
     void FixedUpdate()
