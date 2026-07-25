@@ -185,8 +185,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283291380
+  m_fontColor: {r: 0.9568628, g: 0.83921576, b: 0.3019608, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -384,8 +384,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283291380
+  m_fontColor: {r: 0.9568628, g: 0.83921576, b: 0.3019608, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -524,8 +524,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -571,8 +571,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4166885317543474367, guid: 01a90d8611f795c4aafeeed07cc31288, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -670,8 +670,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -705,8 +705,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4166885317543474367, guid: 01a90d8611f795c4aafeeed07cc31288, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -926,8 +926,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283291380
+  m_fontColor: {r: 0.9568628, g: 0.83921576, b: 0.3019608, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1009,6 +1009,7 @@ GameObject:
   - component: {fileID: 1523235309}
   - component: {fileID: 1523235308}
   - component: {fileID: 1523235307}
+  - component: {fileID: 1523235310}
   m_Layer: 5
   m_Name: Credits button
   m_TagString: Untagged
@@ -1065,8 +1066,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -1080,13 +1081,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1523235310}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: LoadNextScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1112,8 +1113,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4166885317543474367, guid: 01a90d8611f795c4aafeeed07cc31288, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1130,6 +1131,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523235305}
   m_CullTransparentMesh: 1
+--- !u!114 &1523235310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523235305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fee2c71bf9d9144cb3fd9469ef260d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+  _nextSceneName: Credit
 --- !u!1 &1637874053
 GameObject:
   m_ObjectHideFlags: 0
@@ -1435,7 +1449,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3101758818378278193, guid: 4278c733aa5349e4facbf98ca9f4b442, type: 3}
+  m_Sprite: {fileID: 10682205084915666, guid: a5297a9cae6bdfe479ba15fe0151fa49, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1510,8 +1524,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -9178706893835821460, guid: 0401babeb71340a46a83170cc7e6e204, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 5530745344932298482, guid: d88eaf450f27b9c4b80358342948aa6f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4

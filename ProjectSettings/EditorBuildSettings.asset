@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Office.unity
     guid: 0a8668b9ee9add747ae7a8f1d5fb5a04
   - enabled: 1
-    path: Assets/Scenes/MiniGame1.unity
+    path: Assets/Scenes/MiniGame1(LOIVAIKHONGSUANOI).unity
     guid: 4368985500aa4a845877752ba8098694
   - enabled: 1
     path: Assets/Scenes/MiniGame2_DeptChase.unity
