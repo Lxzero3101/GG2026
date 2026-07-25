@@ -9,19 +9,27 @@ using UnityEngine.InputSystem;
 /// directions, no acceleration/inertia. Works with WASD or Arrow Keys.
 ///
 /// This version supports BOTH input backends automatically, using Unity's
-/// built-in compiler flags (ENABLE_INPUT_SYSTEM / ENABLE_LEGACY_INPUT_MANAGER),
-/// which are set based on your Project Settings > Player > Active Input
-/// Handling. You don't need to change anything or maintain two scripts —
-/// whichever backend your project is using, this compiles the matching code
-/// path automatically. If "Both" is selected, it uses the new Input System
-/// path (which reads the keyboard the same way either way).
+/// built-in compiler flags (ENABLE_INPUT_SYSTEM / ENABLE_LEGACY_INPUT_MANAGER).
+///
+/// NEW: also owns the "input lock" used to freeze the player during the intro
+/// countdown. Assign the scene's CountdownUI in the Inspector; movement (and,
+/// via <see cref="IsLocked"/>, item interaction) stays frozen until the
+/// countdown's OnCountdownFinished event fires. Exposes a static Instance
+/// (same pattern as GameUI.Instance) so prefab-asset scripts like
+/// InteractableItem can check the lock without a scene reference.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance { get; private set; }
+
     [Header("Movement")]
     [Tooltip("Constant movement speed — no ramp-up, matches Brotato's snappy feel.")]
     public float moveSpeed = 5f;
+
+    [Header("Countdown Lock")]
+    [Tooltip("Assign the scene's CountdownUI. Movement and item interaction stay frozen until it finishes. Leave empty to skip freezing entirely.")]
+    [SerializeField] private CountdownUI countdownUI;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -29,16 +37,60 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>Current movement input this frame (-1..1 on each axis). Read-only for other scripts.</summary>
     public Vector2 CurrentMoveInput => moveInput;
 
+    /// <summary>True while movement and interactable clicks should be frozen (e.g. during the intro countdown).</summary>
+    public bool IsLocked { get; private set; } = true;
+
     void Awake()
     {
+        Instance = this;
+
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        if (countdownUI == null)
+        {
+            // Nothing would ever unlock us, so don't freeze the player forever by mistake.
+            Debug.LogWarning("[PlayerMovement] No CountdownUI assigned — skipping the intro freeze.");
+            IsLocked = false;
+        }
+    }
+
+    void OnEnable()
+    {
+        if (countdownUI != null)
+        {
+            countdownUI.OnCountdownFinished += HandleCountdownFinished;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (countdownUI != null)
+        {
+            countdownUI.OnCountdownFinished -= HandleCountdownFinished;
+        }
+
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    private void HandleCountdownFinished()
+    {
+        IsLocked = false;
     }
 
     void Update()
     {
+        if (IsLocked)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         float h = 0f;
         float v = 0f;
 
@@ -69,8 +121,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Directly setting velocity gives the instant, no-inertia stop/start
-        // feel Brotato has, while still respecting physics collisions.
         rb.linearVelocity = moveInput * moveSpeed;
     }
 }

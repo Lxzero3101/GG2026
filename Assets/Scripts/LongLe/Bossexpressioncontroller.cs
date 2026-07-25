@@ -120,4 +120,25 @@ public class BossExpressionController : MonoBehaviour
         ApplyExpressionForStage(currentStageIndex);
         flashCoroutine = null;
     }
+
+    // ---- Added for the minigame polish pass -------------------------------
+    // Existing methods/fields above are untouched.
+
+    /// <summary>
+    /// Moves the steady-state expression toward calmer by <paramref name="stagesBetter"/>
+    /// stages and applies it immediately, cancelling any in-progress flash. Used
+    /// to reward the player (e.g. on a win) without changing the underlying
+    /// patience value.
+    /// </summary>
+    public void ImproveStage(int stagesBetter)
+    {
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+            flashCoroutine = null;
+        }
+
+        currentStageIndex = Mathf.Clamp(currentStageIndex - stagesBetter, 0, stageExpressions.Length - 1);
+        ApplyExpressionForStage(currentStageIndex);
+    }
 }

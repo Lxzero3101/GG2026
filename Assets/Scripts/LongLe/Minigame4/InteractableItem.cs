@@ -73,20 +73,59 @@ public class InteractableItem : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // Triggers when clicked on via Physics 2D Raycaster / Collider
+        // Triggers when clicked on via Physics 2D Raycaster / Collider.
+        // Frozen during the intro countdown (see PlayerMovement.IsLocked) —
+        // covers both the manual raycast in PlayerClickInput and Unity's
+        // built-in OnMouseDown message.
+        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
+        {
+            return;
+        }
+
         if (isPlayerNearby && !isCollected)
         {
             CollectItem();
         }
     }
 
-    private void CollectItem()
+    /// <summary>
+    /// Handles the click reaction: money/attempt bookkeeping, the boss's
+    /// low-value warning, freeing the item from physical collision so it can
+    /// zoom to screen center without shoving the player around, and kicking
+    /// off the pickup animation.
+    ///
+    /// Protected + virtual so variants (e.g. InteractableInformation) can layer
+    /// extra behavior on top via <c>base.CollectItem()</c>.
+    /// </summary>
+    protected virtual void CollectItem()
     {
         isCollected = true;
         itemRenderer.color = normalColor; // Reset color tint
 
+        // Stop this item from physically colliding with the player during the
+        // zoom-to-center animation (this was the "clashes with player" issue).
+        // Disabling rather than destroying keeps the component intact in case
+        // anything else still wants to query it before the object deactivates.
+        foreach (Collider2D col in GetComponents<Collider2D>())
+        {
+            col.enabled = false;
+        }
+
+        // Draw above everything else while it's zooming toward the center.
+        if (itemRenderer != null)
+        {
+            itemRenderer.sortingOrder += 10;
+        }
+
         // Notify GameManager / Counter
-        MiniGameManager4.Instance.ProcessItemClick(moneyValue);
+        MiniGameManager4.Instance?.ProcessItemClick(moneyValue);
+
+        // Low-value pickups irritate the boss a little (flash + shake) but,
+        // unlike an obstacle hit, don't cost any patience.
+        if (MiniGameManager4.Instance != null && moneyValue < MiniGameManager4.Instance.LowValueThreshold)
+        {
+            GameUI.Instance?.FlashBossWarning();
+        }
 
         StartCoroutine(CollectAnimationRoutine());
     }

@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 1872595400434954556}
   - component: {fileID: 6158785764660744578}
   - component: {fileID: 5298956493414177159}
+  - component: {fileID: 4492039669363144685}
   m_Layer: 0
   m_Name: WinObject4
   m_TagString: Untagged
@@ -315,7 +316,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.71875, y: 0.96875}
+    oldSize: {x: 1.15, y: 1.55}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -337,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinConditionObject
   spriteRenderer: {fileID: 0}
   newSprite: {fileID: 3902512580945947827, guid: 2ec76aaf4b95d2a4aba9aaa3b6e2e6c1, type: 3}
+  speechBubble: {fileID: 0}
 --- !u!61 &6158785764660744578
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -375,7 +377,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.71875, y: 0.96875}
+    oldSize: {x: 1.15, y: 1.55}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -397,7 +399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObstacle
   promptRoot: {fileID: 1757977303573942148}
   objectLabel: Object
-  canInteractRepeatedly: 1
+  canInteractRepeatedly: 0
   destroyOnInteract: 0
   onInteract:
     m_PersistentCalls:
@@ -414,8 +416,35 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1872595400434954556}
+        m_TargetAssemblyTypeName: WinConditionObject, Assembly-CSharp
+        m_MethodName: OnWinInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   popInDuration: 0.18
   overshootScale: 1.2
   bobWhileVisible: 1
   bobHeight: 0.05
   bobSpeed: 2
+--- !u!114 &4492039669363144685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8006062178577921739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2aefea4d8ad523418d4a15f40ca0ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpeechBubble
+  bubbleRoot: {fileID: 0}
+  bubbleText: {fileID: 0}
+  displayDuration: 2

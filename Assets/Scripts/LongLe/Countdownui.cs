@@ -14,6 +14,10 @@ public class CountdownUI : MonoBehaviour
     [SerializeField] private int startValue = 5;
     [SerializeField] private float secondsPerCount = 1f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip tickSfx;
+    [SerializeField] private AudioClip goSfx;
+
     private Coroutine countdownCoroutine;
 
     /// <summary>Raised once the countdown reaches zero.</summary>
@@ -43,6 +47,8 @@ public class CountdownUI : MonoBehaviour
                 countdownText.text = count.ToString();
             }
 
+            AudioManager.Instance?.PlaySfx(tickSfx); // ← thêm dòng này
+
             yield return new WaitForSeconds(secondsPerCount);
             count--;
         }
@@ -51,6 +57,8 @@ public class CountdownUI : MonoBehaviour
         {
             countdownText.text = string.Empty;
         }
+
+        AudioManager.Instance?.PlaySfx(goSfx); // ← thêm dòng này
 
         gameObject.SetActive(false);
         countdownCoroutine = null;
