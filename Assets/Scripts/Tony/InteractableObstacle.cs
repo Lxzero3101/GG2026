@@ -145,8 +145,26 @@ public class InteractableObstacle : MonoBehaviour
     void RemoveFromGameplay()
     {
         playerInRange = false;
-
         StopAllCoroutines();
+
+        // If there's an AudioSource currently playing, detach it into a
+        // temporary object so it can finish playing even after this
+        // object is destroyed.
+        AudioSource audioSource = GetComponent<AudioSource>();
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            GameObject tempAudio = new GameObject("TempAudio_" + name);
+            tempAudio.transform.position = transform.position;
+
+            AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
+            tempSource.clip = audioSource.clip;
+            tempSource.volume = audioSource.volume;
+            tempSource.pitch = audioSource.pitch;
+            tempSource.spatialBlend = audioSource.spatialBlend;
+            tempSource.Play();
+
+            Destroy(tempAudio, audioSource.clip.length);
+        }
 
         foreach (var col in GetComponents<Collider2D>())
             col.enabled = false;
