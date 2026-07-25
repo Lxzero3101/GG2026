@@ -1821,8 +1821,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9, y: 395}
-  m_SizeDelta: {x: 160, y: 20}
+  m_AnchoredPosition: {x: -6.6, y: 204.59921}
+  m_SizeDelta: {x: 160, y: 20.6016}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317784408
 MonoBehaviour:
@@ -2462,7 +2462,7 @@ MonoBehaviour:
   - {fileID: 1408399133}
   - {fileID: 310665343}
   catchProgressBar: {fileID: 1317784408}
-  catchFillRate: 8
+  catchFillRate: 10
   catchCrashPenalty: 20
   debtorStartX: 4
   debtorCatchOffset: 1
