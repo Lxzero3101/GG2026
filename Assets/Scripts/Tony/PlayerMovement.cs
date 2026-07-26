@@ -52,6 +52,11 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>True while movement and interactable clicks should be frozen (e.g. during the intro countdown or a win screen).</summary>
     public bool IsLocked { get; private set; } = true;
 
+    // True until the intro-countdown freeze has been resolved (released) once.
+    // After that, PollCountdownLock() does nothing, so later gameplay locks
+    // (win/lose freezes via SetLocked) are never fought by the countdown poll.
+    private bool introFreezeResolved;
+
     void Awake()
     {
         Instance = this;
@@ -73,68 +78,39 @@ public class PlayerMovement : MonoBehaviour
                 footstepAudioSource.clip = walkClip;
         }
 
-        // NOTE: We intentionally do NOT decide the lock state here based on
-        // CountdownUI.Instance. This script lives on the Player PREFAB, which is
-        // instantiated at runtime, so its Awake can run BEFORE the scene's
-        // CountdownUI has set its static Instance (this is exactly what happened
-        // in the WebGL build: the player wasn't frozen for the first 5 seconds
-        // because Instance was still null here and we unlocked immediately).
+        // NOTE: We intentionally do NOT decide the lock state here, and we do NOT
+        // rely on subscribing to CountdownUI's finished event. This script lives
+        // on the Player PREFAB, instantiated at runtime, so its Awake/OnEnable can
+        // run either BEFORE or AFTER the scene's CountdownUI sets its static
+        // Instance. Event-subscription timing is therefore unreliable in a build
+        // (it worked in the Editor by luck of init order, but the WebGL build
+        // ordered things so the subscription was skipped and the unlock event was
+        // never received — the player stayed frozen forever).
         //
-        // Instead we stay locked (IsLocked defaults to true) and resolve the
-        // real state in Start()/OnEnable(), by which point every Awake has run.
+        // Instead we stay locked (IsLocked defaults to true) and simply POLL the
+        // countdown's state every frame while locked (see Update). This is
+        // completely order-independent and costs one bool check per frame.
     }
 
     void Start()
     {
-        // Runs after ALL Awake() calls, so CountdownUI.Instance is reliable here
-        // regardless of spawn/init order (fixes the WebGL "no freeze" bug).
-        if (!freezeDuringCountdown)
+        // If freezing is disabled, or there's genuinely no countdown in the
+        // scene, don't hold the player. Otherwise leave IsLocked = true and let
+        // the per-frame poll in Update() release it when the countdown finishes.
+        if (!freezeDuringCountdown || CountdownUI.Instance == null)
         {
-            IsLocked = false;
-            return;
-        }
-
-        CountdownUI countdown = CountdownUI.Instance;
-        if (countdown == null)
-        {
-            Debug.LogWarning("[PlayerMovement] No CountdownUI.Instance found in the scene — skipping the intro freeze.");
-            IsLocked = false;
-            return;
-        }
-
-        // Only unlock if the countdown has ALREADY run to completion (we missed
-        // the event because we spawned too late). If it hasn't started yet OR is
-        // currently counting, we STAY locked and wait for the finished event —
-        // this is the key: "not started yet" must NOT unlock the player, which is
-        // what caused the WebGL no-freeze bug when init order put us first.
-        if (countdown.HasFinished)
-        {
-            IsLocked = false;
-        }
-    }
-
-    void OnEnable()
-    {
-        if (freezeDuringCountdown && CountdownUI.Instance != null)
-        {
-            CountdownUI.Instance.OnCountdownFinished += HandleCountdownFinished;
-
-            // If the countdown already completed before we subscribed, reconcile
-            // immediately instead of waiting for an event that won't fire again.
-            if (CountdownUI.Instance.HasFinished)
+            if (freezeDuringCountdown && CountdownUI.Instance == null)
             {
-                IsLocked = false;
+                Debug.LogWarning("[PlayerMovement] No CountdownUI.Instance found in the scene — skipping the intro freeze.");
             }
+
+            IsLocked = false;
+            introFreezeResolved = true;
         }
     }
 
     void OnDisable()
     {
-        if (freezeDuringCountdown && CountdownUI.Instance != null)
-        {
-            CountdownUI.Instance.OnCountdownFinished -= HandleCountdownFinished;
-        }
-
         if (Instance == this)
         {
             Instance = null;
@@ -143,9 +119,37 @@ public class PlayerMovement : MonoBehaviour
         StopFootstepSound();
     }
 
-    private void HandleCountdownFinished()
+    /// <summary>
+    /// While locked for the intro countdown, releases the player the moment the
+    /// countdown reports it has finished. Polling (instead of the event) makes
+    /// this immune to prefab-vs-scene init order in builds. Once released here,
+    /// the flag stays cleared for the rest of the countdown lifetime.
+    /// </summary>
+    private void PollCountdownLock()
     {
-        IsLocked = false;
+        // Only ever acts on the ONE-TIME intro freeze. Once resolved, it never
+        // touches IsLocked again, so win/lose freezes via SetLocked are safe.
+        if (introFreezeResolved || !freezeDuringCountdown)
+        {
+            return;
+        }
+
+        CountdownUI countdown = CountdownUI.Instance;
+        if (countdown == null)
+        {
+            // No countdown ever appeared — don't strand the player.
+            IsLocked = false;
+            introFreezeResolved = true;
+            return;
+        }
+
+        // Unlock only once the countdown has actually completed. "Not started
+        // yet" and "currently counting" both keep the player frozen.
+        if (countdown.HasFinished)
+        {
+            IsLocked = false;
+            introFreezeResolved = true;
+        }
     }
 
     /// <summary>
@@ -166,6 +170,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Release the intro-countdown freeze as soon as the countdown finishes.
+        // Done here by polling rather than via an event, so it can't be broken by
+        // prefab-vs-scene script init order in a build.
+        PollCountdownLock();
+
         if (IsLocked)
         {
             moveInput = Vector2.zero;

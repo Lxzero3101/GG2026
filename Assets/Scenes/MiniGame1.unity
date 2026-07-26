@@ -1773,8 +1773,8 @@ MonoBehaviour:
   maxSurvivalTime: 15
   currentSurvivalTime: 0
   startGracePeriod: 3
-  timeDrainRate: 1.5
-  rewardMultiplier: 4
+  timeDrainRate: 0.75
+  rewardMultiplier: 2
   offScreenOffset: {x: 3000, y: 0}
   sfxSource: {fileID: 1051866680}
   winClip: {fileID: 0}
