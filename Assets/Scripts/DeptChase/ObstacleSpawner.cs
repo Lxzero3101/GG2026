@@ -20,8 +20,11 @@ public class ObstacleSpawner : MonoBehaviour
     [Tooltip("Lane index that should render in front of the player (0-based). With the default lanePositions, index 2 = Line 3 / bottom lane.")]
     [SerializeField] private int frontLaneIndex = 2;
 
-    [Tooltip("Sorting order applied to obstacles spawned in frontLaneIndex (player is 6, so this should be 7).")]
+    [Tooltip("Sorting order applied to obstacles spawned in frontLaneIndex. Must be HIGHER than the player's Sprite Renderer sorting order.")]
     [SerializeField] private int frontLaneSortingOrder = 7;
+
+    [Tooltip("Sorting order applied to obstacles on every OTHER lane. Must be LOWER than the player's Sprite Renderer sorting order. Explicitly set on every spawn so this no longer depends on whatever default value the obstacle prefab happens to have.")]
+    [SerializeField] private int backLaneSortingOrder = 5;
 
 
     private float timer;
@@ -58,13 +61,15 @@ public class ObstacleSpawner : MonoBehaviour
         GameObject obstacle = Instantiate(obstaclePrefabs[index], spawnPos, Quaternion.identity);
         AudioManager.Instance?.PlaySfx(spawnSfx, 0.4f);
 
-        // Bottom lane (Line 3) renders in front of the player; other lanes stay default.
-        if (lane == frontLaneIndex)
-        {
-            SpriteRenderer sr = obstacle.GetComponent<SpriteRenderer>();
-            if (sr != null)
-                sr.sortingOrder = frontLaneSortingOrder;
-        }
+        // Explicitly set sortingOrder on EVERY spawn, for every lane — not just
+        // the front lane — so this never depends on whatever default value the
+        // prefab happens to have (which is what caused lanes 1/2 to start
+        // covering the player after the player's own order changed).
+        SpriteRenderer sr = obstacle.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+            sr.sortingOrder = (lane == frontLaneIndex) ? frontLaneSortingOrder : backLaneSortingOrder;
+        else
+            Debug.LogWarning($"[ObstacleSpawner] Spawned obstacle '{obstacle.name}' has no SpriteRenderer in itself or its children — can't fix sorting order.");
     }
 
     public void StartSpawning() => IsSpawning = true;

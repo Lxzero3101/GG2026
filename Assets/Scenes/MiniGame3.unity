@@ -384,6 +384,14 @@ PrefabInstance:
       propertyPath: maxPatience
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: goSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 50150031850a782498feb64c20658918, type: 3}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: tickSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 324e008867a24e54eb4efeb8ed6b0523, type: 3}
     - target: {fileID: 6187345165323056662, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_SortingOrder
       value: 1
