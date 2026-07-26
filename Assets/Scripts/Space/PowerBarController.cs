@@ -18,6 +18,10 @@ public class PowerBarController : MonoBehaviour
     [Header("Target Zone Randomization")]
     [SerializeField] private float zoneRandomInterval = 5f; // Mỗi bao nhiêu giây thì đổi vị trí vùng xanh
     [SerializeField] private float zoneRandomTimer = 0f;
+    [Tooltip("Vùng xanh khi random vị trí mới sẽ không được cách vị trí kim hiện tại quá khoảng cách này (đơn vị pixel UI). Đặt nhỏ hơn = dễ hơn (vùng luôn gần kim). Đặt bằng 0 hoặc âm = không giới hạn (random tự do như cũ).")]
+    [SerializeField] private float maxZoneJumpDistance = 180f;
+    [Tooltip("Vùng xanh khi random vị trí mới sẽ không được ra quá gần (hoặc trùng) vị trí kim hiện tại, phải cách tối thiểu khoảng này (đơn vị pixel UI). Đặt bằng 0 = cho phép random sát/trùng vị trí kim.")]
+    [SerializeField] private float minZoneJumpDistance = 40f;
     [SerializeField] private RectTransform barBackground;
     [SerializeField] private RectTransform indicator;
     [SerializeField] private RectTransform targetZone;
@@ -85,6 +89,9 @@ public class PowerBarController : MonoBehaviour
 
     /// <summary>Raised once when the player runs out of survival time or the indicator hits an edge.</summary>
     public event Action OnMiniGameLost;
+
+    /// <summary>Raised once when BeginRound() is called (round thực sự bắt đầu chạy, sau countdown).</summary>
+    public event Action OnRoundBegan;
 
     /// <summary>Raised whenever the indicator crosses the TargetZone boundary. True = now outside the zone.</summary>
     public event Action<bool> OnTargetZoneStatusChanged;
@@ -193,6 +200,8 @@ public class PowerBarController : MonoBehaviour
             tugLoopSource.loop = true;
             tugLoopSource.Play();
         }
+
+        OnRoundBegan?.Invoke();
     }
 
     /// <summary>Instantly moves BarBackground and SurvivalSlider off screen. Called by GameManager on win or loss.</summary>
@@ -320,14 +329,73 @@ public class PowerBarController : MonoBehaviour
         float targetWidth = targetZone.rect.width;
         float halfWidth = targetWidth / 2f;
 
-        // Random 1 vị trí X mới, đảm bảo vùng xanh không bị lòi ra ngoài 2 vạch đỏ
-        float newX = UnityEngine.Random.Range(minX + halfWidth, maxX - halfWidth);
+        // Biên random tối đa theo chiều dài thanh (không để vùng xanh lòi ra ngoài 2 vạch đỏ)
+        float lowerBound = minX + halfWidth;
+        float upperBound = maxX - halfWidth;
+
+        // Giới hạn thêm theo khoảng cách tới vị trí kim hiện tại, để vùng xanh không nhảy quá xa
+        // khiến người chơi không kịp đuổi theo (chỉ áp dụng khi maxZoneJumpDistance > 0)
+        if (maxZoneJumpDistance > 0f)
+        {
+            float indicatorX = indicator.anchoredPosition.x;
+            lowerBound = Mathf.Max(lowerBound, indicatorX - maxZoneJumpDistance);
+            upperBound = Mathf.Min(upperBound, indicatorX + maxZoneJumpDistance);
+
+            // Phòng trường hợp kim đang ở sát mép khiến lowerBound > upperBound do bị giới hạn kép
+            if (lowerBound > upperBound)
+            {
+                float mid = (lowerBound + upperBound) / 2f;
+                lowerBound = upperBound = mid;
+            }
+        }
+
+        float newX = PickPositionExcludingNearIndicator(lowerBound, upperBound);
 
         targetZone.anchoredPosition = new Vector2(newX, targetZone.anchoredPosition.y);
 
         // Tính lại biên trái/phải của vùng xanh theo vị trí mới
         targetMinX = newX - halfWidth;
         targetMaxX = newX + halfWidth;
+    }
+
+    // Random 1 vị trí trong [lowerBound, upperBound], nhưng LOẠI TRỪ đoạn nằm quá gần
+    // (hoặc trùng) vị trí kim hiện tại, tránh vùng xanh random ra ngay chỗ kim đang đứng.
+    float PickPositionExcludingNearIndicator(float lowerBound, float upperBound)
+    {
+        if (minZoneJumpDistance <= 0f)
+        {
+            return UnityEngine.Random.Range(lowerBound, upperBound);
+        }
+
+        float indicatorX = indicator.anchoredPosition.x;
+
+        // Đoạn hợp lệ bên TRÁI kim: [lowerBound, indicatorX - minZoneJumpDistance]
+        float leftMax = indicatorX - minZoneJumpDistance;
+        float leftLength = Mathf.Max(0f, leftMax - lowerBound);
+
+        // Đoạn hợp lệ bên PHẢI kim: [indicatorX + minZoneJumpDistance, upperBound]
+        float rightMin = indicatorX + minZoneJumpDistance;
+        float rightLength = Mathf.Max(0f, upperBound - rightMin);
+
+        // Nếu không còn đoạn nào hợp lệ (kim bị kẹt giữa 2 giới hạn quá sát nhau),
+        // đành chấp nhận random tự do trong khoảng cho phép ban đầu.
+        if (leftLength <= 0f && rightLength <= 0f)
+        {
+            return UnityEngine.Random.Range(lowerBound, upperBound);
+        }
+
+        // Chọn bên trái hoặc bên phải, ưu tiên theo tỉ lệ độ dài để phân bố đều
+        float totalLength = leftLength + rightLength;
+        float roll = UnityEngine.Random.Range(0f, totalLength);
+
+        if (roll < leftLength)
+        {
+            return UnityEngine.Random.Range(lowerBound, leftMax);
+        }
+        else
+        {
+            return UnityEngine.Random.Range(rightMin, upperBound);
+        }
     }
 
     // Hàm di chuyển cả 2 nhân vật và túi tiền (Có kiểm tra giới hạn minScreenX và maxScreenX)
