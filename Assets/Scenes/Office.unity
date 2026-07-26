@@ -432,6 +432,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.7413
+      objectReference: {fileID: 0}
+    - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.7413
+      objectReference: {fileID: 0}
+    - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.7413
+      objectReference: {fileID: 0}
+    - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.26
       objectReference: {fileID: 0}
@@ -471,9 +483,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3586412070049582277, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8624016586706778520, guid: f748bc0d1a8b9614a832528eae82d73d, type: 3}
     - target: {fileID: 3608461865951733628, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
       propertyPath: m_Name
       value: OfficeMinigameEntry3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961312061567182962, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_Size.x
+      value: 0.82921934
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961312061567182962, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.085390344
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961312061567182962, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961312061567182962, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -524,6 +556,18 @@ PrefabInstance:
       value: OfficeMinigameEntry2
       objectReference: {fileID: 0}
     - target: {fileID: 2839836298912478738, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.1478
+      objectReference: {fileID: 0}
+    - target: {fileID: 2839836298912478738, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.1478
+      objectReference: {fileID: 0}
+    - target: {fileID: 2839836298912478738, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.1478
+      objectReference: {fileID: 0}
+    - target: {fileID: 2839836298912478738, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.15
       objectReference: {fileID: 0}
@@ -563,6 +607,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7426474814907192781, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8624016586706778520, guid: f748bc0d1a8b9614a832528eae82d73d, type: 3}
     - target: {fileID: 7682716734226877769, guid: 4cddc470de3c4e046be2db79eb70c6e5, type: 3}
       propertyPath: sceneName
       value: MiniGame2_DeptChase
@@ -878,12 +926,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.9551528
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.0719938
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.289978
+      value: -6.2505
       objectReference: {fileID: 0}
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.7299805
+      value: -3.6826
       objectReference: {fileID: 0}
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.z
@@ -921,6 +981,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeMinigameEntry
       objectReference: {fileID: 0}
+    - target: {fileID: 7458950626678121885, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8624016586706778520, guid: f748bc0d1a8b9614a832528eae82d73d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2151,6 +2215,22 @@ PrefabInstance:
     - target: {fileID: 2382420159999217761, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
       propertyPath: m_Name
       value: OfficeMinigameEntry4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262562674682748342, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8624016586706778520, guid: f748bc0d1a8b9614a832528eae82d73d, type: 3}
+    - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.6705
+      objectReference: {fileID: 0}
+    - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.6705
+      objectReference: {fileID: 0}
+    - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.6705
       objectReference: {fileID: 0}
     - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
       propertyPath: m_LocalPosition.x
