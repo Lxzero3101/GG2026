@@ -6130,7 +6130,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2581266046388132233, guid: 3931a44cf9314ea47bf1c0940af6d2bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.14769
+      value: 20.84
       objectReference: {fileID: 0}
     - target: {fileID: 2581266046388132233, guid: 3931a44cf9314ea47bf1c0940af6d2bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8663,6 +8663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinManager
   autoDetectRequiredCount: 1
   requiredCount: 4
+  subMiniGameSceneName: SubMinigame3
   sceneToLoad: Office
   delayBeforeSceneLoad: 3
   onProgress:
