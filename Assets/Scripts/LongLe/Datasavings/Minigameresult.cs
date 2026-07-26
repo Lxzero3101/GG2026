@@ -98,6 +98,16 @@ public static class MiniGameResult
             return;
         }
 
-        SceneManager.LoadScene(sceneName);
+        // Fade between scenes if a SceneFader exists; otherwise load directly.
+        // Using the type name in a null-safe way means this file still compiles
+        // and runs even if you haven't added SceneFader yet.
+        if (SceneFader.Instance != null)
+        {
+            SceneFader.LoadScene(sceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 }

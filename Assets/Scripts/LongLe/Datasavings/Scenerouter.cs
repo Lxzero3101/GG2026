@@ -56,6 +56,15 @@ public class SceneRouter : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(sceneName);
+        // Fade if a SceneFader is present; otherwise load directly. This keeps
+        // button navigation working whether or not you added the fader.
+        if (SceneFader.Instance != null)
+        {
+            SceneFader.LoadScene(sceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 }
