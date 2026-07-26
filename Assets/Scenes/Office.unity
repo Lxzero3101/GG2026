@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OfficeManager
   clickablePrefab: {fileID: 44925910}
-  decorationPrefab: {fileID: 0}
+  decorationPrefab: {fileID: 4921517848406146928, guid: e9e79cbbd248ee142a3b269f0fbf42f0, type: 3}
   slots:
   - spawnPoint: {fileID: 44925909}
     miniGameNumber: 1
@@ -467,11 +467,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.57
+      value: 3.26
       objectReference: {fileID: 0}
     - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.85
+      value: -3.67
       objectReference: {fileID: 0}
     - target: {fileID: 1890157067421720027, guid: 0efd2e242d47b354c84f48936e07ccf7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2167,11 +2167,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.26
+      value: 6.99
       objectReference: {fileID: 0}
     - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.66
+      value: -3.7
       objectReference: {fileID: 0}
     - target: {fileID: 7256271077937171442, guid: bc4394e3823e2c747a58826c112f7144, type: 3}
       propertyPath: m_LocalPosition.z
