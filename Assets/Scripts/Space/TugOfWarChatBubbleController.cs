@@ -4,48 +4,56 @@ using TMPro;
 
 /// <summary>
 /// Điều khiển bong bóng chat của Player và Debtor trong minigame kéo co.
-/// Sau vài giây đầu round, cứ cách 1 khoảng thời gian ngẫu nhiên, sẽ hiện bong bóng
-/// chat của MỘT trong hai người (luân phiên) — không bao giờ hiện cùng lúc.
-/// Sau khi bong bóng của người này biến mất, tới lượt bong bóng của người kia.
+///
+/// PHIÊN BẢN MỚI (không dùng Canvas World Space):
+/// Bong bóng chat giờ là object 3D thuần túy, nằm ngay trong Hierarchy của
+/// Player/Debtor, dùng SpriteRenderer (nền bong bóng) + TextMeshPro 3D (chữ
+/// thoại) — không còn Canvas, không còn Image, không còn TextMeshProUGUI,
+/// không còn auto-fit scale theo Canvas nữa.
+///
+/// Sau vài giây đầu round, cứ cách một khoảng thời gian ngẫu nhiên, bong bóng
+/// của MỘT trong hai người sẽ hiện lên (luân phiên Player -> Debtor -> Player...),
+/// không bao giờ hiện cùng lúc.
 ///
 /// CÁCH GẮN VÀO SCENE:
-/// 1. Chọn GameObject "Player" trong Hierarchy (nhân vật áo xanh).
-///    - Chuột phải trên Player -> UI -> Canvas. Unity sẽ tạo 1 Canvas con.
-///    - Đổi Render Mode của Canvas đó thành "World Space".
-///    - Kéo thu nhỏ Scale của Canvas đó xuống khoảng (0.01, 0.01, 0.01) để vừa kích thước.
-///    - Đặt Position của Canvas nhô lên trên đầu nhân vật (ví dụ Y = 1.5).
-///    - Đổi tên Canvas đó thành "PlayerChatBubble".
-///    - Bên trong Canvas, thêm 1 Image (làm nền bong bóng) + 1 TextMeshPro - Text (UI) (chữ thoại).
-///    - Tắt (uncheck) GameObject "PlayerChatBubble" để mặc định ẩn.
-/// 2. Làm tương tự y hệt cho "Debtor" (nhân vật áo vàng) -> đặt tên "DebtorChatBubble".
+/// 1. Trong Hierarchy, dưới "Player": tạo GameObject con tên "BubbleRoot".
+///    - Trong "BubbleRoot", tạo 1 GameObject con có SpriteRenderer (nền bong
+///      bóng) và 1 GameObject con khác có component "TextMeshPro" (3D, KHÔNG
+///      PHẢI TextMeshProUGUI) để chứa chữ thoại.
+///    - Đặt "BubbleRoot" nhô lên trên đầu nhân vật (ví dụ Y = 1.5).
+/// 2. Làm tương tự y hệt cho "Debtor".
 /// 3. Tạo 1 GameObject rỗng tên "ChatBubbleManager", add script này vào.
 /// 4. Kéo PowerBarController vào ô "Power Bar Controller".
-/// 5. Kéo "PlayerChatBubble" vào ô "Player Bubble Object", kéo Text bên trong nó vào "Player Bubble Text".
-/// 6. Kéo "DebtorChatBubble" vào ô "Debtor Bubble Object", kéo Text bên trong nó vào "Debtor Bubble Text".
+/// 5. Kéo "Player/BubbleRoot" vào "Player Bubble Root", kéo SpriteRenderer bên
+///    trong vào "Player Bubble Sprite", kéo TextMeshPro (3D) bên trong vào
+///    "Player Bubble Text".
+/// 6. Kéo "Debtor/BubbleRoot" vào "Debtor Bubble Root" và làm tương tự cho
+///    "Debtor Bubble Sprite" / "Debtor Bubble Text".
 /// 7. (Tuỳ chọn) Sửa lại các câu thoại mẫu trong Inspector nếu muốn.
+///
+/// Bong bóng được ẩn bằng SetActive(false)/(true) trên BubbleRoot — không có
+/// Canvas nào để bật/tắt, và pop animation chỉ đơn giản là Lerp localScale.
 /// </summary>
 public class TugOfWarChatBubbleController : MonoBehaviour
 {
     [Header("Liên kết Round (để biết khi nào bắt đầu / kết thúc)")]
     [SerializeField] private PowerBarController powerBarController;
 
+    [Header("Pop Animation")]
+    [Tooltip("Thời gian animation phóng to khi bong bóng xuất hiện")]
+    [SerializeField] private float popDuration = 0.25f;
+    [Tooltip("Scale phóng to nhất (overshoot) trước khi settle về 1")]
+    [SerializeField] private float popOvershoot = 1.15f;
+
     [Header("Bong bóng chat - Player (áo xanh)")]
-    [SerializeField] private GameObject playerBubbleObject;
-    [SerializeField] private TMP_Text playerBubbleText;
-    [Tooltip("SpriteRenderer của Player, dùng để TỰ TÍNH vị trí bong bóng ngay trên đầu (không cần tự đoán số Y)")]
-    [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [SerializeField] private Transform playerBubbleRoot;
+    [SerializeField] private SpriteRenderer playerBubbleSprite;
+    [SerializeField] private TextMeshPro playerBubbleText;
 
     [Header("Bong bóng chat - Debtor (áo vàng)")]
-    [SerializeField] private GameObject debtorBubbleObject;
-    [SerializeField] private TMP_Text debtorBubbleText;
-    [Tooltip("SpriteRenderer của Debtor, dùng để TỰ TÍNH vị trí bong bóng ngay trên đầu (không cần tự đoán số Y)")]
-    [SerializeField] private SpriteRenderer debtorSpriteRenderer;
-
-    [Header("Auto Scale/Position Bong Bóng (tự tính, không cần chỉnh tay)")]
-    [Tooltip("Khoảng hở thêm phía trên đầu nhân vật (đơn vị Unity units), cộng thêm vào chiều cao sprite")]
-    [SerializeField] private float bubbleVerticalPadding = 0.3f;
-    [Tooltip("Chiều cao mong muốn của chữ trong bong bóng, tính theo world units (VD: 0.3 = chữ cao khoảng 0.3 unit). Scale của Canvas bong bóng sẽ được TỰ TÍNH từ số này chia cho Font Size đang đặt trên Text.")]
-    [SerializeField] private float desiredBubbleTextWorldHeight = 0.3f;
+    [SerializeField] private Transform debtorBubbleRoot;
+    [SerializeField] private SpriteRenderer debtorBubbleSprite;
+    [SerializeField] private TextMeshPro debtorBubbleText;
 
     [Header("Timing")]
     [Tooltip("Chờ bao lâu sau khi round bắt đầu thì mới bắt đầu random bong bóng chat đầu tiên")]
@@ -89,56 +97,32 @@ public class TugOfWarChatBubbleController : MonoBehaviour
         "You're breaking my arm!"
     };
 
-    private Coroutine chatRoutine;
-    private bool playerTurn = true; // ai đi trước, mặc định Player nói trước
+    // Scale gốc của mỗi BubbleRoot (đọc từ Inspector lúc Awake), dùng làm scale
+    // "đích" khi Pop Animation settle về, và khi Hide/Show không animation.
+    private Vector3 playerBaseScale;
+    private Vector3 debtorBaseScale;
 
-    void Awake()
+    // Ai sẽ nói lượt tiếp theo. true = Player nói trước.
+    private bool playerTurn = true;
+
+    private Coroutine chatRoutine;
+    private Coroutine playerPopRoutine;
+    private Coroutine debtorPopRoutine;
+
+    private void Awake()
     {
-        AutoFitBubble(playerBubbleObject, playerBubbleText, playerSpriteRenderer);
-        AutoFitBubble(debtorBubbleObject, debtorBubbleText, debtorSpriteRenderer);
+        // Lưu lại scale gốc TRƯỚC khi ẩn, vì SetActive(false) không đổi scale
+        // nhưng ta cần con số này để Pop Animation biết phải phóng to tới đâu.
+        if (playerBubbleRoot != null)
+            playerBaseScale = playerBubbleRoot.localScale;
+
+        if (debtorBubbleRoot != null)
+            debtorBaseScale = debtorBubbleRoot.localScale;
+
         HideBothBubbles();
     }
 
-    // Tự tính SCALE và VỊ TRÍ của bong bóng chat dựa trên kích thước THẬT của sprite và font size THẬT,
-    // thay vì phải tự đoán số tay trong Inspector.
-    private void AutoFitBubble(GameObject bubbleObject, TMP_Text bubbleText, SpriteRenderer characterRenderer)
-    {
-        if (bubbleObject == null) return;
-
-        // 1. Tính SCALE: sao cho chữ trong bong bóng cao đúng "desiredBubbleTextWorldHeight" world units,
-        //    dựa trên Font Size đang đặt sẵn trên TMP Text (không quan tâm Font Size bạn để bao nhiêu).
-        if (bubbleText != null && bubbleText.fontSize > 0f)
-        {
-            float scale = desiredBubbleTextWorldHeight / bubbleText.fontSize;
-            bubbleObject.transform.localScale = new Vector3(scale, scale, scale);
-        }
-
-        // 2. Tính VỊ TRÍ: đặt bong bóng CĂN GIỮA (X=0, Z=0) ngay phía trên đỉnh đầu nhân vật (Y),
-        //    dựa theo bounds.extents.y THẬT của SpriteRenderer (đã tính cả Transform Scale của nhân vật).
-        //    LUÔN reset cả X/Z về 0 (kể cả khi thiếu SpriteRenderer) vì Unity có thể để lại toạ độ
-        //    mặc định "rác" lúc tạo Canvas (ví dụ X=96, Y=54) khiến bong bóng bị lệch xa ra ngoài
-        //    khung hình camera, tưởng như bong bóng "biến mất".
-        if (bubbleObject.transform.parent != null)
-        {
-            float localHalfHeight;
-            if (characterRenderer != null)
-            {
-                float worldHalfHeight = characterRenderer.bounds.extents.y;
-                float parentScaleY = bubbleObject.transform.parent.lossyScale.y;
-                localHalfHeight = (parentScaleY != 0f) ? worldHalfHeight / parentScaleY : worldHalfHeight;
-            }
-            else
-            {
-                // Chưa gán SpriteRenderer -> dùng khoảng cách mặc định để vẫn hiện được, thay vì để lệch
-                localHalfHeight = 0.5f;
-                Debug.LogWarning("[ChatBubble] Chưa gán SpriteRenderer cho " + bubbleObject.name + " -> dùng vị trí mặc định (Y=0.5 + padding). Kéo SpriteRenderer vào Inspector để tự tính chính xác.");
-            }
-
-            bubbleObject.transform.localPosition = new Vector3(0f, localHalfHeight + bubbleVerticalPadding, 0f);
-        }
-    }
-
-    void OnEnable()
+    private void OnEnable()
     {
         if (powerBarController != null)
         {
@@ -152,7 +136,7 @@ public class TugOfWarChatBubbleController : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (powerBarController != null)
         {
@@ -160,24 +144,36 @@ public class TugOfWarChatBubbleController : MonoBehaviour
             powerBarController.OnMiniGameWon -= HandleRoundEnded;
             powerBarController.OnMiniGameLost -= HandleRoundEnded;
         }
+
+        // An toàn: dừng hết coroutine khi bị disable giữa chừng.
+        StopAllChatCoroutines();
     }
 
     private void HandleRoundBegan()
     {
-        Debug.Log("[ChatBubble] Round bắt đầu -> bắt đầu đếm giờ để hiện bong bóng chat.");
         if (chatRoutine != null) StopCoroutine(chatRoutine);
         chatRoutine = StartCoroutine(ChatLoop());
     }
 
     private void HandleRoundEnded()
     {
-        if (chatRoutine != null) StopCoroutine(chatRoutine);
+        StopAllChatCoroutines();
         HideBothBubbles();
     }
 
+    private void StopAllChatCoroutines()
+    {
+        if (chatRoutine != null) { StopCoroutine(chatRoutine); chatRoutine = null; }
+        if (playerPopRoutine != null) { StopCoroutine(playerPopRoutine); playerPopRoutine = null; }
+        if (debtorPopRoutine != null) { StopCoroutine(debtorPopRoutine); debtorPopRoutine = null; }
+    }
+
+    /// <summary>
+    /// Vòng lặp chính: chờ delay đầu round, sau đó luân phiên hiện bong bóng
+    /// Player/Debtor với khoảng nghỉ ngẫu nhiên giữa mỗi lần.
+    /// </summary>
     private IEnumerator ChatLoop()
     {
-        // Chờ 2-3 giây đầu round trước khi bắt đầu
         yield return new WaitForSeconds(Random.Range(initialDelayMin, initialDelayMax));
 
         while (true)
@@ -188,57 +184,90 @@ public class TugOfWarChatBubbleController : MonoBehaviour
 
             HideBubble(playerTurn);
 
-            // Đổi lượt cho người còn lại
+            // Đổi lượt cho người còn lại.
             playerTurn = !playerTurn;
 
-            // Chờ 1 khoảng ngẫu nhiên trước khi tới lượt tiếp theo
             yield return new WaitForSeconds(Random.Range(intervalMin, intervalMax));
         }
     }
 
     private void ShowBubble(bool isPlayer)
     {
+        Transform root = isPlayer ? playerBubbleRoot : debtorBubbleRoot;
+        TextMeshPro text = isPlayer ? playerBubbleText : debtorBubbleText;
+        string[] lines = isPlayer ? playerLines : debtorLines;
+        string who = isPlayer ? "PLAYER" : "DEBTOR";
+
+        if (root == null || lines.Length == 0)
+        {
+            Debug.LogWarning($"[ChatBubble] Không hiện được bong bóng {who}: thiếu 'Bubble Root' hoặc mảng thoại rỗng.");
+            return;
+        }
+
+        string line = lines[Random.Range(0, lines.Length)];
+        if (text != null) text.text = line;
+
+        root.gameObject.SetActive(true);
+
+        Vector3 targetScale = isPlayer ? playerBaseScale : debtorBaseScale;
+
         if (isPlayer)
         {
-            if (playerLines.Length == 0 || playerBubbleObject == null)
-            {
-                Debug.LogWarning("[ChatBubble] Không hiện được bong bóng Player: thiếu 'Player Bubble Object' hoặc mảng 'Player Lines' rỗng.");
-                return;
-            }
-            string line = playerLines[Random.Range(0, playerLines.Length)];
-            if (playerBubbleText != null) playerBubbleText.text = line;
-            playerBubbleObject.SetActive(true);
-            Debug.Log("[ChatBubble] Hiện bong bóng PLAYER: " + line);
+            if (playerPopRoutine != null) StopCoroutine(playerPopRoutine);
+            playerPopRoutine = StartCoroutine(PopRoutine(root, targetScale));
         }
         else
         {
-            if (debtorLines.Length == 0 || debtorBubbleObject == null)
-            {
-                Debug.LogWarning("[ChatBubble] Không hiện được bong bóng Debtor: thiếu 'Debtor Bubble Object' hoặc mảng 'Debtor Lines' rỗng.");
-                return;
-            }
-            string line = debtorLines[Random.Range(0, debtorLines.Length)];
-            if (debtorBubbleText != null) debtorBubbleText.text = line;
-            debtorBubbleObject.SetActive(true);
-            Debug.Log("[ChatBubble] Hiện bong bóng DEBTOR: " + line);
+            if (debtorPopRoutine != null) StopCoroutine(debtorPopRoutine);
+            debtorPopRoutine = StartCoroutine(PopRoutine(root, targetScale));
         }
+
+        Debug.Log($"[ChatBubble] Hiện bong bóng {who}: {line}");
     }
 
     private void HideBubble(bool isPlayer)
     {
-        if (isPlayer)
-        {
-            if (playerBubbleObject != null) playerBubbleObject.SetActive(false);
-        }
-        else
-        {
-            if (debtorBubbleObject != null) debtorBubbleObject.SetActive(false);
-        }
+        Transform root = isPlayer ? playerBubbleRoot : debtorBubbleRoot;
+        if (root != null) root.gameObject.SetActive(false);
     }
 
     private void HideBothBubbles()
     {
-        if (playerBubbleObject != null) playerBubbleObject.SetActive(false);
-        if (debtorBubbleObject != null) debtorBubbleObject.SetActive(false);
+        if (playerBubbleRoot != null) playerBubbleRoot.gameObject.SetActive(false);
+        if (debtorBubbleRoot != null) debtorBubbleRoot.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Animation "pop": phóng to vượt mức (overshoot) rồi settle về đúng scale gốc.
+    /// Chạy hoàn toàn bằng Transform.localScale + Vector3.Lerp, không đụng Canvas.
+    /// </summary>
+    private IEnumerator PopRoutine(Transform bubbleRoot, Vector3 targetScale)
+    {
+        bubbleRoot.localScale = Vector3.zero;
+
+        // Giai đoạn 1: phóng to vượt mức (overshoot).
+        Vector3 overshootScale = targetScale * popOvershoot;
+        float phase1Duration = popDuration * 0.6f;
+        float elapsed = 0f;
+        while (elapsed < phase1Duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / phase1Duration;
+            bubbleRoot.localScale = Vector3.Lerp(Vector3.zero, overshootScale, t);
+            yield return null;
+        }
+
+        // Giai đoạn 2: settle về đúng scale gốc.
+        elapsed = 0f;
+        float phase2Duration = popDuration * 0.4f;
+        while (elapsed < phase2Duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / phase2Duration;
+            bubbleRoot.localScale = Vector3.Lerp(overshootScale, targetScale, t);
+            yield return null;
+        }
+
+        bubbleRoot.localScale = targetScale;
     }
 }
