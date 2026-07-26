@@ -56,6 +56,12 @@ public class MiniGameLossHandler : MonoBehaviour
         // furious face + shake below are all the feedback this needs; the
         // patience bar is about to leave with the scene anyway.
 
+        // NOTE: Không gọi gameUI.DecreasePatience() ở đây vì nó vẫn có thể
+        // bắn OnPatienceChanged/OnPatienceDepleted và re-enter vòng loss
+        // handler (nguyên nhân StackOverflow cũ). Thay vào đó, chỉ đồng bộ
+        // HIỂN THỊ thanh Patience về rỗng — an toàn vì không bắn event nào.
+        gameUI?.ForceEmptyPatienceVisual();
+
         // Đổi biểu cảm sếp sang Furious (Rất giận) và bật Shake
         if (gameUI != null)
         {

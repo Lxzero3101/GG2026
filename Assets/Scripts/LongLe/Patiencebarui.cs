@@ -111,6 +111,19 @@ public class PatienceBarUI : MonoBehaviour
         isDraining = true;
     }
 
+    /// <summary>
+    /// Đặt fill hiển thị về 0 NGAY LẬP TỨC, không set currentPatience và
+    /// không bắn OnPatienceChanged/OnPatienceDepleted — dùng khi round đã kết
+    /// thúc bởi lý do khác (vd: thua kéo co) và chỉ cần đồng bộ hình ảnh,
+    /// tránh vòng lặp event từng gây StackOverflow.
+    /// </summary>
+    public void ForceEmptyVisual()
+    {
+        if (fillImage != null)
+        {
+            fillImage.fillAmount = 0f;
+        }
+    }
     private void UpdateFill()
     {
         if (fillImage != null)

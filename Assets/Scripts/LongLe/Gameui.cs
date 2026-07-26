@@ -187,4 +187,13 @@ public class GameUI : MonoBehaviour
     {
         bossExpressionController?.ImproveStage(stages);
     }
+    /// <summary>
+    /// Đồng bộ hiển thị thanh Patience về rỗng mà KHÔNG bắn event thay đổi
+    /// patience — dùng khi round kết thúc do lý do khác (vd: thua kéo co)
+    /// và chỉ cần visual khớp trạng thái "đã thua", tránh re-entrant event.
+    /// </summary>
+    public void ForceEmptyPatienceVisual()
+    {
+        patienceBarUI?.ForceEmptyVisual();
+    }
 }
