@@ -3,54 +3,47 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Drives the Office scene. There are 4 fixed slots, one per minigame. At each
-/// slot this spawns EITHER:
-///   - the clickable MiniGameEntry prefab (if that minigame isn't passed yet), OR
-///   - the green-tick decoration prefab (if it's already passed).
+/// Drives the Office scene for a HAND-PLACED entry layout (Option B).
 ///
-/// Because each slot just asks GameData "is my minigame passed?", the behaviour
-/// you described falls out for free:
-///   - Fresh start (NoMP 0): all 4 slots clickable.
-///   - After passing 3: 3 slots show the tick, 1 stays clickable.
-///   - After any loss: GameData resets to 0, so all 4 are clickable again.
+/// You place each clickable MiniGameEntry object in the scene yourself, wherever
+/// you want it, with its own Mini Game Number set in the Inspector. On scene
+/// load, this manager looks at every pre-placed MiniGameEntry and, for each one
+/// whose minigame is already PASSED (per GameData), it:
+///   - disables that entry (so it can't be clicked / can't relaunch the game), and
+///   - spawns a green-tick decoration at that entry's position.
+/// Entries whose minigame is NOT passed are left exactly as you placed them.
 ///
-/// When all 4 are passed (NoMP == 4) it spawns 4 ticks, plays the closing
-/// dialogue, and auto-loads the Finish scene when the dialogue ends.
+/// This fixes the "tick spawned on top of a still-clickable entry" bug: the
+/// hand-placed entry is the single source of position AND is the thing that gets
+/// hidden, so there is never a leftover clickable object behind the tick.
+///
+/// Behaviour still falls out for free:
+///   - Fresh start (NoMP 0): every entry stays clickable, no ticks.
+///   - After passing some: those entries become ticks, the rest stay clickable.
+///   - After any loss: GameData resets to 0, so on the next Office load every
+///     entry is clickable again (the ticks simply aren't spawned).
+///   - All 4 passed: every entry becomes a tick, then the finish dialogue plays
+///     and Finish loads.
 ///
 /// SETUP:
 /// 1. Put this on an empty GameObject in the Office scene.
-/// 2. Assign the clickable prefab (with MiniGameEntry) and the decoration
-///    (green tick) prefab.
-/// 3. Fill the 4 Slots: for each, set the spawn Transform (an empty child
-///    placed where you want it), the minigame Number (1..4), and the exact
-///    Scene Name to load.
-/// 4. Optional: assign a DialogueManager for the 4/4 ending. If left empty,
-///    a 4/4 state loads Finish after finishDelayIfNoDialogue seconds instead.
+/// 2. Place your clickable MiniGameEntry objects in the scene (as you already
+///    do), each with its Mini Game Number + Scene Name set.
+/// 3. Assign the Decoration Prefab (the green tick — no script needed).
+/// 4. Optional: assign a DialogueManager for the 4/4 ending. If left empty, a
+///    4/4 state loads Finish after finishDelayIfNoDialogue seconds instead.
+///
+/// NOTE: You no longer need the old "Slots" array or a "Clickable Prefab" — the
+/// hand-placed entries replace both. Those fields are gone.
 /// </summary>
 public class OfficeManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class MiniGameSlot
-    {
-        [Tooltip("Where this slot's prefab spawns. Use an empty child GameObject placed in the scene.")]
-        public Transform spawnPoint;
-
-        [Tooltip("Which minigame this slot represents (1..4).")]
-        public int miniGameNumber = 1;
-
-        [Tooltip("Exact scene name this slot's clickable prefab loads (must be in Build Settings).")]
-        public string sceneName = "Minigame1";
-    }
-
-    [Header("Prefabs")]
-    [Tooltip("Clickable prefab (must have a MiniGameEntry component). Spawned for UNPASSED minigames.")]
-    [SerializeField] private MiniGameEntry clickablePrefab;
-
-    [Tooltip("Green-tick decoration prefab. Spawned for PASSED minigames. No script required.")]
+    [Header("Decoration")]
+    [Tooltip("Green-tick decoration prefab, spawned at a passed minigame's entry position. Purely visual — needs no script or collider.")]
     [SerializeField] private GameObject decorationPrefab;
 
-    [Header("Slots (one per minigame)")]
-    [SerializeField] private MiniGameSlot[] slots = new MiniGameSlot[GameData.TotalMiniGames];
+    [Tooltip("Optional local offset applied to the spawned tick relative to the entry's position (e.g. nudge it up/forward).")]
+    [SerializeField] private Vector3 decorationOffset = Vector3.zero;
 
     [Header("All-Passed Ending")]
     [Tooltip("Optional. Dialogue played when the player has passed all 4. When it completes, Finish loads.")]
@@ -66,69 +59,84 @@ public class OfficeManager : MonoBehaviour
     {
         GameData data = GameData.Instance_OrCreate;
 
-        // All done → ending flow instead of spawning entry points.
+        ApplyProgressToEntries(data);
+
+        // All done → play the ending after converting every entry to a tick.
         if (data.AllPassed)
         {
-            SpawnAllAsPassed();
             BeginFinishSequence();
+        }
+    }
+
+    /// <summary>
+    /// Finds every hand-placed MiniGameEntry in the scene and, for each passed
+    /// minigame, hides the entry and drops a tick in its place. Unpassed entries
+    /// are left untouched.
+    /// </summary>
+    private void ApplyProgressToEntries(GameData data)
+    {
+        // Include inactive just in case an entry starts disabled for some reason.
+        MiniGameEntry[] entries = FindObjectsByType<MiniGameEntry>(
+            FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        if (entries.Length == 0)
+        {
+            Debug.LogWarning("[OfficeManager] No MiniGameEntry objects found in the Office scene. " +
+                             "Place your clickable entries in the scene (Option B setup).");
             return;
         }
 
-        SpawnSlots(data);
-    }
-
-    private void SpawnSlots(GameData data)
-    {
-        foreach (MiniGameSlot slot in slots)
+        foreach (MiniGameEntry entry in entries)
         {
-            if (slot == null || slot.spawnPoint == null)
+            if (entry == null)
             {
                 continue;
             }
 
-            if (data.IsPassed(slot.miniGameNumber))
+            if (data.IsPassed(entry.MiniGameNumber))
             {
-                SpawnDecoration(slot);
+                ConvertEntryToDecoration(entry);
             }
-            else
-            {
-                SpawnClickable(slot);
-            }
+            // else: leave the clickable entry exactly as placed.
         }
     }
 
-    private void SpawnClickable(MiniGameSlot slot)
+    /// <summary>
+    /// Hides a passed minigame's clickable entry and spawns a tick where it was.
+    /// The entry is deactivated (not destroyed) so nothing else that might hold a
+    /// reference to it breaks; either way it can no longer be clicked.
+    /// </summary>
+    private void ConvertEntryToDecoration(MiniGameEntry entry)
     {
-        if (clickablePrefab == null)
-        {
-            Debug.LogWarning("[OfficeManager] Clickable prefab is not assigned.");
-            return;
-        }
+        Vector3 position = entry.transform.position + decorationOffset;
+        Quaternion rotation = entry.transform.rotation;
 
-        MiniGameEntry entry = Instantiate(
-            clickablePrefab, slot.spawnPoint.position, slot.spawnPoint.rotation);
-        entry.Configure(slot.miniGameNumber, slot.sceneName);
-    }
+        // Hide the clickable entry so it can't be clicked or relaunch the game.
+        entry.gameObject.SetActive(false);
 
-    private void SpawnDecoration(MiniGameSlot slot)
-    {
         if (decorationPrefab == null)
         {
-            Debug.LogWarning("[OfficeManager] Decoration prefab is not assigned.");
+            Debug.LogWarning("[OfficeManager] Decoration prefab is not assigned — " +
+                             $"Minigame {entry.MiniGameNumber} entry hidden but no tick shown.");
             return;
         }
 
-        Instantiate(decorationPrefab, slot.spawnPoint.position, slot.spawnPoint.rotation);
-    }
+        GameObject deco = Instantiate(decorationPrefab, position, rotation);
 
-    private void SpawnAllAsPassed()
-    {
-        foreach (MiniGameSlot slot in slots)
+        // SAFETY NET: a decoration must never be able to launch a minigame. If the
+        // tick prefab was accidentally built from the clickable prefab, strip any
+        // launch behavior so clicking the tick can't send the player back in.
+        MiniGameEntry stray = deco.GetComponentInChildren<MiniGameEntry>(true);
+        if (stray != null)
         {
-            if (slot != null && slot.spawnPoint != null)
+            Debug.LogWarning($"[OfficeManager] Decoration for Minigame {entry.MiniGameNumber} " +
+                             "had a MiniGameEntry on it — removing it so it can't relaunch the minigame.");
+
+            foreach (Collider2D col in deco.GetComponentsInChildren<Collider2D>(true))
             {
-                SpawnDecoration(slot);
+                col.enabled = false;
             }
+            Destroy(stray);
         }
     }
 
@@ -136,9 +144,6 @@ public class OfficeManager : MonoBehaviour
     {
         if (finishDialogue != null)
         {
-            // Load Finish when the dialogue finishes. StartDialogue's own
-            // scene-load can also do this, but wiring it here keeps the
-            // Finish scene name owned by OfficeManager.
             finishDialogue.onDialogueComplete.AddListener(LoadFinish);
             finishDialogue.StartDialogue();
         }
