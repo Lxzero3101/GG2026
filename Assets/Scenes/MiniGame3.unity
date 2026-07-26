@@ -362,7 +362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3970911902504188438, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: maxPatience
-      value: 500
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 6187345165323056662, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_SortingOrder
@@ -628,24 +628,24 @@ MonoBehaviour:
     prefab: {fileID: 8006062178577921739, guid: 7ad44af5378c2a1459105536a37851ee, type: 3}
     count: 1
   minDistancePlayerToWinObject: 10
-  minDistanceWinObjectToObjects: 1.5
+  minDistanceWinObjectToObjects: 5
   objectsToSpawn:
   - label: 
     prefab: {fileID: 8225100486755736850, guid: b01eca486c2b0b048ae5c704cdf32eed, type: 3}
-    count: 3
+    count: 5
   - label: 
     prefab: {fileID: 3253662244161316624, guid: 181a53288e88f5948bc3fde3a87c3c59, type: 3}
-    count: 5
+    count: 9
   - label: 
     prefab: {fileID: 445509246180960357, guid: c06b4d786da42724ba790f90b1bdcee3, type: 3}
-    count: 5
+    count: 9
   - label: 
     prefab: {fileID: 78894018490004442, guid: bb5241b0dc9ec574f9b10b3735bb430a, type: 3}
-    count: 4
+    count: 8
   - label: 
     prefab: {fileID: 3162352094935265677, guid: 245b13a007807bd439c79a35dd1c6144, type: 3}
-    count: 2
-  minDistanceBetweenObjects: 3
+    count: 3
+  minDistanceBetweenObjects: 2.5
   spawnOnStart: 1
 --- !u!114 &770830025 stripped
 MonoBehaviour:
