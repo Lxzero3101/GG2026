@@ -2110,6 +2110,10 @@ PrefabInstance:
       propertyPath: decreasePerSecond
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4272648065342565942, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: goSfx
       value: 

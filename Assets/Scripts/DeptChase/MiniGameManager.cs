@@ -342,8 +342,10 @@ public class MiniGameManager : MonoBehaviour
 
     private IEnumerator LoseSequenceRoutine()
     {
-        yield return new WaitForSeconds(2f); // let the lose SFX play before leaving
-        MiniGameResult.ReportLoss(); // reset NoMP to 0, go to Lose scene
+        // Let the lose SFX play before leaving, then reset NoMP to 0 and
+        // route to the Lose scene via MiniGameResult.
+        yield return new WaitForSeconds(2f);
+        MiniGameResult.ReportLoss();
     }
 
     private void EndGame()

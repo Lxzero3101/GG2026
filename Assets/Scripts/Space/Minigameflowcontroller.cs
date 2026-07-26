@@ -249,8 +249,8 @@ public class MiniGameFlowController : MonoBehaviour
             winButton.SetActive(true);
         }
 
-        // Keep the win delay/feedback, but route through GameData instead of a
-        // hardcoded scene: +1 NoMP, then Office (or Finish at 4/4).
+        // Route through GameData instead of a hardcoded scene: keep the win
+        // delay/feedback, then +1 NoMP and go to Office (or Finish at 4/4).
         StartCoroutine(ReportAfterDelay(true, winSceneLoadDelay));
     }
 
