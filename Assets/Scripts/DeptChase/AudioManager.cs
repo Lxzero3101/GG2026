@@ -18,6 +18,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource bgmSource;
     [Range(0f, 1f)][SerializeField] private float bgmVolume = 0.6f;
 
+    [Tooltip("Temporary: one BGM looping across the whole project while crunching. " +
+             "Once each minigame gets its own track later, remove this and call PlayBgm() per scene instead.")]
+    [SerializeField] private AudioClip mainBgmClip;
+
     [Header("SFX Pool")]
     [Tooltip("How many SFX can play at the exact same time without cutting each other off.")]
     [SerializeField] private int sfxPoolSize = 6;
@@ -57,6 +61,13 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogWarning("[AudioManager] bgmSource reference is missing!");
         }
+
+        // Because this object is DontDestroyOnLoad + singleton-guarded, this only
+        // actually runs once — on later scene loads, the guard above returns early
+        // before reaching here. PlayBgm's own "already playing this clip" check
+        // also protects against restarting the track if this were ever called again.
+        if (mainBgmClip != null)
+            PlayBgm(mainBgmClip);
     }
 
     private void OnDestroy()
