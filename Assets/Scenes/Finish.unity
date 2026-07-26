@@ -708,9 +708,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 844164965}
-  - {fileID: 1224334055}
   - {fileID: 853611518}
   - {fileID: 1819712670}
+  - {fileID: 1224334055}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 1224334058}
   - component: {fileID: 1224334057}
   - component: {fileID: 1224334056}
+  - component: {fileID: 1224334060}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -865,6 +866,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224334054}
   m_CullTransparentMesh: 1
+--- !u!114 &1224334060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224334054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893297e91ab5af54a9beaaea933dd310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonUI
 --- !u!1 &1700276725
 GameObject:
   m_ObjectHideFlags: 0
