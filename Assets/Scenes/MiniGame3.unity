@@ -628,7 +628,7 @@ MonoBehaviour:
     prefab: {fileID: 8006062178577921739, guid: 7ad44af5378c2a1459105536a37851ee, type: 3}
     count: 1
   minDistancePlayerToWinObject: 10
-  minDistanceWinObjectToObjects: 5
+  minDistanceWinObjectToObjects: 1.5
   objectsToSpawn:
   - label: 
     prefab: {fileID: 8225100486755736850, guid: b01eca486c2b0b048ae5c704cdf32eed, type: 3}
