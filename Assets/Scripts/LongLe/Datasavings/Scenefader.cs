@@ -76,6 +76,32 @@ public class SceneFader : MonoBehaviour
         // Fade in on first appearance so the very first scene isn't a hard cut
         // if something loaded us mid-transition. Starts transparent otherwise.
         canvasGroup.alpha = 0f;
+
+        // Guarantee the overlay never gets stuck blocking clicks: every time ANY
+        // scene finishes loading, force the overlay back to non-blocking. If a
+        // fade-in is mid-flight it will re-enable blocking itself; if a fade was
+        // interrupted (leaving blocksRaycasts stuck true), this frees it. This is
+        // the safety net that keeps buttons on the new scene clickable.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // A new scene is now live. Unless a fade-in is actively running, make
+        // absolutely sure the overlay isn't eating input on the new scene.
+        if (!isFading)
+        {
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.interactable = false;
+        }
     }
 
     /// <summary>
@@ -119,7 +145,10 @@ public class SceneFader : MonoBehaviour
         yield return null;                  // let the new scene's Awake/Start run one frame
         yield return Fade(1f, 0f);          // back in
 
+        // Always clear blocking here AND OnSceneLoaded clears it as a backup, so
+        // the overlay can never be left swallowing clicks on the new scene.
         canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
         isFading = false;
     }
 

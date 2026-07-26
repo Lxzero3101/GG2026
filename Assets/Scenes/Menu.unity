@@ -266,6 +266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 803296877}
   - component: {fileID: 803296876}
+  - component: {fileID: 803296878}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -318,6 +319,18 @@ RectTransform:
   m_AnchoredPosition: {x: 213.8631, y: 199.45334}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &803296878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 803296875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d4bed8abdd1cf43a8f8efa0ada20a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuProgressGate
 --- !u!1 &1018151904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1125,53 @@ MonoBehaviour:
   officeScene: Office
   finishScene: Finish
   loseScene: Lose
+--- !u!1 &1388896384
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1388896386}
+  - component: {fileID: 1388896385}
+  m_Layer: 0
+  m_Name: SceneFader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1388896385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388896384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 137026cd985acd24487ee166605aca2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneFader
+  fadeDuration: 0.4
+  fadeColor: {r: 0, g: 0, b: 0, a: 1}
+  canvasSortOrder: 9999
+--- !u!4 &1388896386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388896384}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.4, y: -1.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1523235305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1679,3 +1739,4 @@ SceneRoots:
   - {fileID: 1637874056}
   - {fileID: 803296877}
   - {fileID: 1326308770}
+  - {fileID: 1388896386}

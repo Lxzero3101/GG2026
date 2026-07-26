@@ -675,13 +675,13 @@ MonoBehaviour:
     count: 5
   - label: 
     prefab: {fileID: 3253662244161316624, guid: 181a53288e88f5948bc3fde3a87c3c59, type: 3}
-    count: 9
+    count: 6
   - label: 
     prefab: {fileID: 445509246180960357, guid: c06b4d786da42724ba790f90b1bdcee3, type: 3}
-    count: 9
+    count: 8
   - label: 
     prefab: {fileID: 78894018490004442, guid: bb5241b0dc9ec574f9b10b3735bb430a, type: 3}
-    count: 9
+    count: 7
   - label: 
     prefab: {fileID: 3162352094935265677, guid: 245b13a007807bd439c79a35dd1c6144, type: 3}
     count: 3
@@ -6644,8 +6644,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WinManager
   autoDetectRequiredCount: 1
   requiredCount: 4
+  subMiniGameSceneName: SubMinigame3
   sceneToLoad: SubMiniGame3
-  delayBeforeSceneLoad: 3
+  delayBeforeSceneLoad: 2
   onProgress:
     m_PersistentCalls:
       m_Calls: []
