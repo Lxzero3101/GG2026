@@ -124,6 +124,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
   m_PrefabInstance: {fileID: 990040145}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &44925910 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2695496097566979350, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
+  m_PrefabInstance: {fileID: 990040145}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb3a4afa8f4b464cbbb9b71fcaf6edd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameEntry
 --- !u!1 &88957938
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e370c746d2b442a4893fd2385da918da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OfficeManager
-  clickablePrefab: {fileID: 0}
+  clickablePrefab: {fileID: 44925910}
   decorationPrefab: {fileID: 0}
   slots:
   - spawnPoint: {fileID: 44925909}
@@ -867,15 +878,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1451106903}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -966.29
+      value: -6.289978
       objectReference: {fileID: 0}
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -543.73
+      value: -3.7299805
       objectReference: {fileID: 0}
     - target: {fileID: 1660907207748634417, guid: cdce2d5b3bb354049a62d568dbea9eda, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1469,7 +1480,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 44925909}
   - {fileID: 1108693709}
   - {fileID: 1389511296}
   - {fileID: 813404448}
@@ -2345,6 +2355,7 @@ SceneRoots:
   - {fileID: 1451106903}
   - {fileID: 1492574970}
   - {fileID: 168566062}
+  - {fileID: 990040145}
   - {fileID: 538016473}
   - {fileID: 378516426}
   - {fileID: 1922640922}
