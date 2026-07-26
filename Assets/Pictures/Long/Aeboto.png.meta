@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9127e4f8dd9a6c740ac6a22495ec25fd
+guid: 8eb61cb181367d8479526f4d734d81b6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7528230167259226437
-    second: game_credit_background_remake_0
+      213: 5908687244813927357
+    second: Aeboto_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: game_credit_background_remake_0
+      name: Aeboto_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 640
-        height: 360
+        width: 1355
+        height: 568
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 541adda6375a97860800000000000000
-      internalID: 7528230167259226437
+      spriteID: db3040c5ebfdff150800000000000000
+      internalID: 5908687244813927357
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      game_credit_background_remake_0: 7528230167259226437
+      Aeboto_0: 5908687244813927357
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

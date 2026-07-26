@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9127e4f8dd9a6c740ac6a22495ec25fd
+guid: 87fc410eda87b454594790a4816a85b4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7528230167259226437
-    second: game_credit_background_remake_0
+      213: 3990026116115574621
+    second: Lxzero_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: game_credit_background_remake_0
+      name: Lxzero_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 4
         y: 0
-        width: 640
-        height: 360
+        width: 26
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 541adda6375a97860800000000000000
-      internalID: 7528230167259226437
+      spriteID: d5fa99fcc9b6f5730800000000000000
+      internalID: 3990026116115574621
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      game_credit_background_remake_0: 7528230167259226437
+      Lxzero_0: 3990026116115574621
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
