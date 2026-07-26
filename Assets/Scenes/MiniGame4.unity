@@ -8633,7 +8633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bec4b77757199f49990307a8635fc08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MiniGameManager4
-  targetMoneyRequirement: 100
+  targetMoneyRequirement: 150
   maxAllowedAttempts: 7
   lowValueThreshold: 10
   gameManager: {fileID: 1673170319}
@@ -8891,7 +8891,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
     - target: {fileID: 1672651429741766291, guid: 28916e2cefb35e941945a64da2922e97, type: 3}
       propertyPath: moneyValue
-      value: 12
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1672651429741766291, guid: 28916e2cefb35e941945a64da2922e97, type: 3}
       propertyPath: interactPromptRoot
@@ -8980,7 +8980,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
     - target: {fileID: 9028549813145928095, guid: 5fcfa502e8181e9438b8be9da3b6d305, type: 3}
       propertyPath: moneyValue
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
