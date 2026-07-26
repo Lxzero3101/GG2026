@@ -47,9 +47,26 @@ public class CountdownUI : MonoBehaviour
     /// <summary>Raised once the countdown reaches zero.</summary>
     public event Action OnCountdownFinished;
 
+    /// <summary>
+    /// True while a countdown is actively running (between StartCountdown and it
+    /// reaching zero). Lets a listener that subscribes LATE — e.g. a Player
+    /// prefab spawned after this object's Awake — reconcile its own state
+    /// immediately instead of relying on catching the OnCountdownFinished event.
+    /// </summary>
+    public bool IsCounting { get; private set; }
+
+    /// <summary>
+    /// True once a countdown has run to completion at least once. Distinguishes
+    /// "hasn't started yet" (stay locked, wait for the event) from "already
+    /// finished, event missed" (unlock now) for late subscribers.
+    /// </summary>
+    public bool HasFinished { get; private set; }
+
     /// <summary>Starts (or restarts) the countdown from <see cref="startValue"/>.</summary>
     public void StartCountdown()
     {
+        IsCounting = true;
+        HasFinished = false;
         gameObject.SetActive(true);
 
         if (instructionTextObject != null)
@@ -92,6 +109,8 @@ public class CountdownUI : MonoBehaviour
 
         gameObject.SetActive(false);
         countdownCoroutine = null;
+        IsCounting = false;
+        HasFinished = true;
         OnCountdownFinished?.Invoke();
     }
 }

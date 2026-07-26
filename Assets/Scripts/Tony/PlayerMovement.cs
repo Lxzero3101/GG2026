@@ -73,13 +73,42 @@ public class PlayerMovement : MonoBehaviour
                 footstepAudioSource.clip = walkClip;
         }
 
-        if (!freezeDuringCountdown || CountdownUI.Instance == null)
-        {
-            if (freezeDuringCountdown)
-            {
-                Debug.LogWarning("[PlayerMovement] No CountdownUI.Instance found in the scene — skipping the intro freeze.");
-            }
+        // NOTE: We intentionally do NOT decide the lock state here based on
+        // CountdownUI.Instance. This script lives on the Player PREFAB, which is
+        // instantiated at runtime, so its Awake can run BEFORE the scene's
+        // CountdownUI has set its static Instance (this is exactly what happened
+        // in the WebGL build: the player wasn't frozen for the first 5 seconds
+        // because Instance was still null here and we unlocked immediately).
+        //
+        // Instead we stay locked (IsLocked defaults to true) and resolve the
+        // real state in Start()/OnEnable(), by which point every Awake has run.
+    }
 
+    void Start()
+    {
+        // Runs after ALL Awake() calls, so CountdownUI.Instance is reliable here
+        // regardless of spawn/init order (fixes the WebGL "no freeze" bug).
+        if (!freezeDuringCountdown)
+        {
+            IsLocked = false;
+            return;
+        }
+
+        CountdownUI countdown = CountdownUI.Instance;
+        if (countdown == null)
+        {
+            Debug.LogWarning("[PlayerMovement] No CountdownUI.Instance found in the scene — skipping the intro freeze.");
+            IsLocked = false;
+            return;
+        }
+
+        // Only unlock if the countdown has ALREADY run to completion (we missed
+        // the event because we spawned too late). If it hasn't started yet OR is
+        // currently counting, we STAY locked and wait for the finished event —
+        // this is the key: "not started yet" must NOT unlock the player, which is
+        // what caused the WebGL no-freeze bug when init order put us first.
+        if (countdown.HasFinished)
+        {
             IsLocked = false;
         }
     }
@@ -89,6 +118,13 @@ public class PlayerMovement : MonoBehaviour
         if (freezeDuringCountdown && CountdownUI.Instance != null)
         {
             CountdownUI.Instance.OnCountdownFinished += HandleCountdownFinished;
+
+            // If the countdown already completed before we subscribed, reconcile
+            // immediately instead of waiting for an event that won't fire again.
+            if (CountdownUI.Instance.HasFinished)
+            {
+                IsLocked = false;
+            }
         }
     }
 

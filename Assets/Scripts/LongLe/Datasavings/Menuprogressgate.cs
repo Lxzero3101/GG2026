@@ -1,28 +1,24 @@
 using UnityEngine;
 
 /// <summary>
-/// Decides what happens to saved progress when the player is on the Menu.
+/// Resets saved progress whenever the player is on the Menu.
 ///
-/// The rule you asked for:
-///   - Normal case: entering the Office from the Menu should be a FRESH run,
-///     so progress resets to NoMP = 0.
-///   - Exception: if the player has already completed ALL 4 minigames (came
-///     back via Finish -> Menu), progress must be PRESERVED so that re-entering
-///     the Office shows all 4 decoration prefabs (a finished office).
+/// The rule:
+///   - Entering the Office from the Menu is ALWAYS a FRESH run, so progress
+///     resets to NoMP = 0 every time the Menu is reached — including after the
+///     player has finished all 4 minigames. Pressing Play always starts over.
 ///
-/// So: this resets NoMP to 0 on the Menu UNLESS the player is at 4/4, in which
-/// case it leaves everything intact. Because the reset happens here on the Menu
-/// (not in the Office), the Office script stays a pure reader of GameData and
-/// doesn't need to know any of this policy.
+/// Because the reset happens here on the Menu (not in the Office), the Office
+/// script stays a pure reader of GameData and doesn't need to know any policy.
 ///
 /// SETUP:
 /// 1. Put an empty GameObject in the Menu scene named "MenuProgressGate".
 /// 2. Attach this script. Nothing to configure.
 ///
-/// EDGE CASE THIS HANDLES:
-///   Finish -> Menu -> Office : NoMP was 4, stays 4, office shows all ticks. ✔
+/// EDGE CASES:
+///   Finish -> Menu -> Office : NoMP resets to 0, office shows 4 clickable. ✔
 ///   (fresh start) Menu -> Office : NoMP resets to 0, office shows 4 clickable. ✔
-///   Lose -> Menu -> Office : LoseSceneReset already zeroed it; this leaves 0. ✔
+///   Lose -> Menu -> Office : already zeroed; this leaves 0. ✔
 /// </summary>
 public class MenuProgressGate : MonoBehaviour
 {
@@ -30,17 +26,9 @@ public class MenuProgressGate : MonoBehaviour
     {
         GameData data = GameData.Instance_OrCreate;
 
-        if (data.AllPassed)
-        {
-            // Player finished the whole game and came back to the Menu. Keep
-            // their completed progress so the Office reads as fully done.
-            Debug.Log("[MenuProgressGate] All 4 minigames complete — preserving progress on Menu.");
-            return;
-        }
-
-        // Fresh playthrough (or a partial run being abandoned): start clean so
-        // entering the Office spawns all 4 clickable entries.
+        // Always start clean when the Menu is reached, so entering the Office
+        // spawns all 4 clickable entries — even after a completed 4/4 run.
         data.ResetAll();
-        Debug.Log("[MenuProgressGate] Menu reached mid-run — progress reset to NoMP = 0.");
+        Debug.Log("[MenuProgressGate] Menu reached — progress reset to NoMP = 0.");
     }
 }
