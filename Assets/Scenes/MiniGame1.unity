@@ -1485,7 +1485,7 @@ MonoBehaviour:
   currentSurvivalTime: 0
   startGracePeriod: 3
   timeDrainRate: 3.5
-  rewardMultiplier: 4
+  rewardMultiplier: 5
   offScreenOffset: {x: 3000, y: 0}
   sfxSource: {fileID: 1051866680}
   winClip: {fileID: 0}
