@@ -315,7 +315,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Designer
 
-    Developer'
+    BugBreeder'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff10b92a17f22204894380b4fc543cad, type: 2}
   m_sharedMaterial: {fileID: -6883740936056344630, guid: ff10b92a17f22204894380b4fc543cad, type: 2}
@@ -342,8 +342,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
