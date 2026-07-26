@@ -641,11 +641,11 @@ MonoBehaviour:
     count: 9
   - label: 
     prefab: {fileID: 78894018490004442, guid: bb5241b0dc9ec574f9b10b3735bb430a, type: 3}
-    count: 8
+    count: 9
   - label: 
     prefab: {fileID: 3162352094935265677, guid: 245b13a007807bd439c79a35dd1c6144, type: 3}
     count: 3
-  minDistanceBetweenObjects: 2.5
+  minDistanceBetweenObjects: 2
   spawnOnStart: 1
 --- !u!114 &770830025 stripped
 MonoBehaviour:
