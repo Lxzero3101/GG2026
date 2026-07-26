@@ -468,6 +468,7 @@ GameObject:
   - component: {fileID: 1064329339}
   - component: {fileID: 1064329338}
   - component: {fileID: 1064329341}
+  - component: {fileID: 1064329342}
   m_Layer: 5
   m_Name: Start Button
   m_TagString: Untagged
@@ -524,7 +525,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_HighlightedSprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
     m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -602,6 +603,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   _nextSceneName: Office
+--- !u!114 &1064329342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064329336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893297e91ab5af54a9beaaea933dd310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonUI
 --- !u!1 &1086616111
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,6 +628,7 @@ GameObject:
   - component: {fileID: 1086616114}
   - component: {fileID: 1086616113}
   - component: {fileID: 1086616116}
+  - component: {fileID: 1086616117}
   m_Layer: 5
   m_Name: Settings Button
   m_TagString: Untagged
@@ -671,7 +685,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_HighlightedSprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
     m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -749,6 +763,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   _nextSceneName: Settings
+--- !u!114 &1086616117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086616111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893297e91ab5af54a9beaaea933dd310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonUI
 --- !u!1 &1172723362
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,6 +1062,7 @@ GameObject:
   - component: {fileID: 1523235308}
   - component: {fileID: 1523235307}
   - component: {fileID: 1523235310}
+  - component: {fileID: 1523235311}
   m_Layer: 5
   m_Name: Credits button
   m_TagString: Untagged
@@ -1092,7 +1119,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
+    m_HighlightedSprite: {fileID: -8148096389273198606, guid: adeb20eda15e4874ba520d86053eb84a, type: 3}
     m_PressedSprite: {fileID: -2812791795751782038, guid: cd75c0299c0841249a5358fc8be49a72, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
@@ -1170,6 +1197,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   _nextSceneName: Credit
+--- !u!114 &1523235311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523235305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893297e91ab5af54a9beaaea933dd310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonUI
 --- !u!1 &1637874053
 GameObject:
   m_ObjectHideFlags: 0
