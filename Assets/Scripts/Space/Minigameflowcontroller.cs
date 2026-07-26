@@ -249,7 +249,9 @@ public class MiniGameFlowController : MonoBehaviour
             winButton.SetActive(true);
         }
 
-        StartCoroutine(LoadSceneAfterDelay(nextSceneName, winSceneLoadDelay));
+        // Route through GameData instead of a hardcoded scene: keep the win
+        // delay/feedback, then +1 NoMP and go to Office (or Finish at 4/4).
+        StartCoroutine(ReportAfterDelay(true, winSceneLoadDelay));
     }
 
     private void TriggerLoss()
@@ -258,12 +260,17 @@ public class MiniGameFlowController : MonoBehaviour
         gameUI?.PausePatience();
         powerBarController?.HideBar();
 
-        StartCoroutine(LoadSceneAfterDelay(loseSceneName, loseSceneLoadDelay));
+        // Reset NoMP to 0, then go to the Lose scene — handled by MiniGameResult.
+        StartCoroutine(ReportAfterDelay(false, loseSceneLoadDelay));
     }
 
-    private IEnumerator LoadSceneAfterDelay(string sceneName, float delay)
+    private IEnumerator ReportAfterDelay(bool won, float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(sceneName);
+
+        if (won)
+            MiniGameResult.ReportWin();
+        else
+            MiniGameResult.ReportLoss();
     }
 }

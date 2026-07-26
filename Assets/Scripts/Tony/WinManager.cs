@@ -88,13 +88,8 @@ public class WinManager : MonoBehaviour
 
     private void LoadNextScene()
     {
-        if (string.IsNullOrEmpty(sceneToLoad))
-        {
-            Debug.LogWarning("WinManager: Scene To Load is empty — set it in the Inspector.");
-            return;
-        }
-
-        Debug.Log($"WinManager: loading scene '{sceneToLoad}'.");
-        SceneManager.LoadScene(sceneToLoad);
+        // Minigame 3 win: route through GameData instead of the local
+        // sceneToLoad — +1 NoMP, then Office (or Finish at 4/4).
+        MiniGameResult.ReportWin();
     }
 }

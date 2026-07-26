@@ -121,14 +121,10 @@ public class MiniGameManager4 : MonoBehaviour
     {
         yield return new WaitForSeconds(winToNextSceneDelay);
 
-        if (gameManager != null)
-        {
-            gameManager.LoadNextScene();
-        }
-        else
-        {
-            Debug.LogWarning("[MiniGameManager4] GameManager reference is missing — can't auto-load the next scene.");
-        }
+        // Route through GameData: +1 NoMP, then Office (or Finish at 4/4).
+        // (The lose path below still delegates to GameManager.LoadLoseScene(),
+        // which now resets NoMP — so both MG4 losses stay covered by one funnel.)
+        MiniGameResult.ReportWin();
     }
 
     private void TriggerLose()
