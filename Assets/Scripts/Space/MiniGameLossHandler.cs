@@ -35,15 +35,28 @@ public class MiniGameLossHandler : MonoBehaviour
         }
     }
 
+    private bool hasReacted;
+
     private void HandleLossReaction()
     {
-        // 1. Xả sạch cây kiên nhẫn về 0
-        if (gameUI != null)
+        // Guard: the loss event can arrive while a loss is already being
+        // processed elsewhere (MiniGameFlowController also listens to it). Run
+        // this reaction exactly once to avoid re-entrant event storms.
+        if (hasReacted)
         {
-            gameUI.DecreasePatience(gameUI.GetNormalizedPatience() * 100f);
+            return;
         }
+        hasReacted = true;
 
-        // 2. Đổi biểu cảm sếp sang Furious (Rất giận) và bật Shake
+        // NOTE: We deliberately do NOT call gameUI.DecreasePatience() here.
+        // On a patience-depletion loss, patience is already 0, and pushing
+        // another patience change re-fires OnPatienceChanged / OnPatienceDepleted
+        // WHILE a loss is mid-flight — which re-enters the loss handlers and
+        // caused Unity to crash (StackOverflow from the event loop). The boss's
+        // furious face + shake below are all the feedback this needs; the
+        // patience bar is about to leave with the scene anyway.
+
+        // Đổi biểu cảm sếp sang Furious (Rất giận) và bật Shake
         if (gameUI != null)
         {
             gameUI.SetBossExpression(BossExpression.Furious);

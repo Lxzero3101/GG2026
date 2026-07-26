@@ -428,7 +428,7 @@ public class PowerBarController : MonoBehaviour
         if (CheckHitRedZone())
         {
             isGameOver = true;
-            Debug.LogError("BẠN ĐÃ THUA MINIGAME! (Chạm vạch đỏ)");
+            Debug.Log("BẠN ĐÃ THUA MINIGAME! (Chạm vạch đỏ)");
             HandleLossVisuals();
             OnMiniGameLost?.Invoke();
             return;
@@ -462,7 +462,7 @@ public class PowerBarController : MonoBehaviour
         if (currentSurvivalTime <= 0f && maxSurvivalTime > 0)
         {
             isGameOver = true;
-            Debug.LogError("BẠN ĐÃ THUA MINIGAME! (Hết thời gian)");
+            Debug.Log("BẠN ĐÃ THUA MINIGAME! (Hết thời gian)");
             HandleLossVisuals();
             OnMiniGameLost?.Invoke();
         }

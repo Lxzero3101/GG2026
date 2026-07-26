@@ -52,6 +52,13 @@ public class MiniGameEntry : MonoBehaviour
         MiniGameContext.CurrentMiniGame = miniGameNumber;
 
         Debug.Log($"[MiniGameEntry] Entering Minigame {miniGameNumber} -> scene '{sceneName}'.");
+
+        // Remove this clickable prefab immediately so it can't be clicked twice
+        // (e.g. during a fade) and doesn't linger over the transition. The scene
+        // is about to change anyway; on return, OfficeManager re-decides what to
+        // spawn at this slot based on GameData.
+        Destroy(gameObject);
+
         SceneManager.LoadScene(sceneName);
     }
 }

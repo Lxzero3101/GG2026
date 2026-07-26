@@ -260,6 +260,9 @@ public class MiniGameFlowController : MonoBehaviour
         gameUI?.PausePatience();
         powerBarController?.HideBar();
 
+        Debug.Log($"[MiniGameFlowController] TriggerLoss reached. Waiting {loseSceneLoadDelay}s, then ReportLoss. " +
+                  $"(SceneFader.Instance is {(SceneFader.Instance != null ? "PRESENT" : "null")}.)");
+
         // Reset NoMP to 0, then go to the Lose scene — handled by MiniGameResult.
         StartCoroutine(ReportAfterDelay(false, loseSceneLoadDelay));
     }
@@ -268,9 +271,13 @@ public class MiniGameFlowController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        Debug.Log($"[MiniGameFlowController] Delay finished. Calling {(won ? "ReportWin" : "ReportLoss")} now.");
+
         if (won)
             MiniGameResult.ReportWin();
         else
             MiniGameResult.ReportLoss();
+
+        Debug.Log("[MiniGameFlowController] Report call returned — scene load should be underway.");
     }
 }
