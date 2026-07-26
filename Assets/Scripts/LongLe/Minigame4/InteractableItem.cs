@@ -35,6 +35,12 @@ public class InteractableItem : MonoBehaviour
     [SerializeField] private float shakeDuration = 0.3f;
     [SerializeField] private float shakeMagnitude = 0.1f;
 
+    [Header("Audio")]
+    [Tooltip("Played every time this item is collected, regardless of value.")]
+    [SerializeField] private AudioClip collectSfx;
+    [Tooltip("Played instead of/alongside collectSfx when this item is below the boss's low-value threshold. Leave empty to skip — collectSfx will still play.")]
+    [SerializeField] private AudioClip lowValueWarningSfx;
+
     private bool isPlayerNearby = false;
     private bool isCollected = false;
     private Camera mainCamera;
@@ -222,9 +228,20 @@ public class InteractableItem : MonoBehaviour
 
         // Low-value pickups irritate the boss a little (flash + shake) but,
         // unlike an obstacle hit, don't cost any patience.
-        if (MiniGameManager4.Instance != null && moneyValue < MiniGameManager4.Instance.LowValueThreshold)
+        bool isLowValue = MiniGameManager4.Instance != null && moneyValue < MiniGameManager4.Instance.LowValueThreshold;
+
+        if (isLowValue)
         {
             GameUI.Instance?.FlashBossWarning();
+        }
+
+        // Always play the base collect sound; layer the warning sting on top
+        // for low-value items rather than replacing it, so pickup always
+        // feels responsive even when the boss is also reacting.
+        AudioManager.Instance?.PlaySfx(collectSfx);
+        if (isLowValue)
+        {
+            AudioManager.Instance?.PlaySfx(lowValueWarningSfx);
         }
 
         StartCoroutine(CollectAnimationRoutine());

@@ -30,6 +30,10 @@ public class MiniGameManager4 : MonoBehaviour
     [SerializeField] private int currentTotalMoney = 0;
     [SerializeField] private int currentAttempts = 0;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip winSfx;
+    [SerializeField] private AudioClip loseSfx;
+
     [Header("Events (Optional UI hookup)")]
     [SerializeField] private UnityEvent onWin;
     [SerializeField] private UnityEvent onLose;
@@ -107,6 +111,7 @@ public class MiniGameManager4 : MonoBehaviour
         PlayerMovement.Instance?.SetLocked(true);
         GameUI.Instance?.PausePatience();
         GameUI.Instance?.ImproveBossExpression(2);
+        AudioManager.Instance?.PlaySfx(winSfx);
 
         onWin?.Invoke();
         StartCoroutine(LoadNextSceneAfterDelay());
@@ -134,6 +139,7 @@ public class MiniGameManager4 : MonoBehaviour
         PlayerMovement.Instance?.SetLocked(true);
         GameUI.Instance?.PausePatience();
         GameUI.Instance?.SetBossExpression(BossExpression.Furious);
+        AudioManager.Instance?.PlaySfx(loseSfx);
 
         onLose?.Invoke();
         StartCoroutine(LoadLoseSceneAfterDelay());
