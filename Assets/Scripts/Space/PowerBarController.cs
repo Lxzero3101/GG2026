@@ -90,6 +90,9 @@ public class PowerBarController : MonoBehaviour
     /// <summary>Raised once when the player runs out of survival time or the indicator hits an edge.</summary>
     public event Action OnMiniGameLost;
 
+    /// <summary>Raised once when BeginRound() is called (round thực sự bắt đầu chạy, sau countdown).</summary>
+    public event Action OnRoundBegan;
+
     /// <summary>Raised whenever the indicator crosses the TargetZone boundary. True = now outside the zone.</summary>
     public event Action<bool> OnTargetZoneStatusChanged;
 
@@ -197,6 +200,8 @@ public class PowerBarController : MonoBehaviour
             tugLoopSource.loop = true;
             tugLoopSource.Play();
         }
+
+        OnRoundBegan?.Invoke();
     }
 
     /// <summary>Instantly moves BarBackground and SurvivalSlider off screen. Called by GameManager on win or loss.</summary>
