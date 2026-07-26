@@ -23,6 +23,9 @@ public class MiniGameManager4 : MonoBehaviour
     [Tooltip("Seconds to wait after winning before automatically loading the next scene.")]
     [SerializeField] private float winToNextSceneDelay = 3f;
 
+    [Tooltip("Seconds to hold on the boss's furious reaction before loading the lose scene (attempts exhausted).")]
+    [SerializeField] private float loseToLoseSceneDelay = 2f;
+
     [Header("Game State Readouts")]
     [SerializeField] private int currentTotalMoney = 0;
     [SerializeField] private int currentAttempts = 0;
@@ -98,6 +101,13 @@ public class MiniGameManager4 : MonoBehaviour
     {
         isGameOver = true;
         Debug.Log("<color=green><b>YOU WIN!</b></color> You reached the required money target!");
+
+        // Freeze the player and hold patience/boss reaction steady so the reward
+        // is the last thing shown before the scene transition.
+        PlayerMovement.Instance?.SetLocked(true);
+        GameUI.Instance?.PausePatience();
+        GameUI.Instance?.ImproveBossExpression(2);
+
         onWin?.Invoke();
         StartCoroutine(LoadNextSceneAfterDelay());
     }
@@ -120,6 +130,26 @@ public class MiniGameManager4 : MonoBehaviour
     {
         isGameOver = true;
         Debug.Log("<color=red><b>YOU LOSE!</b></color> Out of attempts and did not reach the target money!");
+
+        PlayerMovement.Instance?.SetLocked(true);
+        GameUI.Instance?.PausePatience();
+        GameUI.Instance?.SetBossExpression(BossExpression.Furious);
+
         onLose?.Invoke();
+        StartCoroutine(LoadLoseSceneAfterDelay());
+    }
+
+    private IEnumerator LoadLoseSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(loseToLoseSceneDelay);
+
+        if (gameManager != null)
+        {
+            gameManager.LoadLoseScene();
+        }
+        else
+        {
+            Debug.LogWarning("[MiniGameManager4] GameManager reference is missing — can't auto-load the lose scene.");
+        }
     }
 }

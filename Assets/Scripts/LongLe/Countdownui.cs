@@ -10,9 +10,33 @@ using UnityEngine;
 /// </summary>
 public class CountdownUI : MonoBehaviour
 {
+    // ---- Added for the minigame polish pass -------------------------------
+    // Same pattern as GameUI.Instance / PlayerMovement.Instance: lets scripts
+    // living on PREFAB ASSETS (e.g. PlayerMovement on the Player prefab,
+    // instantiated at runtime by RandomSpawner) find this scene object without
+    // a serialized Inspector reference, which can't be wired on a prefab asset.
+    public static CountdownUI Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+    // -------------------------------------------------------------------
+
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private int startValue = 5;
     [SerializeField] private float secondsPerCount = 1f;
+    [Header("Instruction Text")]
+    [Tooltip("Shown only during the countdown, hidden once it finishes.")]
+    [SerializeField] private GameObject instructionTextObject;
 
     [Header("Audio")]
     [SerializeField] private AudioClip tickSfx;
@@ -27,6 +51,9 @@ public class CountdownUI : MonoBehaviour
     public void StartCountdown()
     {
         gameObject.SetActive(true);
+
+        if (instructionTextObject != null)
+            instructionTextObject.SetActive(true); // ← thêm dòng này
 
         if (countdownCoroutine != null)
         {
@@ -58,7 +85,10 @@ public class CountdownUI : MonoBehaviour
             countdownText.text = string.Empty;
         }
 
-        AudioManager.Instance?.PlaySfx(goSfx); // ← thêm dòng này
+        if (instructionTextObject != null)
+            instructionTextObject.SetActive(false); // ← thêm dòng này
+
+        AudioManager.Instance?.PlaySfx(goSfx);
 
         gameObject.SetActive(false);
         countdownCoroutine = null;

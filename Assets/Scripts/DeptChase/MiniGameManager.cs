@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -83,6 +84,18 @@ public class MiniGameManager : MonoBehaviour
 
     [Tooltip("Scene to load after the win delay elapses.")]
     [SerializeField] private string winSceneName = "NextLevel";
+    [Header("Win Feedback")]
+    [Tooltip("Player's SpriteRenderer — swapped to a smiling face on win.")]
+    [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [SerializeField] private Sprite playerWinSprite;
+
+    [Tooltip("Hidden by default in the scene — this script activates it on win.")]
+    [SerializeField] private TextMeshProUGUI winMessageText;
+    [SerializeField] private string winMessageString = "Đã đòi được nợ!";
+    [Header("Lose Feedback")]
+    [Tooltip("Debtor's SpriteRenderer — swapped to a fallen/defeated sprite on lose.")]
+    [SerializeField] private SpriteRenderer debtorSpriteRenderer;
+    [SerializeField] private Sprite debtorLoseSprite;
 
     // ─────────────────────────────────────────────
     //  Private State
@@ -93,10 +106,15 @@ public class MiniGameManager : MonoBehaviour
     private bool roundStarted = false;  // true once the countdown finishes
     private float debtorEndX = 0f;      // calculated at Start() from player's actual X
 
+
     // ─────────────────────────────────────────────
     //  Unity Lifecycle
     // ─────────────────────────────────────────────
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip winSfx;
+    [SerializeField] private AudioClip loseSfx;
+    [SerializeField] private AudioClip bgmClip;
 
     void Start()
     {
@@ -259,12 +277,51 @@ public class MiniGameManager : MonoBehaviour
     // ─────────────────────────────────────────────
     //  Win / Lose
     // ─────────────────────────────────────────────
-
+    private void ClearRemainingObstacles()
+    {
+        GameObject[] remainingObstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+        foreach (GameObject obstacle in remainingObstacles)
+        {
+            Destroy(obstacle);
+        }
+    }
     private void TriggerWin()
     {
         EndGame();
+        ClearRemainingObstacles();
+        AudioManager.Instance?.PlaySfx(winSfx);
+        ShowWinFeedback();
+        ShowDebtorCaughtFeedback(); // ← thêm dòng này
         Debug.Log("[MiniGameManager] WIN — Debtor caught! 🎉");
         StartCoroutine(WinSequenceRoutine());
+    }
+    private void ShowDebtorCaughtFeedback()
+    {
+        if (debtorSpriteRenderer != null && debtorLoseSprite != null)
+        {
+            Animator debtorAnimator = debtorSpriteRenderer.GetComponentInParent<Animator>();
+            if (debtorAnimator != null)
+                debtorAnimator.enabled = false;
+
+            debtorSpriteRenderer.sprite = debtorLoseSprite;
+        }
+    }
+    private void ShowWinFeedback()
+    {
+        if (playerSpriteRenderer != null && playerWinSprite != null)
+        {
+            Animator playerAnimator = playerSpriteRenderer.GetComponent<Animator>();
+            if (playerAnimator != null)
+                playerAnimator.enabled = false; // dừng Animator để nó không ghi đè sprite mỗi frame
+
+            playerSpriteRenderer.sprite = playerWinSprite;
+        }
+
+        if (winMessageText != null)
+        {
+            winMessageText.text = winMessageString;
+            winMessageText.gameObject.SetActive(true);
+        }
     }
 
     private IEnumerator WinSequenceRoutine()
@@ -280,6 +337,7 @@ public class MiniGameManager : MonoBehaviour
     private void TriggerLose()
     {
         EndGame();
+        AudioManager.Instance?.PlaySfx(loseSfx);
         Debug.Log("[MiniGameManager] LOSE — Boss patience ran out! 💢");
         // TODO: Fire a public event or call boss UI / scene transition here
     }

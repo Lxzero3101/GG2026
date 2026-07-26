@@ -1,11 +1,27 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider2D))]
 public class InteractableItem : MonoBehaviour
 {
     [Header("Item Value")]
     [SerializeField] private int moneyValue = 10;
+
+    [Header("Interaction Settings")]
+    [Tooltip("Key the player presses to interact while standing near this item (proximity-based, replaces mouse click).")]
+    [SerializeField] private Key interactKey = Key.F;
+
+    [Header("Interaction Prompt")]
+    [Tooltip("Optional manual override — a world-space UI element shown while the player is near the item. Leave EMPTY to auto-find a child GameObject/TMP text named 'PressFText' at runtime (see Awake) — the recommended setup for prefabs where you can't hand-wire this per instance.")]
+    [SerializeField] private GameObject interactPromptRoot;
+    [Tooltip("Optional manual override for the prompt's TMP_Text. Leave EMPTY to auto-find a child named 'PressFText'.")]
+    [SerializeField] private TMP_Text interactPromptText;
+    [SerializeField] private string interactPromptFormat = "Press {0}";
+
+    [Tooltip("Name of the child GameObject (with a TMP_Text component) that Awake() auto-searches for when Interact Prompt Root/Text are left empty.")]
+    [SerializeField] private string interactPromptChildName = "PressFText";
 
     [Header("Visual Effects Settings")]
     [SerializeField] private SpriteRenderer itemRenderer;
@@ -24,6 +40,13 @@ public class InteractableItem : MonoBehaviour
     private Camera mainCamera;
     private Vector3 originalScale;
 
+    // Shared across ALL InteractableItem instances. If the player is standing
+    // inside two overlapping trigger zones, both items' Update() would otherwise
+    // react to the same single keypress in the same frame and both get collected
+    // at once. This lets only the first item to process the press in a given
+    // frame claim it; every other item sees the frame already claimed and skips.
+    private static int lastInteractFrame = -1;
+
     public int MoneyValue => moneyValue;
 
     private void Awake()
@@ -34,11 +57,90 @@ public class InteractableItem : MonoBehaviour
         }
         mainCamera = Camera.main;
         originalScale = transform.localScale;
+
+        // Prefab-friendly fallback: if not manually wired in the Inspector,
+        // find a child (active or inactive, any depth) whose GameObject is
+        // named interactPromptChildName and has a TMP_Text on it.
+        if (interactPromptText == null)
+        {
+            interactPromptText = FindPromptTextInChildren();
+        }
+
+        if (interactPromptRoot == null && interactPromptText != null)
+        {
+            interactPromptRoot = interactPromptText.gameObject;
+        }
+
+        if (interactPromptText != null)
+        {
+            interactPromptText.text = string.Format(interactPromptFormat, interactKey);
+        }
+        else if (interactPromptRoot == null)
+        {
+            Debug.LogWarning($"[InteractableItem] No interact prompt found — expected a child named '{interactPromptChildName}' with a TMP_Text, or manual Inspector wiring.");
+        }
+
+        SetInteractPromptVisible(false);
+    }
+
+    /// <summary>
+    /// Searches this item's children (any depth, including inactive objects)
+    /// for one named <see cref="interactPromptChildName"/> that has a TMP_Text.
+    /// Lets every prefab instance auto-wire its own prompt purely by naming
+    /// convention, with no per-instance Inspector assignment required.
+    /// </summary>
+    private TMP_Text FindPromptTextInChildren()
+    {
+        TMP_Text[] candidates = GetComponentsInChildren<TMP_Text>(true);
+        foreach (TMP_Text candidate in candidates)
+        {
+            if (candidate.gameObject.name == interactPromptChildName)
+            {
+                return candidate;
+            }
+        }
+
+        return null;
     }
 
     private void Update()
     {
         HandleSparkleEffect();
+        HandleInteractInput();
+    }
+
+    /// <summary>
+    /// Proximity + key-press interaction, replacing the old click-based flow.
+    /// Requires the player to be inside the trigger (<see cref="isPlayerNearby"/>)
+    /// AND press <see cref="interactKey"/>. Also respects PlayerMovement.IsLocked,
+    /// so this is automatically disabled during the intro countdown and after the
+    /// round ends (win/lose freeze), same as before.
+    /// </summary>
+    private void HandleInteractInput()
+    {
+        if (isCollected || !isPlayerNearby)
+        {
+            return;
+        }
+
+        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
+        {
+            return;
+        }
+
+        if (Keyboard.current == null || !Keyboard.current[interactKey].wasPressedThisFrame)
+        {
+            return;
+        }
+
+        if (lastInteractFrame == Time.frameCount)
+        {
+            // Another overlapping item already claimed this keypress this frame.
+            return;
+        }
+
+        lastInteractFrame = Time.frameCount;
+        CollectItem();
     }
 
     private void HandleSparkleEffect()
@@ -60,6 +162,7 @@ public class InteractableItem : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = true;
+            SetInteractPromptVisible(!isCollected);
         }
     }
 
@@ -68,25 +171,21 @@ public class InteractableItem : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = false;
+            SetInteractPromptVisible(false);
         }
     }
 
-    private void OnMouseDown()
+    private void SetInteractPromptVisible(bool visible)
     {
-        // Triggers when clicked on via Physics 2D Raycaster / Collider.
-        // Frozen during the intro countdown (see PlayerMovement.IsLocked) —
-        // covers both the manual raycast in PlayerClickInput and Unity's
-        // built-in OnMouseDown message.
-        if (PlayerMovement.Instance != null && PlayerMovement.Instance.IsLocked)
+        if (interactPromptRoot != null)
         {
-            return;
-        }
-
-        if (isPlayerNearby && !isCollected)
-        {
-            CollectItem();
+            interactPromptRoot.SetActive(visible);
         }
     }
+
+    // Click-based collection (OnMouseDown) removed — interaction is now
+    // proximity + key press, handled by HandleInteractInput() above.
+    // PlayerClickInput.cs is now unused and can be removed from the player object.
 
     /// <summary>
     /// Handles the click reaction: money/attempt bookkeeping, the boss's
@@ -101,6 +200,7 @@ public class InteractableItem : MonoBehaviour
     {
         isCollected = true;
         itemRenderer.color = normalColor; // Reset color tint
+        SetInteractPromptVisible(false);
 
         // Stop this item from physically colliding with the player during the
         // zoom-to-center animation (this was the "clashes with player" issue).
