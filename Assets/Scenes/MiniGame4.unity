@@ -6172,6 +6172,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DogPre
       objectReference: {fileID: 0}
+    - target: {fileID: 7398960023415831603, guid: 3931a44cf9314ea47bf1c0940af6d2bf, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: d103a51bf61dc7146afe2fdc032d9fe4, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8018,6 +8022,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MoneyBagPre (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4594173435805657196, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: db85f83f2cfbee847ace2b9240c0c7f7, type: 3}
+    - target: {fileID: 4594173435805657196, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
+      propertyPath: moneyValue
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.65231
@@ -8071,6 +8083,161 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
   m_PrefabInstance: {fileID: 1250268418}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1260336824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260336828}
+  - component: {fileID: 1260336827}
+  - component: {fileID: 1260336826}
+  - component: {fileID: 1260336825}
+  m_Layer: 5
+  m_Name: Instruction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1260336825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260336824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add0ed1f73588274694ee6d9612830df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingAnimation
+  floatHeight: 15
+  floatSpeed: 3
+  randomizePhase: 1
+--- !u!114 &1260336826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260336824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "Your debt isn't the only thing being collected.\nIf they can't pay, the
+    furniture will. Move fast before your boss loses his patience!\nUse WASD or \u2191
+    \u2193 \u2192 \u2190 to MOVE"
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 45
+  m_fontSizeBase: 45
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 1024
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 44.373444}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1260336827
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260336824}
+  m_CullTransparentMesh: 1
+--- !u!224 &1260336828
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260336824}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 558749598}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1460170641
 GameObject:
   m_ObjectHideFlags: 0
@@ -8374,6 +8541,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: goSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 6c0befb73b3694349906dfac788d63eb, type: 3}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: tickSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 324e008867a24e54eb4efeb8ed6b0523, type: 3}
+    - target: {fileID: 4828758998150134442, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: instructionTextObject
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1841156203918698759, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
@@ -8384,6 +8563,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2667157410824168385, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1595272640}
+    - targetCorrespondingSourceObject: {fileID: 2667157410824168385, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1260336828}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8789415315666337366, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       insertIndex: -1
@@ -8423,6 +8605,8 @@ MonoBehaviour:
   loseToLoseSceneDelay: 2
   currentTotalMoney: 0
   currentAttempts: 0
+  winSfx: {fileID: 0}
+  loseSfx: {fileID: 0}
   onWin:
     m_PersistentCalls:
       m_Calls: []
@@ -8665,6 +8849,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1672651429741766291, guid: 28916e2cefb35e941945a64da2922e97, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 1672651429741766291, guid: 28916e2cefb35e941945a64da2922e97, type: 3}
+      propertyPath: moneyValue
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672651429741766291, guid: 28916e2cefb35e941945a64da2922e97, type: 3}
       propertyPath: interactPromptRoot
       value: 
       objectReference: {fileID: 0}
@@ -8745,6 +8937,14 @@ PrefabInstance:
       propertyPath: infoText
       value: 
       objectReference: {fileID: 1460170642}
+    - target: {fileID: 9028549813145928095, guid: 5fcfa502e8181e9438b8be9da3b6d305, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 9028549813145928095, guid: 5fcfa502e8181e9438b8be9da3b6d305, type: 3}
+      propertyPath: moneyValue
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8770,6 +8970,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MoneyBagPre
       objectReference: {fileID: 0}
+    - target: {fileID: 4594173435805657196, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: db85f83f2cfbee847ace2b9240c0c7f7, type: 3}
     - target: {fileID: 6931512119212578247, guid: 2c33fe47f028013408f5b188a89d794d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 21.15231
@@ -8831,6 +9035,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 555185300}
     m_Modifications:
+    - target: {fileID: 2282957359863844247, guid: 2b9e2130337328c429d36df81eb1f5d1, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 2282957359863844247, guid: 2b9e2130337328c429d36df81eb1f5d1, type: 3}
+      propertyPath: moneyValue
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 2421127402125489884, guid: 2b9e2130337328c429d36df81eb1f5d1, type: 3}
       propertyPath: m_Name
       value: cupboardPre
@@ -8900,6 +9112,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 555185300}
     m_Modifications:
+    - target: {fileID: 4473682170529867110, guid: 788a49f3c379f3c4c936e8081d1b2833, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
     - target: {fileID: 7254944535421513887, guid: 788a49f3c379f3c4c936e8081d1b2833, type: 3}
       propertyPath: m_Name
       value: refrigeratorPre
@@ -9010,6 +9226,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8284328485689559939, guid: 336b899c72a345e478a37a1c355b0025, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: db85f83f2cfbee847ace2b9240c0c7f7, type: 3}
+    - target: {fileID: 8284328485689559939, guid: 336b899c72a345e478a37a1c355b0025, type: 3}
       propertyPath: moneyValue
       value: 50
       objectReference: {fileID: 0}
@@ -9037,6 +9257,14 @@ PrefabInstance:
     - target: {fileID: 2126843302000393122, guid: 537446495433f754299817ff083efa7e, type: 3}
       propertyPath: m_Name
       value: BananaPre
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352070960189334929, guid: 537446495433f754299817ff083efa7e, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 8352070960189334929, guid: 537446495433f754299817ff083efa7e, type: 3}
+      propertyPath: moneyValue
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8647401926454254576, guid: 537446495433f754299817ff083efa7e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9139,6 +9367,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2771552330117745431, guid: dd58d93497656e842a7fd8cbd619577c, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 2771552330117745431, guid: dd58d93497656e842a7fd8cbd619577c, type: 3}
+      propertyPath: moneyValue
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7741553544354299949, guid: dd58d93497656e842a7fd8cbd619577c, type: 3}
       propertyPath: m_Name
       value: Table Pre
@@ -9164,6 +9400,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 555185300}
     m_Modifications:
+    - target: {fileID: 3088107135836226028, guid: 6da04a55fa592ff439cf77feb49a6160, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 3088107135836226028, guid: 6da04a55fa592ff439cf77feb49a6160, type: 3}
+      propertyPath: moneyValue
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4529348554708461454, guid: 6da04a55fa592ff439cf77feb49a6160, type: 3}
       propertyPath: m_Name
       value: CartonBoxPre
@@ -9233,6 +9477,18 @@ PrefabInstance:
       propertyPath: infoText
       value: 
       objectReference: {fileID: 1460170642}
+    - target: {fileID: 5543672774241737277, guid: 7a9487384ea31c74286c8faf69208d38, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 5543672774241737277, guid: 7a9487384ea31c74286c8faf69208d38, type: 3}
+      propertyPath: moneyValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5543672774241737277, guid: 7a9487384ea31c74286c8faf69208d38, type: 3}
+      propertyPath: displayDuration
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7132928031389428551, guid: 7a9487384ea31c74286c8faf69208d38, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.6823101
@@ -9341,6 +9597,14 @@ PrefabInstance:
     - target: {fileID: 4863357604837721509, guid: b66a75ca88aea3e47a2d4043bd40c73b, type: 3}
       propertyPath: m_Name
       value: vasePre
+      objectReference: {fileID: 0}
+    - target: {fileID: 6840420486293764335, guid: b66a75ca88aea3e47a2d4043bd40c73b, type: 3}
+      propertyPath: collectSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: a6afa51838f399644869969446bad6d2, type: 3}
+    - target: {fileID: 6840420486293764335, guid: b66a75ca88aea3e47a2d4043bd40c73b, type: 3}
+      propertyPath: moneyValue
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

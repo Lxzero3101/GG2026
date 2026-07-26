@@ -153,7 +153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -544, y: 372}
+  m_AnchoredPosition: {x: -354, y: 362}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &132973112
@@ -352,6 +352,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 851
       objectReference: {fileID: 0}
+    - target: {fileID: 3024573937216549305, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -3883915927591372742, guid: 9a626b182a3a9a449ab3b3e7387e58b2, type: 3}
     - target: {fileID: 3227173323673028471, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_Name
       value: GlobalUI
@@ -360,9 +364,25 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3737143633894543406, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.69062
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737143633894543406, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.69062
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737143633894543406, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.69062
+      objectReference: {fileID: 0}
+    - target: {fileID: 3737143633894543406, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.0000038230005
+      objectReference: {fileID: 0}
     - target: {fileID: 3970911902504188438, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: maxPatience
-      value: 500
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 6187345165323056662, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_SortingOrder
@@ -383,6 +403,26 @@ PrefabInstance:
     - target: {fileID: 7529291451038755939, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_fontSizeBase
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8210411186801249053, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.442
+      objectReference: {fileID: 0}
+    - target: {fileID: 8210411186801249053, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.442
+      objectReference: {fileID: 0}
+    - target: {fileID: 8210411186801249053, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.442
+      objectReference: {fileID: 0}
+    - target: {fileID: 8210411186801249053, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 41.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8210411186801249053, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -23.6
       objectReference: {fileID: 0}
     - target: {fileID: 9203003222181820189, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -632,20 +672,20 @@ MonoBehaviour:
   objectsToSpawn:
   - label: 
     prefab: {fileID: 8225100486755736850, guid: b01eca486c2b0b048ae5c704cdf32eed, type: 3}
-    count: 3
+    count: 5
   - label: 
     prefab: {fileID: 3253662244161316624, guid: 181a53288e88f5948bc3fde3a87c3c59, type: 3}
-    count: 5
+    count: 9
   - label: 
     prefab: {fileID: 445509246180960357, guid: c06b4d786da42724ba790f90b1bdcee3, type: 3}
-    count: 5
+    count: 9
   - label: 
     prefab: {fileID: 78894018490004442, guid: bb5241b0dc9ec574f9b10b3735bb430a, type: 3}
-    count: 4
+    count: 9
   - label: 
     prefab: {fileID: 3162352094935265677, guid: 245b13a007807bd439c79a35dd1c6144, type: 3}
-    count: 2
-  minDistanceBetweenObjects: 3
+    count: 3
+  minDistanceBetweenObjects: 2
   spawnOnStart: 1
 --- !u!114 &770830025 stripped
 MonoBehaviour:

@@ -117,7 +117,9 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoadLoseSceneAfterDelay()
     {
         yield return new WaitForSeconds(loseTransitionDelay);
-        SceneManager.LoadScene(loseSceneName);
+        // Global patience loss (highest-priority): reset NoMP to 0 and go to
+        // the Lose scene via MiniGameResult.
+        MiniGameResult.ReportLoss();
     }
 
     /// <summary>
@@ -127,7 +129,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void LoadLoseScene()
     {
-        SceneManager.LoadScene(loseSceneName);
+        // Single lose funnel (also used by MiniGameManager4's out-of-attempts
+        // loss): reset NoMP to 0, then load the Lose scene via MiniGameResult.
+        MiniGameResult.ReportLoss();
     }
 
     /// <summary>

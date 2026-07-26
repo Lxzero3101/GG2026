@@ -13,6 +13,10 @@ public class WinManager : MonoBehaviour
     public int requiredCount = 4;
 
     [Header("Scene Transition")]
+    [Tooltip("Scene loaded when Minigame 3 is won. For the debt-collector flow this is SubMinigame3, NOT the Office — NoMP is credited only after SubMinigame3 finishes.")]
+    public string subMiniGameSceneName = "SubMinigame3";
+
+    [Tooltip("Legacy field, no longer used for the scene load (kept so existing Inspector setups don't break). Safe to ignore.")]
     public string sceneToLoad = "Office";
     public float delayBeforeSceneLoad = 3f;
 
@@ -88,13 +92,18 @@ public class WinManager : MonoBehaviour
 
     private void LoadNextScene()
     {
-        if (string.IsNullOrEmpty(sceneToLoad))
+        // Minigame 3 is only truly "passed" once SubMinigame3 is ALSO finished,
+        // so we do NOT credit NoMP here. Instead we hand off to SubMinigame3;
+        // the SubMinigame3 return script calls MiniGameResult.ReportWin(3) when
+        // the player heads back to the Office. This way, quitting during
+        // SubMinigame3 doesn't wrongly count Minigame 3 as done.
+        if (SceneFader.Instance != null)
         {
-            Debug.LogWarning("WinManager: Scene To Load is empty — set it in the Inspector.");
-            return;
+            SceneFader.LoadScene(subMiniGameSceneName);
         }
-
-        Debug.Log($"WinManager: loading scene '{sceneToLoad}'.");
-        SceneManager.LoadScene(sceneToLoad);
+        else
+        {
+            SceneManager.LoadScene(subMiniGameSceneName);
+        }
     }
 }

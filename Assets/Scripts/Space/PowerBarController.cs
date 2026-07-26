@@ -18,10 +18,22 @@ public class PowerBarController : MonoBehaviour
     [Header("Target Zone Randomization")]
     [SerializeField] private float zoneRandomInterval = 5f; // Mỗi bao nhiêu giây thì đổi vị trí vùng xanh
     [SerializeField] private float zoneRandomTimer = 0f;
+    [Tooltip("Vùng xanh khi random vị trí mới sẽ không được cách vị trí kim hiện tại quá khoảng cách này (đơn vị pixel UI). Đặt nhỏ hơn = dễ hơn (vùng luôn gần kim). Đặt bằng 0 hoặc âm = không giới hạn (random tự do như cũ).")]
+    [SerializeField] private float maxZoneJumpDistance = 180f;
+    [Tooltip("Vùng xanh khi random vị trí mới sẽ không được ra quá gần (hoặc trùng) vị trí kim hiện tại, phải cách tối thiểu khoảng này (đơn vị pixel UI). Đặt bằng 0 = cho phép random sát/trùng vị trí kim.")]
+    [SerializeField] private float minZoneJumpDistance = 40f;
     [SerializeField] private RectTransform barBackground;
     [SerializeField] private RectTransform indicator;
     [SerializeField] private RectTransform targetZone;
     [SerializeField] private Slider survivalSlider;
+
+    [Header("Red Zone (Vạch Đỏ - Chạm Là Thua)")]
+    [Tooltip("RectTransform của vạch đỏ bên trái (RedZone_Left)")]
+    [SerializeField] private RectTransform redZoneLeft;
+    [Tooltip("RectTransform của vạch đỏ bên phải (RedZone_Right)")]
+    [SerializeField] private RectTransform redZoneRight;
+    [Tooltip("Nếu sprite vạch đỏ có viền trong suốt bao quanh, biên va chạm sẽ rộng hơn phần màu đỏ thật. Tăng số này (đơn vị pixel UI) để thu hẹp vùng va chạm lại cho khớp với phần màu đỏ nhìn thấy.")]
+    [SerializeField] private float redZoneCollisionPadding = 0f;
 
     [Header("Tug of War GameObjects")]
     [SerializeField] private Transform playerTransform;   // Ông áo xanh
@@ -78,6 +90,9 @@ public class PowerBarController : MonoBehaviour
     /// <summary>Raised once when the player runs out of survival time or the indicator hits an edge.</summary>
     public event Action OnMiniGameLost;
 
+    /// <summary>Raised once when BeginRound() is called (round thực sự bắt đầu chạy, sau countdown).</summary>
+    public event Action OnRoundBegan;
+
     /// <summary>Raised whenever the indicator crosses the TargetZone boundary. True = now outside the zone.</summary>
     public event Action<bool> OnTargetZoneStatusChanged;
 
@@ -85,6 +100,8 @@ public class PowerBarController : MonoBehaviour
     private float maxX;
     private float targetMinX;
     private float targetMaxX;
+    private float redZoneLeftWorldX;  // mép PHẢI của vạch đỏ trái, tính bằng world space (đụng vào đây là thua)
+    private float redZoneRightWorldX; // mép TRÁI của vạch đỏ phải, tính bằng world space (đụng vào đây là thua)
     private bool isGameOver = false;
 
     // The round doesn't actually run (indicator doesn't move, no win/lose checks)
@@ -110,6 +127,43 @@ public class PowerBarController : MonoBehaviour
         float targetX = targetZone.anchoredPosition.x;
         targetMinX = targetX - (targetWidth / 2f);
         targetMaxX = targetX + (targetWidth / 2f);
+
+        // 3. Tính toán biên va chạm của 2 Vạch Đỏ (RedZone_Left / RedZone_Right)
+        // Dùng GetWorldCorners() thay vì anchoredPosition + width/2, vì công thức cũ
+        // giả định pivot chính giữa (0.5) — nếu pivot của các object không phải 0.5,
+        // biên tính ra bị lệch (báo thua trước khi kim thật sự chạm vạch đỏ trên màn hình).
+        // GetWorldCorners() luôn trả về toạ độ góc THẬT, khớp 100% với hình ảnh hiển thị.
+        Vector3[] corners = new Vector3[4];
+
+        if (redZoneLeft != null)
+        {
+            redZoneLeft.GetWorldCorners(corners);
+            redZoneLeftWorldX = corners[2].x; // mép PHẢI (top-right) của vạch đỏ trái
+        }
+        else
+        {
+            barBackground.GetWorldCorners(corners);
+            redZoneLeftWorldX = corners[0].x; // fallback: mép trái của thanh nền
+        }
+
+        if (redZoneRight != null)
+        {
+            redZoneRight.GetWorldCorners(corners);
+            redZoneRightWorldX = corners[0].x; // mép TRÁI (bottom-left) của vạch đỏ phải
+        }
+        else
+        {
+            barBackground.GetWorldCorners(corners);
+            redZoneRightWorldX = corners[2].x; // fallback: mép phải của thanh nền
+        }
+
+        // Thu hẹp vùng va chạm vào bên trong (nếu sprite có viền trong suốt thì set redZoneCollisionPadding > 0
+        // trong Inspector để bù lại, giúp biên va chạm khớp với phần màu đỏ thật nhìn thấy trên màn hình)
+        redZoneLeftWorldX -= redZoneCollisionPadding;
+        redZoneRightWorldX += redZoneCollisionPadding;
+
+        // Đảm bảo kim (Indicator) luôn vẽ ĐÈ LÊN 2 vạch đỏ (không bị RedZone che mất)
+        indicator.SetAsLastSibling();
 
         // Đặt kim ở vị trí chính giữa ban đầu
         indicator.anchoredPosition = new Vector2(0, indicator.anchoredPosition.y);
@@ -146,6 +200,8 @@ public class PowerBarController : MonoBehaviour
             tugLoopSource.loop = true;
             tugLoopSource.Play();
         }
+
+        OnRoundBegan?.Invoke();
     }
 
     /// <summary>Instantly moves BarBackground and SurvivalSlider off screen. Called by GameManager on win or loss.</summary>
@@ -253,6 +309,19 @@ public class PowerBarController : MonoBehaviour
         float indicatorX = indicator.anchoredPosition.x;
         return (indicatorX >= targetMinX && indicatorX <= targetMaxX);
     }
+    // Kiểm tra kim (Indicator) đã chạm vào vạch đỏ trái/phải hay chưa.
+    // Dùng toạ độ góc THẬT (world corners) của kim mỗi lần gọi, để khớp chính xác
+    // với những gì hiển thị trên màn hình, không phụ thuộc pivot của Indicator.
+    private static readonly Vector3[] s_IndicatorCorners = new Vector3[4];
+    bool CheckHitRedZone()
+    {
+        indicator.GetWorldCorners(s_IndicatorCorners);
+        float indicatorLeftEdge = s_IndicatorCorners[0].x;  // bottom-left
+        float indicatorRightEdge = s_IndicatorCorners[2].x; // top-right
+
+        return indicatorLeftEdge <= redZoneLeftWorldX || indicatorRightEdge >= redZoneRightWorldX;
+    }
+
     void RandomizeTargetZonePosition()
     {
         if (targetZone == null) return;
@@ -260,14 +329,73 @@ public class PowerBarController : MonoBehaviour
         float targetWidth = targetZone.rect.width;
         float halfWidth = targetWidth / 2f;
 
-        // Random 1 vị trí X mới, đảm bảo vùng xanh không bị lòi ra ngoài 2 vạch đỏ
-        float newX = UnityEngine.Random.Range(minX + halfWidth, maxX - halfWidth);
+        // Biên random tối đa theo chiều dài thanh (không để vùng xanh lòi ra ngoài 2 vạch đỏ)
+        float lowerBound = minX + halfWidth;
+        float upperBound = maxX - halfWidth;
+
+        // Giới hạn thêm theo khoảng cách tới vị trí kim hiện tại, để vùng xanh không nhảy quá xa
+        // khiến người chơi không kịp đuổi theo (chỉ áp dụng khi maxZoneJumpDistance > 0)
+        if (maxZoneJumpDistance > 0f)
+        {
+            float indicatorX = indicator.anchoredPosition.x;
+            lowerBound = Mathf.Max(lowerBound, indicatorX - maxZoneJumpDistance);
+            upperBound = Mathf.Min(upperBound, indicatorX + maxZoneJumpDistance);
+
+            // Phòng trường hợp kim đang ở sát mép khiến lowerBound > upperBound do bị giới hạn kép
+            if (lowerBound > upperBound)
+            {
+                float mid = (lowerBound + upperBound) / 2f;
+                lowerBound = upperBound = mid;
+            }
+        }
+
+        float newX = PickPositionExcludingNearIndicator(lowerBound, upperBound);
 
         targetZone.anchoredPosition = new Vector2(newX, targetZone.anchoredPosition.y);
 
         // Tính lại biên trái/phải của vùng xanh theo vị trí mới
         targetMinX = newX - halfWidth;
         targetMaxX = newX + halfWidth;
+    }
+
+    // Random 1 vị trí trong [lowerBound, upperBound], nhưng LOẠI TRỪ đoạn nằm quá gần
+    // (hoặc trùng) vị trí kim hiện tại, tránh vùng xanh random ra ngay chỗ kim đang đứng.
+    float PickPositionExcludingNearIndicator(float lowerBound, float upperBound)
+    {
+        if (minZoneJumpDistance <= 0f)
+        {
+            return UnityEngine.Random.Range(lowerBound, upperBound);
+        }
+
+        float indicatorX = indicator.anchoredPosition.x;
+
+        // Đoạn hợp lệ bên TRÁI kim: [lowerBound, indicatorX - minZoneJumpDistance]
+        float leftMax = indicatorX - minZoneJumpDistance;
+        float leftLength = Mathf.Max(0f, leftMax - lowerBound);
+
+        // Đoạn hợp lệ bên PHẢI kim: [indicatorX + minZoneJumpDistance, upperBound]
+        float rightMin = indicatorX + minZoneJumpDistance;
+        float rightLength = Mathf.Max(0f, upperBound - rightMin);
+
+        // Nếu không còn đoạn nào hợp lệ (kim bị kẹt giữa 2 giới hạn quá sát nhau),
+        // đành chấp nhận random tự do trong khoảng cho phép ban đầu.
+        if (leftLength <= 0f && rightLength <= 0f)
+        {
+            return UnityEngine.Random.Range(lowerBound, upperBound);
+        }
+
+        // Chọn bên trái hoặc bên phải, ưu tiên theo tỉ lệ độ dài để phân bố đều
+        float totalLength = leftLength + rightLength;
+        float roll = UnityEngine.Random.Range(0f, totalLength);
+
+        if (roll < leftLength)
+        {
+            return UnityEngine.Random.Range(lowerBound, leftMax);
+        }
+        else
+        {
+            return UnityEngine.Random.Range(rightMin, upperBound);
+        }
     }
 
     // Hàm di chuyển cả 2 nhân vật và túi tiền (Có kiểm tra giới hạn minScreenX và maxScreenX)
@@ -296,7 +424,17 @@ public class PowerBarController : MonoBehaviour
 
     void CheckWinLossConditions()
     {
-        // Trong thời gian grace period, không kiểm tra thua
+        // 0. THUA NGAY: Kim chạm vào vạch đỏ (áp dụng LUÔN, kể cả trong grace period)
+        if (CheckHitRedZone())
+        {
+            isGameOver = true;
+            Debug.LogError("BẠN ĐÃ THUA MINIGAME! (Chạm vạch đỏ)");
+            HandleLossVisuals();
+            OnMiniGameLost?.Invoke();
+            return;
+        }
+
+        // Trong thời gian grace period, không kiểm tra thua vì hết thời gian sống sót
         if (roundElapsedTime < startGracePeriod)
         {
             // 1. THẮNG: Đạt đủ thời gian tích lũy
@@ -320,12 +458,11 @@ public class PowerBarController : MonoBehaviour
             return;
         }
 
-        // 2. THUA: Hết thời gian sống sót HOẶC Chạm vạch đỏ ở 2 đầu
-        float indicatorX = indicator.anchoredPosition.x;
-        if ((currentSurvivalTime <= 0f && maxSurvivalTime > 0) || indicatorX <= minX || indicatorX >= maxX)
+        // 2. THUA: Hết thời gian sống sót
+        if (currentSurvivalTime <= 0f && maxSurvivalTime > 0)
         {
             isGameOver = true;
-            Debug.LogError("BẠN ĐÃ THUA MINIGAME!");
+            Debug.LogError("BẠN ĐÃ THUA MINIGAME! (Hết thời gian)");
             HandleLossVisuals();
             OnMiniGameLost?.Invoke();
         }
