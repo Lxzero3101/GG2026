@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d4caf72f37b344ebd3b60f10b7f81c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 3.5
+  moveSpeed: 4
   freezeDuringCountdown: 1
   footstepAudioSource: {fileID: 0}
   walkClip: {fileID: 8300000, guid: 8b0baad0e91061b4bb115b949e441b06, type: 3}
