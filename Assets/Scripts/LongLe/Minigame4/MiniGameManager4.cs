@@ -115,15 +115,8 @@ public class MiniGameManager4 : MonoBehaviour
     private IEnumerator LoadNextSceneAfterDelay()
     {
         yield return new WaitForSeconds(winToNextSceneDelay);
-
-        if (gameManager != null)
-        {
-            gameManager.LoadNextScene();
-        }
-        else
-        {
-            Debug.LogWarning("[MiniGameManager4] GameManager reference is missing — can't auto-load the next scene.");
-        }
+        // +1 NoMP, then Office (or Finish at 4/4).
+        MiniGameResult.ReportWin();
     }
 
     private void TriggerLose()

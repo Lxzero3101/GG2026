@@ -328,10 +328,8 @@ public class MiniGameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(winLoadDelay);
 
-        if (!string.IsNullOrEmpty(winSceneName))
-            SceneManager.LoadScene(winSceneName);
-        else
-            Debug.LogWarning("[MiniGameManager] winSceneName is empty — not loading a scene.");
+        // Route through GameData: +1 NoMP, then Office (or Finish at 4/4).
+        MiniGameResult.ReportWin();
     }
 
     private void TriggerLose()
@@ -339,7 +337,13 @@ public class MiniGameManager : MonoBehaviour
         EndGame();
         AudioManager.Instance?.PlaySfx(loseSfx);
         Debug.Log("[MiniGameManager] LOSE — Boss patience ran out! 💢");
-        // TODO: Fire a public event or call boss UI / scene transition here
+        StartCoroutine(LoseSequenceRoutine());
+    }
+
+    private IEnumerator LoseSequenceRoutine()
+    {
+        yield return new WaitForSeconds(2f); // let the lose SFX play before leaving
+        MiniGameResult.ReportLoss(); // reset NoMP to 0, go to Lose scene
     }
 
     private void EndGame()
