@@ -592,7 +592,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3970911902504188438, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: maxPatience
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 4272648065342565942, guid: 5a16f954963f54a44b31f013ccf4fe8c, type: 3}
       propertyPath: m_Enabled
@@ -1294,6 +1294,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerBarController
   zoneRandomInterval: 2.795
   zoneRandomTimer: 0
+  maxZoneJumpDistance: 100
+  minZoneJumpDistance: 40
   barBackground: {fileID: 1051866676}
   indicator: {fileID: 1202592767}
   targetZone: {fileID: 118706512}
@@ -1314,14 +1316,14 @@ MonoBehaviour:
   playerFallenSprite: {fileID: -6708501417520951118, guid: a914e9bea6d6ce14d963b38d8a776169, type: 3}
   debtorFallenSprite: {fileID: 2556563222956901894, guid: 21d4256c12ed9b34f94c40dd31cf9139, type: 3}
   moneyBagHeightOffset: 2
-  floodStrength: 120
-  swimStrength: 25
+  floodStrength: 500
+  swimStrength: 15
   maxVelocity: 72
-  maxSurvivalTime: 20
+  maxSurvivalTime: 15
   currentSurvivalTime: 0
-  startGracePeriod: 5
-  timeDrainRate: 4
-  rewardMultiplier: 1
+  startGracePeriod: 3
+  timeDrainRate: 3.5
+  rewardMultiplier: 3
   offScreenOffset: {x: 3000, y: 0}
   sfxSource: {fileID: 1051866680}
   winClip: {fileID: 0}
