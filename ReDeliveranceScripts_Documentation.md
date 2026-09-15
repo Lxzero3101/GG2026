@@ -51,22 +51,22 @@ graph TD
 
     subgraph PackageSystem
         PS[PackageSpawner]
-        PKG["Package [×N]"]
-        FSM["PackageStateMachine [×N]"]
-        MOV["PackageMovement [×N]"]
-        VIS["PackageVisuals [×N]"]
+        PKG[Package xN]
+        FSM[PackageStateMachine xN]
+        MOV[PackageMovement xN]
+        VIS[PackageVisuals xN]
     end
 
     subgraph Tracks
-        TR["Track [×3]"]
-        WP["Waypoint Transforms [×8-10]"]
+        TR[Track x3]
+        WP[Waypoint Transforms x8-10]
     end
 
     subgraph World
         SO[Sorter]
-        EP["Endpoint [×3]"]
+        EP[Endpoint x3]
         LA[LostArea]
-        OB["Obstacle [×N]"]
+        OB[Obstacle xN]
     end
 
     subgraph Events
@@ -74,13 +74,13 @@ graph TD
     end
 
     subgraph UI_Layer
-        SPL["SneakPeekLabel [×N]"]
+        SPL[SneakPeekLabel xN]
     end
 
     %% Managers
     GM -->|reads SpawnInterval| PS
     GM -->|calls FinaliseHighScore| SM
-    GM ~~>|RaiseLevelEnd| GE
+    GM -.->|RaiseLevelEnd| GE
     SM -->|RefreshScoreDisplay| UI
     UI -->|reads RemainingTime| GM
     UI -->|reads score fields| SM
@@ -96,7 +96,7 @@ graph TD
     SP -->|RaycastAll LOS blocked by| PKG
 
     %% Spawner
-    PS --instantiates--> PKG
+    PS -->|instantiates| PKG
     PS -->|SetTrack wp0| MOV
 
     %% Package internals
@@ -106,10 +106,10 @@ graph TD
     FSM -->|enables/disables| MOV
     FSM -->|reads HealthPercent| PKG
     FSM -->|PlacePackage| LA
-    FSM ~~>|RaisePackageDelivered| GE
-    FSM ~~>|RaiseLost| GE
-    FSM ~~>|RaisePickedUp| GE
-    PKG ~~>|RaisePackageDestroyed onDestroy| GE
+    FSM -.->|RaisePackageDelivered| GE
+    FSM -.->|RaiseLost| GE
+    FSM -.->|RaisePickedUp| GE
+    PKG -.->|RaisePackageDestroyed onDestroy| GE
     VIS -->|reads Health/State| PKG
 
     %% Track
@@ -121,8 +121,8 @@ graph TD
     SO -->|reads| TR
 
     %% Endpoint
-    EP ◇-->|trigger: receives Sorted pkg| FSM
-    EP ◇-->|trigger: tracks player inside| PR
+    EP -->|trigger: receives Sorted pkg| FSM
+    EP -->|trigger: tracks player inside| PR
     FSM -->|SetActiveEndpoint| EP
 
     %% LostArea
