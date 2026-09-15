@@ -337,6 +337,8 @@ stateDiagram-v2
 
 | Tool | How it was used | Which parts of the project |
 |---|---|---|
-| Abacus AI Agent | Wrote all C# scripts, wiring guide, and this documentation template | All scripts, SetupGuide.md, Documentation.md |
+| Gemini | fixed the diagram | Documentation.md |https://share.gemini.google/jJD1TIHvZhd3 |
+| Cowork agent| Intellisense help to write the code faster | Scripts|https://claude.com/product/cowork|
+|Prettier - Code formatter| Organise the code| Scripts| VS Code extension|
 
-> All code was reviewed, understood, and adapted before use. The overall architecture, design decisions, and feature logic match the specification requirements.
+> All code was reviewed, understood, and adapted before use.
