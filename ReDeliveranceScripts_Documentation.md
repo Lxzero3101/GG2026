@@ -189,149 +189,48 @@ stateDiagram-v2
 
 ## 4. Quality Assurance (QA) Report
 
----
+# QA Test Report
+**Unity version:** 6000.3.7f1  
+**Build/version:** [link to commit tested]  
+**Date tested:** [test date/time]  
+**Test environment:** [OS, resolution, controller used if relevant]  
 
-### Test Case 1 — Boundary and play-area constraints
-- **Requirement:** F1 Player Movement
-- **Setup:** Open the scene in Play mode. Player starts at scene centre.
-- **Steps:**
-  1. Hold **D** (or Right arrow) until the player reaches the right edge of the screen.
-  2. Observe whether the player can be pushed further right.
-  3. Repeat for all four screen edges (Up, Down, Left, Right).
-  4. Hold a diagonal direction (e.g. D + W) into a corner.
-- **Expected result:** The player sprite halts exactly at the screen boundary on all four edges and corners, never disappearing off-screen. The player sprite remains fully visible at all times.
-- **Actual result:** *(Fill in after running in Unity — e.g. "Player clamped correctly on all four edges; corner clamp also works.")*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Screenshot / GIF showing player at screen edge)*
-
----
-
-### Test Case 2 — Allowed vs disallowed interaction
-- **Requirement:** F5 Player Redirection
-- **Setup:** Play mode. Ensure at least one Sorted package exists on a track and at least one package is in the Dispatching or Delivered state.
-- **Steps:**
-  1. Walk the player over a **Sorted** package and press **Space**. Note result.
-  2. Walk the player over an **Unsorted** package and press **Space**. Note result.
-  3. Walk the player over a **Dispatching** package and press **Space**. Note result.
-  4. Wait for a Delivered package to appear; walk over it and press **Space**. Note result.
-- **Expected result:** Steps 1–2: package is picked up and follows the player (state = Redirecting). Steps 3–4: nothing happens; the player does not pick up the package.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Screenshot showing carried package vs ignored Dispatching package)*
+### Test case table (minimum 8 required)
+| Test ID | QA Prompt | Requirement reference | Setup / Initial conditions | Steps | Expected result | Actual result | Pass/Fail | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| TC01 | Boundary and play-area constraints | F1 Player Movement | Open the scene in Play mode. Player starts at scene centre. | 1. Hold **D** (or Right arrow) until the player reaches the right edge of the screen.<br>2. Observe whether the player can be pushed further right.<br>3. Repeat for all four screen edges (Up, Down, Left, Right).<br>4. Hold a diagonal direction (e.g. D + W) into a corner. | The player sprite halts exactly at the screen boundary on all four edges and corners, never disappearing off-screen. The player sprite remains fully visible at all times. | *(Fill in after running in Unity — e.g. "Player clamped correctly on all four edges; corner clamp also works.")* | *(Pass / Fail)* | *(Screenshot / GIF showing player at screen edge)* |
+| TC02 | Allowed vs disallowed interaction | F5 Player Redirection | Play mode. Ensure at least one Sorted package exists on a track and at least one package is in the Dispatching or Delivered state. | 1. Walk the player over a **Sorted** package and press **Space**. Note result.<br>2. Walk the player over an **Unsorted** package and press **Space**. Note result.<br>3. Walk the player over a **Dispatching** package and press **Space**. Note result.<br>4. Wait for a Delivered package to appear; walk over it and press **Space**. Note result. | Steps 1–2: package is picked up and follows the player (state = Redirecting). Steps 3–4: nothing happens; the player does not pick up the package. | *(Fill in)* | *(Pass / Fail)* | *(Screenshot showing carried package vs ignored Dispatching package)* |
+| TC03 | Duplication prevention | F5 Player Redirection (carry only one) | Play mode. Two packages exist on the track close together. | 1. Walk the player over the first package and press **Space** to pick it up.<br>2. While carrying the first package, walk toward a second package (Sorted or Lost).<br>3. Press **Space** again.<br>4. Check how many packages follow the player. | Only the first package follows the player. The second pick-up attempt is ignored. `carriedPackage` in `PlayerRedirection` is not replaced. | *(Fill in)* | *(Pass / Fail)* | *(Screenshot or inspector view showing only one carried package)* |
+| TC04 | Time-dependent behaviour | F4 Dispatching (½ spawn interval) / F7 Level timer | Set `spawnInterval = 10 s` in PackageSpawner inspector. Set `levelDuration = 15 s` in GameManager. Play mode. | 1. Note the timer in the HUD; confirm it counts down from 15.<br>2. Allow a package to reach an endpoint and enter Dispatching. Start a stopwatch.<br>3. Observe when the package transitions (Delivered or Lost); stop the stopwatch.<br>4. Compare elapsed time to expected: ½ × 10 = **5 s**.<br>5. Allow the timer to reach zero; confirm all entities freeze. | Dispatching lasts 5 ± 0.1 s. At timer zero the player stops moving, no new packages spawn, and existing packages stop moving. Restart button appears. | *(Fill in)* | *(Pass / Fail)* | *(Screenshot at timer zero showing frozen scene + Restart button)* |
+| TC05 | Randomisation bounds and validity | F3 random package type / F6 random Lost Area position | Play mode. Open Console. Lower `spawnInterval` to 2 s to generate many packages quickly. Set mis-sort chance to 0.99 to force many Lost packages. | 1. Observe 20+ packages spawned. In Console (or inspector) confirm each package's type is Red, Green, or Blue only — no invalid enum value.<br>2. Allow multiple packages to become Lost. Observe their landing positions in the Scene view.<br>3. Confirm each Lost package lands inside the pink Gizmo box of the LostArea. | Package types are always one of the three valid values. All Lost positions fall within the LostArea's half-extent bounds. | *(Fill in)* | *(Pass / Fail)* | *(Inspector screenshots showing type values; Scene view screenshot of packages inside LostArea bounds)* |
+| TC06 | Parameter change robustness | F3 spawn interval / F6 health-decay rate (inspector params) | Play mode with default settings. Then modify values in the inspector **while stopped**, restart. | 1. Change `spawnInterval` in PackageSpawner from 5 → 2. Press Play. Confirm packages spawn faster.<br>2. Stop. Change `healthDecayRate` in LostArea from 1 → 10. Press Play. Force a Lost package and confirm it loses health ~10× faster (reaches zero in ~10 s instead of ~100 s).<br>3. Stop. Restore defaults. Confirm no errors in Console across all changes. | Both parameters update behaviour immediately on the next Play without code errors or NullReferenceExceptions. Inspector changes are designer-friendly. | *(Fill in)* | *(Pass / Fail)* | *(Console screenshot showing no errors; inspector screenshot with modified values)* |
+| TC07 | Lifecycle and cleanup | F4 Delivered removal / F10 SneakPeek label cleanup | Play mode. Set `spawnInterval = 6 s` so the Delivered window is 3 s. | 1. Drop a correctly-typed package at its endpoint. Observe it enters Delivered.<br>2. Start a stopwatch; confirm the package disappears after ~3 s.<br>3. While the package is Sorted (before delivery), left-click it to spawn a SneakPeekLabel.<br>4. Deliver the package (Dispatching → Delivered → destroyed).<br>5. Confirm the SneakPeekLabel is also destroyed when the package is destroyed.<br>6. Check the Hierarchy — no orphaned SneakPeekLabel GameObjects remain. | Delivered packages self-destruct after ½ spawn interval (3 s). Their SneakPeekLabels are also destroyed via the `GameEvents.OnPackageDestroyed` callback. | *(Fill in)* | *(Pass / Fail)* | *(Hierarchy screenshot before/after destruction; no SneakPeekLabel remaining)* |
+| TC08 | Obstruction / visibility constraint | F11 Sneak-Peek Line of Sight and Obstacles | Play mode. Position the player with a clear view of one package. Position a scene Obstacle between the player and a second package. | 1. Left-click the package with a **clear** LOS (no obstacle between player and package). Confirm a type label appears.<br>2. Move the player so another package lies between the player and a new target package.<br>3. Left-click the target package. Confirm **no** label appears (blocked by another package).<br>4. Move the player so the scene Obstacle (pipe/sign) lies between the player and a package.<br>5. Left-click the target package. Confirm **no** label appears (blocked by obstacle).<br>6. Move the player **outside** `maxRange` (default 8 world units) of any package.<br>7. Left-click a package from that distance. Confirm **no** label appears. | Label appears only when: within range AND clear LOS. Label is blocked by both other packages and scene Obstacle-layer objects. Range check independently prevents far-click reveals. | *(Fill in)* | *(Pass / Fail)* | *(Screenshots: successful reveal, package-blocked fail, obstacle-blocked fail, out-of-range fail)* |
 
 ---
 
-### Test Case 3 — Duplication prevention
-- **Requirement:** F5 Player Redirection (carry only one)
-- **Setup:** Play mode. Two packages exist on the track close together.
-- **Steps:**
-  1. Walk the player over the first package and press **Space** to pick it up.
-  2. While carrying the first package, walk toward a second package (Sorted or Lost).
-  3. Press **Space** again.
-  4. Check how many packages follow the player.
-- **Expected result:** Only the first package follows the player. The second pick-up attempt is ignored. `carriedPackage` in `PlayerRedirection` is not replaced.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Screenshot or inspector view showing only one carried package)*
+## [Bug] Report
+**ID:** B01  
+**Title:** No visual or audio feedback when a pick-up or Sneak-Peek attempt fails silently  
+**Date:** [Date of bug found]  
+**Build/version:** [link to commit tested]  
+**Bug severity:** Medium  
+**Area/feature:** F5 Player Redirection, F11 Sneak-Peek LOS  
 
----
+**Description:** The action silently fails with no feedback when attempting to interact outside range, through obstacles, or with invalid targets. New players may not understand why actions are not working, leading to confusion, frustration, and the assumption that the game has a bug rather than a design rule preventing the action.  
 
-### Test Case 4 — Time-dependent behaviour
-- **Requirement:** F4 Dispatching (½ spawn interval) / F7 Level timer
-- **Setup:** Set `spawnInterval = 10 s` in PackageSpawner inspector. Set `levelDuration = 15 s` in GameManager. Play mode.
-- **Steps:**
-  1. Note the timer in the HUD; confirm it counts down from 15.
-  2. Allow a package to reach an endpoint and enter Dispatching. Start a stopwatch.
-  3. Observe when the package transitions (Delivered or Lost); stop the stopwatch.
-  4. Compare elapsed time to expected: ½ × 10 = **5 s**.
-  5. Allow the timer to reach zero; confirm all entities freeze.
-- **Expected result:** Dispatching lasts 5 ± 0.1 s. At timer zero the player stops moving, no new packages spawn, and existing packages stop moving. Restart button appears.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Screenshot at timer zero showing frozen scene + Restart button)*
+**Steps to reproduce:**
+1. Stand outside Sneak-Peek range and left-click a package.
+2. Stand with an obstacle between the player and a package and left-click.
+3. Stand next to a Dispatching package and press Space.
 
----
+**Expected result:** The game communicates clearly why the action failed — e.g. a brief shake animation, a "blocked" sound effect, or a tooltip like "Obstacle in the way!" so the player understands the rule.  
 
-### Test Case 5 — Randomisation bounds and validity
-- **Requirement:** F3 random package type / F6 random Lost Area position
-- **Setup:** Play mode. Open Console. Lower `spawnInterval` to 2 s to generate many packages quickly. Set mis-sort chance to 0.99 to force many Lost packages.
-- **Steps:**
-  1. Observe 20+ packages spawned. In Console (or inspector) confirm each package's type is Red, Green, or Blue only — no invalid enum value.
-  2. Allow multiple packages to become Lost. Observe their landing positions in the Scene view.
-  3. Confirm each Lost package lands inside the pink Gizmo box of the LostArea.
-- **Expected result:** Package types are always one of the three valid values. All Lost positions fall within the LostArea's half-extent bounds.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Inspector screenshots showing type values; Scene view screenshot of packages inside LostArea bounds)*
+**Actual result:** The action silently fails with zero visual or auditory feedback.  
 
----
+**Notes / suspected cause (optional):** Input checks correctly block the state change or label spawn, but lack corresponding event triggers for user feedback UI or audio.  
 
-### Test Case 6 — Parameter change robustness
-- **Requirement:** F3 spawn interval / F6 health-decay rate (inspector params)
-- **Setup:** Play mode with default settings. Then modify values in the inspector **while stopped**, restart.
-- **Steps:**
-  1. Change `spawnInterval` in PackageSpawner from 5 → 2. Press Play. Confirm packages spawn faster.
-  2. Stop. Change `healthDecayRate` in LostArea from 1 → 10. Press Play. Force a Lost package and confirm it loses health ~10× faster (reaches zero in ~10 s instead of ~100 s).
-  3. Stop. Restore defaults. Confirm no errors in Console across all changes.
-- **Expected result:** Both parameters update behaviour immediately on the next Play without code errors or NullReferenceExceptions. Inspector changes are designer-friendly.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Console screenshot showing no errors; inspector screenshot with modified values)*
-
----
-
-### Test Case 7 — Lifecycle and cleanup
-- **Requirement:** F4 Delivered removal / F10 SneakPeek label cleanup
-- **Setup:** Play mode. Set `spawnInterval = 6 s` so the Delivered window is 3 s.
-- **Steps:**
-  1. Drop a correctly-typed package at its endpoint. Observe it enters Delivered.
-  2. Start a stopwatch; confirm the package disappears after ~3 s.
-  3. While the package is Sorted (before delivery), left-click it to spawn a SneakPeekLabel.
-  4. Deliver the package (Dispatching → Delivered → destroyed).
-  5. Confirm the SneakPeekLabel is also destroyed when the package is destroyed.
-  6. Check the Hierarchy — no orphaned SneakPeekLabel GameObjects remain.
-- **Expected result:** Delivered packages self-destruct after ½ spawn interval (3 s). Their SneakPeekLabels are also destroyed via the `GameEvents.OnPackageDestroyed` callback.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Hierarchy screenshot before/after destruction; no SneakPeekLabel remaining)*
-
----
-
-### Test Case 8 — Obstruction / visibility constraint
-- **Requirement:** F11 Sneak-Peek Line of Sight and Obstacles
-- **Setup:** Play mode. Position the player with a clear view of one package. Position a scene Obstacle between the player and a second package.
-- **Steps:**
-  1. Left-click the package with a **clear** LOS (no obstacle between player and package). Confirm a type label appears.
-  2. Move the player so another package lies between the player and a new target package.
-  3. Left-click the target package. Confirm **no** label appears (blocked by another package).
-  4. Move the player so the scene Obstacle (pipe/sign) lies between the player and a package.
-  5. Left-click the target package. Confirm **no** label appears (blocked by obstacle).
-  6. Move the player **outside** `maxRange` (default 8 world units) of any package.
-  7. Left-click a package from that distance. Confirm **no** label appears.
-- **Expected result:** Label appears only when: within range AND clear LOS. Label is blocked by both other packages and scene Obstacle-layer objects. Range check independently prevents far-click reveals.
-- **Actual result:** *(Fill in)*
-- **Pass/Fail:** *(Pass / Fail)*
-- **Evidence:** *(Screenshots: successful reveal, package-blocked fail, obstacle-blocked fail, out-of-range fail)*
-
----
-
-### Bug Report / Usability-Design Risk Report
-
-- **Title:** No visual or audio feedback when a pick-up or Sneak-Peek attempt fails silently
-- **Type:** Usability-Design Risk
-- **Requirement affected:** F5 Player Redirection, F11 Sneak-Peek LOS
-- **Environment:** Unity 6000.3.7f1, Windows 11, 1920 × 1080
-- **Steps to reproduce:**
-  1. Stand outside Sneak-Peek range and left-click a package.
-  2. Stand with an obstacle between the player and a package and left-click.
-  3. Stand next to a Dispatching package and press Space.
-- **Expected behaviour:** The game communicates clearly why the action failed — e.g. a brief shake animation, a "blocked" sound effect, or a tooltip like "Obstacle in the way!" so the player understands the rule.
-- **Actual behaviour (design risk):** The action silently fails with no feedback. New players may not understand why clicking/picking-up is not working, leading to confusion and frustration. They may assume the game has a bug rather than that a design rule is preventing the action.
-- **Impact / severity:** Medium — does not break any feature, but significantly harms learnability and player experience, especially for new players unfamiliar with the LOS mechanic.
-- **Suggested fix / mitigation:** Add a brief flash/shake on the label spawn site when blocked (e.g. red "X" sprite that fades in 0.3 s). Play a short failure sound. Display a short on-screen tooltip near the cursor for 1–2 s ("Out of range", "Blocked!"). These can be added without affecting any scored gameplay logic.
-- **Evidence:** *(Screenshot or recording showing silent failure)*
-
----
+**Verification plan (optional):** Verify that feedback cues (UI flash, sound, or tooltip) trigger when conditions for line of sight, range, or state validity are unmet.
 
 ## 5. Generative AI Acknowledgement
 
